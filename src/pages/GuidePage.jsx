@@ -1,0 +1,240 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  HiOutlineBookOpen, 
+  HiOutlineCalculator, 
+  HiOutlineCalendar, 
+  HiOutlineClock, 
+  HiOutlineCloudUpload, 
+  HiOutlineShieldCheck,
+  HiOutlineArrowLeft
+} from 'react-icons/hi';
+
+/* ── Page meta hook ──────────────────────────────────────── */
+function usePageMeta(title, description) {
+  useEffect(() => {
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', description);
+  }, [title, description]);
+}
+
+/* Decorative background orbs */
+const Background = () => (
+  <>
+    <div className="pointer-events-none fixed top-0 right-0 w-[500px] h-[500px] rounded-full opacity-15"
+      style={{ background: 'radial-gradient(circle at 80% 20%, #93c0a9 0%, transparent 65%)' }} />
+    <div className="pointer-events-none fixed bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-10"
+      style={{ background: 'radial-gradient(circle at 20% 80%, #3d8265 0%, transparent 65%)' }} />
+    <div className="pointer-events-none fixed inset-0 opacity-[0.02]"
+      style={{ backgroundImage: 'radial-gradient(#255342 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+  </>
+);
+
+export default function GuidePage() {
+  const navigate = useNavigate();
+
+  usePageMeta(
+    'User Usage Guide — Namazly | How to Track Qaza Prayers',
+    'A complete user guide and instruction manual explaining how to estimate qaza prayers, navigate the Islamic calendar, and track daily timings.'
+  );
+
+  return (
+    <div className="min-h-screen relative flex flex-col"
+      style={{ background: 'linear-gradient(135deg, #e8f5ee 0%, #f5f0e8 60%, #eef2ee 100%)' }}>
+      <Background />
+
+      {/* Navigation Header */}
+      <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
+        <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
+          >
+            <HiOutlineArrowLeft className="w-4 h-4 text-sage-600" />
+            <span className="hidden sm:inline">Dashboard</span>
+          </button>
+          
+          <span className="poppins-regular text-lg font-bold gradient-text">Usage Guide</span>
+          
+          <div className="w-10" /> {/* Spacer */}
+        </div>
+      </nav>
+
+      {/* Main Container */}
+      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
+        
+        {/* Banner Card */}
+        <section className="glass-card rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-3 animate-fade-in">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-200 to-sage-300/40 flex items-center justify-center mx-auto shadow-md">
+            <HiOutlineBookOpen className="text-3xl text-sage-700" />
+          </div>
+          <h1 className="poppins-regular text-3xl font-black text-sage-900 tracking-tight leading-tight">
+            Namazly User Guide
+          </h1>
+          <p className="poppins-regular text-sm text-sage-600 max-w-md mx-auto leading-relaxed">
+            Welcome to the instruction manual. Learn how to estimate, track, and manage your prayers seamlessly with Namazly's features.
+          </p>
+        </section>
+
+        {/* Instructions Grid */}
+        <div className="space-y-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+
+          {/* 1. Quick Start */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineCloudUpload className="text-xl text-sage-500" />
+              <span>1. Quick Start: Guest vs. Cloud Sync</span>
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <div className="p-4 rounded-2xl bg-white/40 border border-white/60 space-y-2">
+                <h3 className="font-bold text-sage-800 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  Guest Mode (Offline-first)
+                </h3>
+                <p>
+                  You can use Namazly instantly without registering. Any calculated and recorded prayers are stored securely directly inside your browser's local storage.
+                </p>
+                <p className="text-[11px] text-sage-400">
+                  ⚠️ Clearing your browser cache or cookies may wipe guest tracker history.
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-sage-50/40 border border-sage-200/50 space-y-2">
+                <h3 className="font-bold text-sage-800 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-sage-500 animate-pulse" />
+                  Cloud Sync (Google Account)
+                </h3>
+                <p>
+                  Sign in with Google at any time. Namazly will **automatically migrate** all your local guest records straight into the secure cloud database.
+                </p>
+                <p className="text-[11px] text-sage-400">
+                  ✅ Access and update your records on any smartphone, tablet, or desktop.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 2. Missed Prayers Tracker & Calculator */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineCalculator className="text-xl text-sage-500" />
+              <span>2. Qaza Tracker & Smart Calculator</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <div className="space-y-2">
+                <h3 className="font-bold text-sage-800">📊 Calculating Missed Prayers</h3>
+                <p>
+                  Unsure how many prayers you have missed? Open the **Qaza Calculator** on your dashboard. Enter your age of puberty, current age, and the years you spent praying regularly. 
+                </p>
+                <p>
+                  Tapping **Apply Calculation** automatically generates your total missed prayer counts, converting years/days into specific **Rakat totals** for each of the daily prayers (Fajr, Zohar, Asr, Maghrib, Isha Farz, and Isha Witr).
+                </p>
+              </div>
+              <div className="space-y-2 border-t border-sage-100/40 pt-3">
+                <h3 className="font-bold text-sage-800">✅ Recording Your Progress</h3>
+                <p>
+                  As you make up your missed prayers, tap the green **`+`** button on any prayer card to increment your count. If you make a mistake, tap **`-`** to decrement.
+                </p>
+                <p>
+                  The **Stats Summary** card dynamically updates your percentage completed, total rakats prayed, and visualizes your progress to keep you motivated.
+                </p>
+              </div>
+              <div className="space-y-2 border-t border-sage-100/40 pt-3">
+                <h3 className="font-bold text-sage-800">🗑️ Restarting Fresh</h3>
+                <p>
+                  If you wish to reset all counts to zero, tap the red **Clear All Data** button at the bottom of the page, review the prompt, and confirm to start fresh.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 3. Dual Islamic Calendar */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineCalendar className="text-xl text-sage-500" />
+              <span>3. Dual Hijri-Gregorian Calendar</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                The **Islamic Calendar** page displays a dual grid combining standard Gregorian dates with their corresponding Islamic Hijri date.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🌙 Moonsighting Adjustment</h3>
+                  <p>
+                    Because Islamic months depend on regional moon sightings, Hijri dates can vary by 1–2 days. Use the **Adjustment Control panel** on the calendar page to shift the Hijri dates backward or forward (`-2` to `+2` days) to align with your local mosque.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🕋 Islamic Holidays & Holy Days</h3>
+                  <p>
+                    Important events (such as the start of Ramadan, Eid al-Fitr, Eid al-Adha, and Ashura) are listed dynamically. Any holiday occurring in the currently viewed month is flagged automatically on the calendar grid with a gold indicator.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 4. Daily Namaz Timings */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineClock className="text-xl text-sage-500" />
+              <span>4. Real-time Namaz Timings Dashboard</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                The **Daily Namaz Timings** page fetches precise prayer starting times using a secure connection to the global Aladhan API.
+              </p>
+              <div className="space-y-2">
+                <h3 className="font-bold text-sage-800">🎯 GPS Coordinates vs. Manual Search</h3>
+                <p>
+                  By default, Namazly requests browser Geolocation. Granting access allows us to pinpoint your exact coordinates and load local prayer timings. If denied, the page falls back to manual mode. You can enter any global city and country in the search panel to look up times.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-sage-100/40 pt-3">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">⏳ Next Prayer Countdown</h3>
+                  <p>
+                    A real-time countdown display (`HH:MM:SS`) is rendered at the top, updating every second to show precisely how much time remains before the next prayer starts.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🟢 Current Active Prayer</h3>
+                  <p>
+                    The currently active prayer is highlighted automatically in the timings sheet with a glowing border, a pulsing marker, and an **"Active Now"** badge.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 5. Privacy First Philosophy */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineShieldCheck className="text-xl text-sage-500" />
+              <span>5. Our Privacy-First Commitment</span>
+            </h2>
+            <div className="space-y-2 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                Namazly is built with complete sincerity as an open utility for Muslims around the world.
+              </p>
+              <ul className="list-disc pl-5 space-y-1.5">
+                <li>**No Ads or Distractions**: Namazly is entirely free, contains zero ads, and does not sell features or track your browsing habits.</li>
+                <li>**Secure Google Auth**: Google Sign-in is handled securely. We only store your email, name, avatar link, and qaza prayer counts.</li>
+                <li>**Zero Metadata Selling**: We never sell, rent, or share personal profiles or location data with third parties.</li>
+              </ul>
+            </div>
+          </section>
+
+        </div>
+
+        {/* Bottom helper */}
+        <section className="text-center poppins-regular text-sage-500 text-xs py-4 space-y-1.5 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <p>Need support or have suggestions? Reach out via our GitHub repository.</p>
+          <p className="text-sage-400 text-[10px]">Built with sincerity &bull; Namazly &copy; {new Date().getFullYear()}</p>
+        </section>
+
+      </main>
+    </div>
+  );
+}

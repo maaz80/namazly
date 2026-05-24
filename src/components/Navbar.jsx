@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen } from 'react-icons/hi';
 
 const MoonStar = () => (
   <svg
@@ -29,32 +30,46 @@ export default function Navbar({ onAuthClick }) {
   const { user, logout } = useAuth();
   const navigate         = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   const menuRef    = useRef(null);
   const triggerRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const mobileTriggerRef = useRef(null);
 
-  /* Close menu on outside click */
+  /* Close menus on outside click */
   useEffect(() => {
-    if (!menuOpen) return;
     const handle = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target) &&
+      // Close user account menu
+      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target) &&
           triggerRef.current && !triggerRef.current.contains(e.target)) {
         setMenuOpen(false);
+      }
+      // Close mobile navigation menu
+      if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(e.target) &&
+          mobileTriggerRef.current && !mobileTriggerRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handle);
     return () => document.removeEventListener('mousedown', handle);
-  }, [menuOpen]);
+  }, [menuOpen, mobileMenuOpen]);
 
-  /* Close on Escape */
+  /* Close menus on Escape */
   useEffect(() => {
-    if (!menuOpen) return;
-    const handle = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    const handle = (e) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
     document.addEventListener('keydown', handle);
     return () => document.removeEventListener('keydown', handle);
-  }, [menuOpen]);
+  }, []);
 
   const handleLogout = async () => {
     setMenuOpen(false);
+    setMobileMenuOpen(false);
     await logout();
     navigate('/');
   };
@@ -71,114 +86,166 @@ export default function Navbar({ onAuthClick }) {
         {/* Logo */}
         <a
           href="/"
-          className="flex items-center gap-2.5 no-underline"
+          className="flex items-center gap-2.5 no-underline shrink-0"
           aria-label="Namazly — Go to home page"
         >
           <MoonStar />
-          <span className="poppins-regular text-xl font-bold gradient-text tracking-tight">
+          <span className="poppins-regular text-lg sm:text-xl font-bold gradient-text tracking-tight">
             Namazly
           </span>
         </a>
 
-        {/* User menu or Sign In */}
-        {user ? (
-          <div className="relative">
-            <button
-              ref={triggerRef}
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-haspopup="true"
-              aria-expanded={menuOpen}
-              aria-controls="user-dropdown"
-              aria-label={`Account menu for ${user.name}`}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl glass-card-deep
-                         hover:bg-white/60 transition-all duration-200 cursor-pointer"
-            >
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={`${user.name}'s profile picture`}
-                  className="w-7 h-7 rounded-full border border-white/80 object-cover"
-                  loading="lazy"
-                  width={28}
-                  height={28}
-                />
-              ) : (
+        {/* Navigation Links (Desktop) */}
+        <div className="hidden md:flex items-center gap-6">
+          <a
+            href="/calendar"
+            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
+            title="Islamic Calendar"
+          >
+            <HiOutlineCalendar className="text-lg text-sage-500" />
+            <span>Calendar</span>
+          </a>
+          <a
+            href="/timings"
+            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
+            title="Namaz Timings"
+          >
+            <HiOutlineClock className="text-lg text-sage-500" />
+            <span>Namaz Timings</span>
+          </a>
+          <a
+            href="/guide"
+            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
+            title="User Guide"
+          >
+            <HiOutlineBookOpen className="text-lg text-sage-500" />
+            <span>Guide</span>
+          </a>
+        </div>
+
+        {/* User Actions & Mobile Hamburger */}
+        <div className="flex items-center">
+          {/* User menu or Sign In */}
+          {user ? (
+            <div className="relative">
+              <button
+                ref={triggerRef}
+                onClick={() => setMenuOpen((o) => !o)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+                aria-controls="user-dropdown"
+                aria-label={`Account menu for ${user.name}`}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-card-deep
+                           hover:bg-white/60 transition-all duration-200 cursor-pointer"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={`${user.name}'s profile picture`}
+                    className="w-7 h-7 rounded-full border border-white/80 object-cover"
+                    loading="lazy"
+                    width={28}
+                    height={28}
+                  />
+                ) : (
+                  <div
+                    className="w-7 h-7 rounded-full bg-sage-500 flex items-center justify-center text-white text-xs font-bold"
+                    aria-hidden="true"
+                  >
+                    {user.name?.[0]?.toUpperCase()}
+                  </div>
+                )}
+                <span className="hidden sm:block poppins-regular text-sm font-medium text-sage-800 max-w-[140px] truncate">
+                  {user.name}
+                </span>
+                <HiChevronDown className={`w-4 h-4 text-sage-500 transition-transform duration-200 ${menuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {menuOpen && (
                 <div
-                  className="w-7 h-7 rounded-full bg-sage-500 flex items-center justify-center text-white text-xs font-bold"
-                  aria-hidden="true"
+                  id="user-dropdown"
+                  ref={menuRef}
+                  role="menu"
+                  aria-label="Account options"
+                  className="absolute right-0 top-12 w-52 glass-card rounded-2xl shadow-xl
+                             border border-white/80 overflow-hidden animate-scale-in"
                 >
-                  {user.name?.[0]?.toUpperCase()}
+                  <div className="px-4 py-3 border-b border-sage-100/60" role="none">
+                    <p className="poppins-regular text-xs text-sage-400">Signed in as</p>
+                    <p className="poppins-regular text-sm font-medium text-sage-800 truncate">{user.email}</p>
+                  </div>
+                  <button
+                    role="menuitem"
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-3 poppins-regular text-sm text-rose-500
+                               hover:bg-rose-50/60 transition-colors duration-150 flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                  >
+                    <HiOutlineLogout className="w-4 h-4" />
+                    Sign out
+                  </button>
                 </div>
               )}
-              <span className="hidden sm:block poppins-regular text-sm font-medium text-sage-800 max-w-[140px] truncate">
-                {user.name}
-              </span>
-              <svg
-                className={`w-4 h-4 text-sage-500 transition-transform duration-200 ${menuOpen ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+            </div>
+          ) : (
+            <button
+              onClick={onAuthClick}
+              aria-label="Sign in with Google to sync your prayer records"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl
+                         poppins-regular text-sm font-semibold text-white
+                         bg-gradient-to-r from-sage-600 to-sage-500
+                         hover:from-sage-700 hover:to-sage-600
+                         shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer border-0"
+            >
+              <span>Sign In</span>
             </button>
+          )}
 
-            {menuOpen && (
-              <div
-                id="user-dropdown"
-                ref={menuRef}
-                role="menu"
-                aria-label="Account options"
-                className="absolute right-0 top-12 w-52 glass-card rounded-2xl shadow-xl
-                           border border-white/80 overflow-hidden animate-scale-in"
-              >
-                <div className="px-4 py-3 border-b border-sage-100/60" role="none">
-                  <p className="poppins-regular text-xs text-sage-400">Signed in as</p>
-                  <p className="poppins-regular text-sm font-medium text-sage-800 truncate">{user.email}</p>
-                </div>
-                <button
-                  role="menuitem"
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 poppins-regular text-sm text-rose-500
-                             hover:bg-rose-50/60 transition-colors duration-150 flex items-center gap-2 cursor-pointer"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  Sign out
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
+          {/* Hamburger Menu Toggle (Mobile Only) */}
           <button
-            onClick={onAuthClick}
-            aria-label="Sign in with Google to sync your prayer records"
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl
-                       poppins-regular text-sm font-semibold text-white
-                       bg-gradient-to-r from-sage-600 to-sage-500
-                       hover:from-sage-700 hover:to-sage-600
-                       shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
+            ref={mobileTriggerRef}
+            onClick={() => setMobileMenuOpen(o => !o)}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle navigation menu"
+            className="md:hidden p-2 rounded-xl glass-card-deep border border-white/60 hover:bg-white/60 transition-all text-sage-700 cursor-pointer ml-2 bg-transparent"
           >
-            <span>Sign In</span>
+            {mobileMenuOpen ? <HiX className="w-5 h-5" /> : <HiMenu className="w-5 h-5" />}
           </button>
-        )}
+        </div>
+
       </div>
+
+      {/* Mobile Menu Panel */}
+      {mobileMenuOpen && (
+        <div
+          ref={mobileMenuRef}
+          className="md:hidden glass-card border-t border-white/40 overflow-hidden animate-scale-in origin-top flex flex-col p-4 space-y-3 shadow-lg absolute left-0 right-0"
+        >
+          <a
+            href="/calendar"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+          >
+            <HiOutlineCalendar className="text-xl text-sage-500" />
+            <span>Islamic Calendar</span>
+          </a>
+          <a
+            href="/timings"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+          >
+            <HiOutlineClock className="text-xl text-sage-500" />
+            <span>Namaz Timings</span>
+          </a>
+          <a
+            href="/guide"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+          >
+            <HiOutlineBookOpen className="text-xl text-sage-500" />
+            <span>Usage Guide</span>
+          </a>
+        </div>
+      )}
     </nav>
   );
 }

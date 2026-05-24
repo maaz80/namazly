@@ -6,6 +6,9 @@ import LoadingScreen from './components/LoadingScreen';
 // ── Code-split routes — loaded on demand ──────────────────
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Dashboard   = lazy(() => import('./pages/Dashboard'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const TimingsPage  = lazy(() => import('./pages/TimingsPage'));
+const GuidePage    = lazy(() => import('./pages/GuidePage'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -55,6 +58,24 @@ const AppRoutes = () => (
         path="/dashboard"
         element={
           <Dashboard />
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <CalendarPage />
+        }
+      />
+      <Route
+        path="/timings"
+        element={
+          <TimingsPage />
+        }
+      />
+      <Route
+        path="/guide"
+        element={
+          <GuidePage />
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
