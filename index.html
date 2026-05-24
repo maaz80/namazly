@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ── Primary Meta ─────────────────────────────────── -->
-    <title>Namazly — Qaza Prayer Tracker & Calculator</title>
-    <meta name="description" content="Track, calculate, and reduce your missed Qaza prayers with Namazly. A beautiful, distraction-free Islamic prayer tracker with cloud sync." />
-    <meta name="keywords" content="qaza namaz, qaza prayer tracker, missed prayers, islamic prayer calculator, namaz tracker, qaza salah, prayer app" />
-    <meta name="author" content="Namazly" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="canonical" href="https://namazly.com/" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 
+  <!-- ── Primary Meta ─────────────────────────────────── -->
+  <title>Namazly — Qaza Prayer Tracker & Calculator</title>
+  <meta name="description"
+    content="Track, calculate, and reduce your missed Qaza prayers with Namazly. A beautiful, distraction-free Islamic prayer tracker with cloud sync." />
+  <meta name="keywords"
+    content="qaza namaz, qaza prayer tracker, missed prayers, islamic prayer calculator, namaz tracker, qaza salah, prayer app" />
+  <meta name="author" content="Namazly" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="https://namazly.com/" />
+
+  <!-- 
     ── Open Graph / Facebook ─────────────────────────── -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://namazly.com/" />
-    <meta property="og:site_name" content="Namazly" />
-    <meta property="og:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
-    <meta property="og:description" content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
-    <meta property="og:image" content="https://namazly.com/icon-512.png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
-    <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://namazly.com/" />
+  <meta property="og:site_name" content="Namazly" />
+  <meta property="og:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
+  <meta property="og:description"
+    content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
+  <meta property="og:image" content="https://namazly.com/icon-512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
+  <meta property="og:locale" content="en_US" />
 
-    <!-- ── Twitter Card ───────────────────────────────────── -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@namazly" />
-    <meta name="twitter:creator" content="@namazly" />
-    <meta name="twitter:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
-    <meta name="twitter:description" content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
-    <meta name="twitter:image" content="https://namazly.com/icon-512.png" />
-    <meta name="twitter:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
+  <!-- ── Twitter Card ───────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@namazly" />
+  <meta name="twitter:creator" content="@namazly" />
+  <meta name="twitter:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
+  <meta name="twitter:description"
+    content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
+  <meta name="twitter:image" content="https://namazly.com/icon-512.png" />
+  <meta name="twitter:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
 
-    <!-- ── Mobile / PWA ──────────────────────────────────── -->
-    <meta name="theme-color" content="#2d6850" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Namazly" />
-    <meta name="application-name" content="Namazly" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+  <!-- ── Mobile / PWA ──────────────────────────────────── -->
+  <meta name="theme-color" content="#2d6850" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Namazly" />
+  <meta name="application-name" content="Namazly" />
+  <link rel="manifest" href="/manifest.webmanifest" />
 
-    <!-- ── Favicon ───────────────────────────────────────── -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+  <!-- ── Favicon ───────────────────────────────────────── -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
 
-    <!-- ── Font Performance ──────────────────────────────── -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <!-- ── Font Performance ──────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- ── JSON-LD Structured Data ───────────────────────── -->
-    <script type="application/ld+json">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    media="print" onload="this.media='all'">
+
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+  </noscript>
+
+  <!-- ── JSON-LD Structured Data ───────────────────────── -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -85,9 +93,16 @@
       }
     }
     </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+      <!--  Baaki CSS non-blocking load -->
+      <link rel="preload" as="style" href="/assets/css/index-eOnOXqdZ.css" onload="this.onload=null;this.rel='stylesheet'" />
+      <noscript>
+        <link rel="stylesheet" href="/assets/css/index-eOnOXqdZ.css" />
+      </noscript>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

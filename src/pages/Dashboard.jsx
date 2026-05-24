@@ -122,7 +122,7 @@ export default function Dashboard() {
       setLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.id]);
 
   /* Sync local storage guest record with database upon sign in */
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function Dashboard() {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.id]);
 
   /* Called when calculator outputs a day count — replaces (not adds to) existing data */
   const handleCalculatorApply = useCallback(async (days) => {
