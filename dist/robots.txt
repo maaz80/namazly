@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://namazly.com/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 10
