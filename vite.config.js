@@ -74,11 +74,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
 
-      // Tree-shake unused exports
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-      },
     },
   },
 
