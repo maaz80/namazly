@@ -85,22 +85,13 @@ function getGreeting() {
   return 'Good night';
 }
 
-// Module-level variable to lock the layout alignment for the entire session
-let sessionLockedHasData = null;
-
 export default function Dashboard() {
   const { user, updateQazaRecord } = useAuth();
   const [qazaRecord, setQazaRecord] = useState({});
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
-  const [initialHasData, setInitialHasData] = useState(() => {
-    if (sessionLockedHasData !== null) {
-      return sessionLockedHasData;
-    }
-    return false;
-  });
-
+  const [isData, setIsData] = useState(false);
   /* Update page title per auth state */
   useEffect(() => {
     document.title = user
@@ -110,52 +101,12 @@ export default function Dashboard() {
 
   /* Fetch latest records on mount, or reset instantly on logout */
   useEffect(() => {
-    if (sessionLockedHasData !== null) {
-      // Already locked for this session, keep the layout order static
-      setInitialHasData(sessionLockedHasData);
-      setLoading(false);
-
-      // Refresh records in background to keep data state fresh
-      if (user) {
-        const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
-        if (cached) {
-          try {
-            setQazaRecord(JSON.parse(cached));
-          } catch (err) {
-            console.error('Failed to parse cached records:', err);
-          }
-        }
-        api.get('/records')
-          .then(({ data }) => {
-            setQazaRecord(data.qazaRecord);
-            updateQazaRecord(data.qazaRecord);
-            localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
-          })
-          .catch((err) => console.error('Failed to refresh records:', err));
-      } else {
-        const guestRecord = localStorage.getItem('namazly_guest_record');
-        if (guestRecord) {
-          try {
-            setQazaRecord(JSON.parse(guestRecord));
-          } catch (err) {
-            console.error('Failed to parse guest records:', err);
-          }
-        }
-      }
-      return;
-    }
-
     if (user) {
       // 1. Instantly load from localStorage cache if it exists to avoid Render cold-start spinners
       const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
-      let localHasData = false;
       if (cached) {
         try {
-          const parsed = JSON.parse(cached);
-          setQazaRecord(parsed);
-          localHasData = PRAYERS.some((p) => (parsed?.[p.key] ?? 0) > 0);
-          sessionLockedHasData = localHasData;
-          setInitialHasData(localHasData);
+          setQazaRecord(JSON.parse(cached));
           setLoading(false);
         } catch (err) {
           console.error('Failed to parse cached records:', err);
@@ -170,13 +121,6 @@ export default function Dashboard() {
           updateQazaRecord(data.qazaRecord);
           // Sync backend data to cache
           localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
-          
-          // If no cache was loaded on mount, set initialHasData from DB fetch
-          if (sessionLockedHasData === null) {
-            const dbHasData = PRAYERS.some((p) => (data.qazaRecord?.[p.key] ?? 0) > 0);
-            sessionLockedHasData = dbHasData;
-            setInitialHasData(dbHasData);
-          }
         } catch (err) {
           console.error('Failed to fetch records:', err);
         } finally {
@@ -187,15 +131,12 @@ export default function Dashboard() {
     } else {
       // user is guest — load guest records
       const guestRecord = localStorage.getItem('namazly_guest_record');
-      let guestHasData = false;
       const empty = {};
       PRAYERS.forEach((p) => { empty[p.key] = 0; });
-      
+
       if (guestRecord) {
         try {
-          const parsed = JSON.parse(guestRecord);
-          setQazaRecord(parsed);
-          guestHasData = PRAYERS.some((p) => (parsed?.[p.key] ?? 0) > 0);
+          setQazaRecord(JSON.parse(guestRecord));
         } catch (err) {
           console.error('Failed to parse guest records:', err);
           setQazaRecord(empty);
@@ -203,11 +144,9 @@ export default function Dashboard() {
       } else {
         setQazaRecord(empty);
       }
-      sessionLockedHasData = guestHasData;
-      setInitialHasData(guestHasData);
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   /* Sync local storage guest record with database upon sign in */
@@ -230,7 +169,7 @@ export default function Dashboard() {
         syncGuestRecord();
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   /* Called when calculator outputs a day count — replaces (not adds to) existing data */
@@ -352,57 +291,51 @@ export default function Dashboard() {
         )}
 
         {/* Layout grid */}
-        {(() => {
-          return (
-            <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3">
-              {/* 1. Stats Summary (Total Prayer Box) — Always top on mobile */}
-              <div
-                className="order-1 lg:col-span-1 w-full animate-slide-up"
-                style={{ animationDelay: '0.1s' }}
-              >
-                <StatsSummary qazaRecord={qazaRecord} />
-              </div>
-
-              {/* 2. Prayer Tracker */}
-              <div
-                className={`lg:col-span-2 animate-slide-up w-full ${initialHasData ? 'order-2' : 'order-3'}`}
-                style={{ animationDelay: '0.15s' }}
-              >
-                <PrayerTracker
-                  qazaRecord={qazaRecord}
-                  onUpdate={handleRecordUpdate}
-                  isGuest={!user}
-                  onSaveAttempt={() => setIsAuthModalOpen(true)}
-                />
-              </div>
-
-              {/* 3. Calculator & Clear Data Button */}
-              <div
-                className={`space-y-6 lg:col-span-1 w-full ${initialHasData ? 'order-3' : 'order-2'}`}
-              >
-                {/* Calculator */}
-                <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                  <QazaCalculator onApply={handleCalculatorApply} />
-                </div>
-
-                {/* Clear All Data button */}
-                <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                  <button
-                    onClick={() => setShowClearModal(true)}
-                    className="w-full py-3 rounded-2xl poppins-regular font-semibold text-rose-500 text-sm
-                               bg-rose-50/60 hover:bg-rose-100/70 border border-rose-200/60
-                               hover:border-rose-300/80 shadow-sm hover:shadow-md
-                               transition-all duration-200 active:scale-[0.98] cursor-pointer
-                               flex items-center justify-center gap-2"
-                  >
-                    <span>🗑️</span>
-                    <span>Clear All Data</span>
-                  </button>
-                </div>
-              </div>
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3">
+          {/* Left Column (Stats Summary & Calculator stacked closely) */}
+          <div className="space-y-6 lg:col-span-1 w-full flex flex-col">
+            {/* 1. Stats Summary (Total Prayer Box) */}
+            <div
+              className="w-full animate-slide-up"
+              style={{ animationDelay: '0.1s' }}
+            >
+              <StatsSummary qazaRecord={qazaRecord} />
             </div>
-          );
-        })()}
+
+            {/* 3. Calculator */}
+            <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <QazaCalculator onApply={handleCalculatorApply} />
+            </div>
+
+            {/* Clear All Data button */}
+            <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
+              <button
+                onClick={() => setShowClearModal(true)}
+                className="w-full py-3 rounded-2xl poppins-regular font-semibold text-rose-500 text-sm
+                           bg-rose-50/60 hover:bg-rose-100/70 border border-rose-200/60
+                           hover:border-rose-300/80 shadow-sm hover:shadow-md
+                           transition-all duration-200 active:scale-[0.98] cursor-pointer
+                           flex items-center justify-center gap-2"
+              >
+                <span>🗑️</span>
+                <span>Clear All Data</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column (2. Prayer Tracker) */}
+          <div
+            className="lg:col-span-2 animate-slide-up w-full"
+            style={{ animationDelay: '0.15s' }}
+          >
+            <PrayerTracker
+              qazaRecord={qazaRecord}
+              onUpdate={handleRecordUpdate}
+              isGuest={!user}
+              onSaveAttempt={() => setIsAuthModalOpen(true)}
+            />
+          </div>
+        </div>
 
         {/* Footer note */}
         <p className="text-center poppins-regular text-sage-400 text-sm mt-12 opacity-70 leading-relaxed">
