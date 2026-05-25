@@ -12,7 +12,7 @@ const MoonStar = () => (
     focusable="false"
   >
     <path
-      d="M36 24c0 6.627-5.373 12-12 12S12 30.627 12 24s5.373-12 12-12c1.06 0 2.09.138 3.07.398C24.39 15.2 23 18.45 23 22c0 5.523 4.477 10 10 10 1.38 0 2.69-.28 3.88-.785C36.614 29.487 36 26.816 36 24z"
+      d="M24 6 a12 12 0 0 0 18 18 18 18 0 1 1-18-18Z"
       fill="url(#navMoonGrad)"
     />
     <circle cx="38" cy="10" r="1.5" fill="#d4a017" opacity="0.8" />
@@ -45,7 +45,7 @@ export default function Navbar({ onAuthClick }) {
           triggerRef.current && !triggerRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
-      // Close mobile navigation menu
+      // Close navigation menu
       if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(e.target) &&
           mobileTriggerRef.current && !mobileTriggerRef.current.contains(e.target)) {
         setMobileMenuOpen(false);
@@ -95,35 +95,7 @@ export default function Navbar({ onAuthClick }) {
           </span>
         </a>
 
-        {/* Navigation Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-6">
-          <a
-            href="/calendar"
-            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
-            title="Islamic Calendar"
-          >
-            <HiOutlineCalendar className="text-lg text-sage-500" />
-            <span>Calendar</span>
-          </a>
-          <a
-            href="/timings"
-            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
-            title="Namaz Timings"
-          >
-            <HiOutlineClock className="text-lg text-sage-500" />
-            <span>Namaz Timings</span>
-          </a>
-          <a
-            href="/guide"
-            className="poppins-regular text-sm font-semibold text-sage-600 hover:text-sage-900 transition-colors flex items-center gap-1.5"
-            title="User Guide"
-          >
-            <HiOutlineBookOpen className="text-lg text-sage-500" />
-            <span>Guide</span>
-          </a>
-        </div>
-
-        {/* User Actions & Mobile Hamburger */}
+        {/* User Actions & Unified Hamburger */}
         <div className="flex items-center">
           {/* User menu or Sign In */}
           {user ? (
@@ -138,23 +110,17 @@ export default function Navbar({ onAuthClick }) {
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-card-deep
                            hover:bg-white/60 transition-all duration-200 cursor-pointer"
               >
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={`${user.name}'s profile picture`}
-                    className="w-7 h-7 rounded-full border border-white/80 object-cover"
-                    loading="lazy"
-                    width={28}
-                    height={28}
-                  />
-                ) : (
-                  <div
-                    className="w-7 h-7 rounded-full bg-sage-500 flex items-center justify-center text-white text-xs font-bold"
-                    aria-hidden="true"
-                  >
-                    {user.name?.[0]?.toUpperCase()}
-                  </div>
-                )}
+                <img
+                  src={user.avatar || '/icon-192.png'}
+                  onError={(e) => {
+                    e.currentTarget.src = '/icon-192.png';
+                  }}
+                  alt={`${user.name}'s profile picture`}
+                  className="w-7 h-7 rounded-full border border-white/80 object-cover bg-sage-50"
+                  loading="lazy"
+                  width={28}
+                  height={28}
+                />
                 <span className="hidden sm:block poppins-regular text-sm font-medium text-sage-800 max-w-[140px] truncate">
                   {user.name}
                 </span>
@@ -167,7 +133,7 @@ export default function Navbar({ onAuthClick }) {
                   ref={menuRef}
                   role="menu"
                   aria-label="Account options"
-                  className="absolute right-0 top-12 w-52 glass-card rounded-2xl shadow-xl
+                  className="absolute right-0 top-12 w-52 glass-dropdown rounded-2xl shadow-xl
                              border border-white/80 overflow-hidden animate-scale-in"
                 >
                   <div className="px-4 py-3 border-b border-sage-100/60" role="none">
@@ -200,13 +166,13 @@ export default function Navbar({ onAuthClick }) {
             </button>
           )}
 
-          {/* Hamburger Menu Toggle (Mobile Only) */}
+          {/* Unified Hamburger Menu Toggle (Universal on PC and Mobile) */}
           <button
             ref={mobileTriggerRef}
             onClick={() => setMobileMenuOpen(o => !o)}
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"
-            className="md:hidden p-2 rounded-xl glass-card-deep border border-white/60 hover:bg-white/60 transition-all text-sage-700 cursor-pointer ml-2 bg-transparent"
+            className="p-2 rounded-xl glass-card-deep border border-white/60 hover:bg-white/60 transition-all text-sage-700 cursor-pointer ml-2 bg-transparent"
           >
             {mobileMenuOpen ? <HiX className="w-5 h-5" /> : <HiMenu className="w-5 h-5" />}
           </button>
@@ -214,16 +180,16 @@ export default function Navbar({ onAuthClick }) {
 
       </div>
 
-      {/* Mobile Menu Panel */}
+      {/* Unified Dropdown Menu Panel (PC & Mobile - limited width) */}
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden glass-card border-t border-white/40 overflow-hidden animate-scale-in origin-top flex flex-col p-4 space-y-3 shadow-lg absolute left-0 right-0"
+          className="w-64 absolute right-4 md:right-72 top-16 glass-dropdown rounded-2xl p-4 flex flex-col space-y-3 shadow-xl border border-white/80 animate-scale-in origin-top-right z-50"
         >
           <a
             href="/calendar"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
           >
             <HiOutlineCalendar className="text-xl text-sage-500" />
             <span>Islamic Calendar</span>
@@ -231,7 +197,7 @@ export default function Navbar({ onAuthClick }) {
           <a
             href="/timings"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
           >
             <HiOutlineClock className="text-xl text-sage-500" />
             <span>Namaz Timings</span>
@@ -239,10 +205,30 @@ export default function Navbar({ onAuthClick }) {
           <a
             href="/guide"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl glass-card-deep hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
           >
             <HiOutlineBookOpen className="text-xl text-sage-500" />
             <span>Usage Guide</span>
+          </a>
+          
+          {/* About link */}
+          <a
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150 border-t border-sage-100/50 pt-3.5"
+          >
+            <span className="text-xl flex-shrink-0">🌙</span>
+            <span>About Namazly</span>
+          </a>
+
+          {/* Contact link */}
+          <a
+            href="/contact"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <span className="text-xl flex-shrink-0">✉️</span>
+            <span>Contact &amp; Support</span>
           </a>
         </div>
       )}

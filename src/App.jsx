@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
+import InstallPwaModal from './components/InstallPwaModal';
 
 // ── Code-split routes — loaded on demand ──────────────────
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -9,6 +10,8 @@ const Dashboard   = lazy(() => import('./pages/Dashboard'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const TimingsPage  = lazy(() => import('./pages/TimingsPage'));
 const GuidePage    = lazy(() => import('./pages/GuidePage'));
+const AboutPage    = lazy(() => import('./pages/AboutPage'));
+const ContactPage  = lazy(() => import('./pages/ContactPage'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -78,6 +81,18 @@ const AppRoutes = () => (
           <GuidePage />
         }
       />
+      <Route
+        path="/about"
+        element={
+          <AboutPage />
+        }
+      />
+      <Route
+        path="/contact"
+        element={
+          <ContactPage />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Suspense>
@@ -89,6 +104,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <AppRoutes />
+        <InstallPwaModal />
       </BrowserRouter>
     </AuthProvider>
   );

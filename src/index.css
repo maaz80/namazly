@@ -92,6 +92,14 @@
     box-shadow: 0 4px 16px rgba(45, 104, 80, 0.08);
   }
 
+  .glass-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(66px);
+    -webkit-backdrop-filter: blur(36px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 40px rgba(31, 67, 54, 0.16);
+  }
+
   /* ── Custom number input — hide arrows ───────────────── */
   .prayer-input::-webkit-inner-spin-button,
   .prayer-input::-webkit-outer-spin-button {

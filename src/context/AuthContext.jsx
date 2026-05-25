@@ -30,8 +30,9 @@ export const AuthProvider = ({ children }) => {
     restoreSession();
   }, []);
 
-  const login = async (credential) => {
-    const { data } = await api.post('/auth/google', { credential });
+  const login = async (credential, accessToken) => {
+    const payload = credential ? { credential } : { accessToken };
+    const { data } = await api.post('/auth/google', payload);
     if (data.token) {
       localStorage.setItem('namazly_token', data.token);
     }

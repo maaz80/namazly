@@ -85,12 +85,21 @@ function getGreeting() {
   return 'Good night';
 }
 
+// Module-level variable to lock the layout alignment for the entire session
+let sessionLockedHasData = null;
+
 export default function Dashboard() {
   const { user, updateQazaRecord } = useAuth();
   const [qazaRecord, setQazaRecord] = useState({});
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
+  const [initialHasData, setInitialHasData] = useState(() => {
+    if (sessionLockedHasData !== null) {
+      return sessionLockedHasData;
+    }
+    return false;
+  });
 
   /* Update page title per auth state */
   useEffect(() => {
@@ -101,12 +110,73 @@ export default function Dashboard() {
 
   /* Fetch latest records on mount, or reset instantly on logout */
   useEffect(() => {
+    if (sessionLockedHasData !== null) {
+      // Already locked for this session, keep the layout order static
+      setInitialHasData(sessionLockedHasData);
+      setLoading(false);
+
+      // Refresh records in background to keep data state fresh
+      if (user) {
+        const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
+        if (cached) {
+          try {
+            setQazaRecord(JSON.parse(cached));
+          } catch (err) {
+            console.error('Failed to parse cached records:', err);
+          }
+        }
+        api.get('/records')
+          .then(({ data }) => {
+            setQazaRecord(data.qazaRecord);
+            updateQazaRecord(data.qazaRecord);
+            localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
+          })
+          .catch((err) => console.error('Failed to refresh records:', err));
+      } else {
+        const guestRecord = localStorage.getItem('namazly_guest_record');
+        if (guestRecord) {
+          try {
+            setQazaRecord(JSON.parse(guestRecord));
+          } catch (err) {
+            console.error('Failed to parse guest records:', err);
+          }
+        }
+      }
+      return;
+    }
+
     if (user) {
+      // 1. Instantly load from localStorage cache if it exists to avoid Render cold-start spinners
+      const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
+      let localHasData = false;
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          setQazaRecord(parsed);
+          localHasData = PRAYERS.some((p) => (parsed?.[p.key] ?? 0) > 0);
+          sessionLockedHasData = localHasData;
+          setInitialHasData(localHasData);
+          setLoading(false);
+        } catch (err) {
+          console.error('Failed to parse cached records:', err);
+        }
+      }
+
+      // 2. Refresh from backend in background
       const fetchRecords = async () => {
         try {
           const { data } = await api.get('/records');
           setQazaRecord(data.qazaRecord);
           updateQazaRecord(data.qazaRecord);
+          // Sync backend data to cache
+          localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
+          
+          // If no cache was loaded on mount, set initialHasData from DB fetch
+          if (sessionLockedHasData === null) {
+            const dbHasData = PRAYERS.some((p) => (data.qazaRecord?.[p.key] ?? 0) > 0);
+            sessionLockedHasData = dbHasData;
+            setInitialHasData(dbHasData);
+          }
         } catch (err) {
           console.error('Failed to fetch records:', err);
         } finally {
@@ -115,10 +185,26 @@ export default function Dashboard() {
       };
       fetchRecords();
     } else {
-      // user just logged out — clear everything immediately so UI resets without refresh
+      // user is guest — load guest records
+      const guestRecord = localStorage.getItem('namazly_guest_record');
+      let guestHasData = false;
       const empty = {};
       PRAYERS.forEach((p) => { empty[p.key] = 0; });
-      setQazaRecord(empty);
+      
+      if (guestRecord) {
+        try {
+          const parsed = JSON.parse(guestRecord);
+          setQazaRecord(parsed);
+          guestHasData = PRAYERS.some((p) => (parsed?.[p.key] ?? 0) > 0);
+        } catch (err) {
+          console.error('Failed to parse guest records:', err);
+          setQazaRecord(empty);
+        }
+      } else {
+        setQazaRecord(empty);
+      }
+      sessionLockedHasData = guestHasData;
+      setInitialHasData(guestHasData);
       setLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,6 +221,7 @@ export default function Dashboard() {
             const { data } = await api.put('/records', parsed);
             setQazaRecord(data.qazaRecord);
             updateQazaRecord(data.qazaRecord);
+            localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
             localStorage.removeItem('namazly_guest_record');
           } catch (err) {
             console.error('Failed to sync guest record:', err);
@@ -162,6 +249,7 @@ export default function Dashboard() {
         const { data } = await api.put('/records', updated);
         setQazaRecord(data.qazaRecord);
         updateQazaRecord(data.qazaRecord);
+        localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(data.qazaRecord));
       } catch (err) {
         console.error('Failed to apply calculator result:', err);
       }
@@ -181,6 +269,7 @@ export default function Dashboard() {
         const { data } = await api.put('/records', empty);
         setQazaRecord(data.qazaRecord);
         updateQazaRecord(data.qazaRecord);
+        localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(empty));
       } catch (err) {
         console.error('Failed to clear records:', err);
       }
@@ -192,6 +281,7 @@ export default function Dashboard() {
     setQazaRecord(newRecord);
     if (user) {
       updateQazaRecord(newRecord);
+      localStorage.setItem(`namazly_user_record_${user.id}`, JSON.stringify(newRecord));
     } else {
       localStorage.setItem('namazly_guest_record', JSON.stringify(newRecord));
     }
@@ -263,17 +353,33 @@ export default function Dashboard() {
 
         {/* Layout grid */}
         {(() => {
-          // hasData = any prayer count > 0
-          const hasData = PRAYERS.some((p) => (qazaRecord?.[p.key] ?? 0) > 0);
           return (
-            <div className={`flex gap-6 lg:grid lg:grid-cols-3 ${hasData ? 'flex-col-reverse' : 'flex-col'}`}>
-              {/* Left column — Stats + Calculator */}
-              <div className="space-y-6 lg:col-span-1 w-full">
-                {/* Stats summary */}
-                <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                  <StatsSummary qazaRecord={qazaRecord} />
-                </div>
+            <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3">
+              {/* 1. Stats Summary (Total Prayer Box) — Always top on mobile */}
+              <div
+                className="order-1 lg:col-span-1 w-full animate-slide-up"
+                style={{ animationDelay: '0.1s' }}
+              >
+                <StatsSummary qazaRecord={qazaRecord} />
+              </div>
 
+              {/* 2. Prayer Tracker */}
+              <div
+                className={`lg:col-span-2 animate-slide-up w-full ${initialHasData ? 'order-2' : 'order-3'}`}
+                style={{ animationDelay: '0.15s' }}
+              >
+                <PrayerTracker
+                  qazaRecord={qazaRecord}
+                  onUpdate={handleRecordUpdate}
+                  isGuest={!user}
+                  onSaveAttempt={() => setIsAuthModalOpen(true)}
+                />
+              </div>
+
+              {/* 3. Calculator & Clear Data Button */}
+              <div
+                className={`space-y-6 lg:col-span-1 w-full ${initialHasData ? 'order-3' : 'order-2'}`}
+              >
                 {/* Calculator */}
                 <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
                   <QazaCalculator onApply={handleCalculatorApply} />
@@ -293,16 +399,6 @@ export default function Dashboard() {
                     <span>Clear All Data</span>
                   </button>
                 </div>
-              </div>
-
-              {/* Right column — Tracker */}
-              <div className="lg:col-span-2 animate-slide-up w-full" style={{ animationDelay: '0.15s' }}>
-                <PrayerTracker
-                  qazaRecord={qazaRecord}
-                  onUpdate={handleRecordUpdate}
-                  isGuest={!user}
-                  onSaveAttempt={() => setIsAuthModalOpen(true)}
-                />
               </div>
             </div>
           );

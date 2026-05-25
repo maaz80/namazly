@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import { HiPlus, HiMinus } from 'react-icons/hi';
 import api from '../utils/api';
 
 export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, qazaRecord }) {
@@ -69,34 +70,34 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
   };
 
   return (
-    <div className={`glass-card rounded-2xl px-3 py-4 sm:px-4 md:px-5 md:py-4.5
-                     flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4
+    <div className={`glass-card rounded-2xl px-3.5 py-3 sm:px-5 sm:py-4
+                     flex flex-row items-center justify-between gap-2.5 sm:gap-4
                      border border-white/70 hover:border-white/90
                      transition-all duration-200 group`}>
 
       {/* Prayer color dot + name */}
-      <div className="flex items-center gap-3 min-w-0 w-full sm:flex-[2]">
-        <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${prayer.dot}`} />
-        <div className="min-w-0 flex-1">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 sm:flex-[2]">
+        <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0 ${prayer.dot}`} />
+        <div className="min-w-0">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="poppins-regular font-semibold text-sage-900 text-sm md:text-base leading-tight">
+            <span className="poppins-regular font-semibold text-sage-900 text-xs sm:text-sm md:text-base leading-tight truncate">
               {prayer.label}
             </span>
             <StatusDot />
           </div>
-          <span className="poppins-regular text-sage-400 text-xs leading-none">{prayer.arabic}</span>
+          <span className="poppins-regular text-sage-400 text-[10px] sm:text-xs leading-none mt-0.5 block">{prayer.arabic}</span>
         </div>
       </div>
 
       {/* Input field */}
-      <div className="w-full sm:flex-[1.5] flex justify-center">
+      <div className="flex-shrink-0 mx-2 sm:mx-0 sm:flex-[1.5] flex justify-center">
         <input
           type="number"
           value={localValue}
           onChange={handleChange}
           min={0}
-          className="prayer-input w-full max-w-none sm:max-w-[90px] text-center py-2.5 px-2 rounded-xl
-                     poppins-regular font-bold text-lg text-sage-900
+          className="prayer-input w-12 sm:w-16 md:w-20 text-center py-2 px-1 rounded-xl
+                     poppins-regular font-bold text-sm sm:text-base md:text-lg text-sage-900
                      bg-white/70 border border-white/90 outline-none
                      focus:ring-2 focus:ring-sage-300/70 focus:border-sage-300
                      transition-all duration-200"
@@ -104,20 +105,20 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
       </div>
 
       {/* Buttons */}
-      <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
         {/* + button */}
         <button
           onClick={() => adjust(1)}
           title={`Add ${prayer.rakats} ${prayer.label} rakats`}
-          className={`group/btn flex flex-col items-center justify-center
-                      flex-1 sm:flex-none h-12 sm:w-14 md:w-16 rounded-xl poppins-regular font-semibold
+          className={`group/btn flex items-center justify-center gap-0.5
+                      h-9 w-10 sm:h-12 sm:w-14 md:w-16 rounded-xl poppins-regular font-semibold
                       bg-gradient-to-br ${prayer.color}
                       border border-white/70 hover:border-white/90
                       shadow-sm hover:shadow-md
-                      transition-all duration-150 active:scale-95`}
+                      transition-all duration-150 active:scale-95 cursor-pointer`}
         >
-          <span className="text-sage-700 text-base leading-none">+</span>
-          <span className="text-sage-500 text-[9px] leading-tight mt-0.5">{prayer.rakats}R</span>
+          <HiPlus className="text-sage-700 text-sm sm:text-lg leading-none" />
+          <span className="hidden sm:inline text-sage-500 text-[9px] leading-tight mt-0.5">{prayer.rakats}R</span>
         </button>
 
         {/* − button */}
@@ -125,15 +126,15 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
           onClick={() => adjust(-1)}
           disabled={localValue <= 0}
           title={`Mark ${prayer.rakats} ${prayer.label} rakats as done`}
-          className={`group/btn flex flex-col items-center justify-center
-                      flex-1 sm:flex-none h-12 sm:w-14 md:w-16 rounded-xl poppins-regular font-semibold
+          className={`group/btn flex items-center justify-center gap-0.5
+                      h-9 w-10 sm:h-12 sm:w-14 md:w-16 rounded-xl poppins-regular font-semibold
                       border transition-all duration-150 active:scale-95
                       ${localValue <= 0
               ? 'bg-sage-50/40 border-sage-100/60 text-sage-300 cursor-not-allowed'
-              : 'bg-white/60 border-white/80 text-sage-700 hover:bg-rose-50/60 hover:border-rose-200/60 shadow-sm hover:shadow-md'}`}
+              : 'bg-white/60 border-white/80 text-sage-700 hover:bg-rose-50/60 hover:border-rose-200/60 shadow-sm hover:shadow-md cursor-pointer'}`}
         >
-          <span className="text-base leading-none">−</span>
-          <span className="text-[9px] leading-tight mt-0.5">{prayer.rakats}R</span>
+          <HiMinus className="text-sm sm:text-lg leading-none" />
+          <span className="hidden sm:inline text-[9px] leading-tight mt-0.5">{prayer.rakats}R</span>
         </button>
       </div>
     </div>
