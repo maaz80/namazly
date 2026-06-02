@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import QazaCalculator from '../components/QazaCalculator';
@@ -7,6 +8,7 @@ import StatsSummary from '../components/StatsSummary';
 import AuthModal from '../components/AuthModal';
 import api from '../utils/api';
 import { PRAYERS } from '../utils/constants';
+import { HiStar } from 'react-icons/hi';
 
 /* ── Clear All Confirmation Modal ────────────────────── */
 function ClearAllModal({ onConfirm, onCancel }) {
@@ -86,7 +88,10 @@ function getGreeting() {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { user, updateQazaRecord } = useAuth();
+  const [dashboardReviews, setDashboardReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
   const [qazaRecord, setQazaRecord] = useState(() => {
     if (user) {
       const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
@@ -203,6 +208,23 @@ export default function Dashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
+
+  /* Fetch newest reviews on mount for dashboard footer */
+  useEffect(() => {
+    const fetchDashboardReviews = async () => {
+      try {
+        const { data } = await api.get('/reviews');
+        if (data.success) {
+          setDashboardReviews(data.reviews.slice(0, 4));
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard reviews:', err);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+    fetchDashboardReviews();
+  }, []);
 
   /* Called when calculator outputs a day count — replaces (not adds to) existing data */
   const handleCalculatorApply = useCallback(async (days) => {
@@ -368,6 +390,91 @@ export default function Dashboard() {
             />
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <section className="mt-12 space-y-4 animate-fade-in content-auto">
+          <div className="flex items-center justify-between border-b border-sage-100/50 pb-2">
+            <h2 className="poppins-regular text-base sm:text-lg font-bold text-sage-900 flex items-center gap-2">
+              ⭐ User Reviews &amp; Feedback
+            </h2>
+            <button
+              onClick={() => navigate('/reviews')}
+              className="text-xs font-semibold text-sage-600 hover:text-sage-800 transition-colors cursor-pointer bg-transparent border-0 flex items-center gap-1"
+            >
+              <span>Write/View All Reviews</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+
+          {loadingReviews ? (
+            <div className="flex items-center justify-center py-6">
+              <div className="w-6 h-6 border-2 border-sage-300 border-t-sage-600 rounded-full animate-spin" />
+            </div>
+          ) : dashboardReviews.length === 0 ? (
+            <div className="glass-card rounded-2xl p-6 text-center text-sage-500 text-xs border border-white/60">
+              No reviews yet. <span onClick={() => navigate('/reviews')} className="text-sage-600 underline font-semibold cursor-pointer">Be the first to rate us!</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {dashboardReviews.map(rev => {
+                const isGuest = !rev.user;
+                const name = isGuest ? rev.guestName : rev.user.name;
+                const avatar = isGuest ? null : rev.user.avatar;
+                const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'G';
+                const dateStr = new Date(rev.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric'
+                });
+
+                return (
+                  <div 
+                    key={rev._id} 
+                    className="glass-card rounded-2xl p-4 shadow-sm border border-white/70 flex flex-col justify-between gap-3 text-xs leading-relaxed"
+                  >
+                    <div className="space-y-1.5">
+                      {/* Rating Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map(s => (
+                            <HiStar 
+                              key={s} 
+                              className={`w-3.5 h-3.5 ${s <= rev.rating ? 'text-amber-400' : 'text-sage-200'}`} 
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[9px] text-sage-400 font-semibold">{dateStr}</span>
+                      </div>
+
+                      {/* Comment */}
+                      <p className="text-sage-600 italic leading-snug">
+                        "{rev.comment.length > 80 ? rev.comment.substring(0, 80) + '...' : rev.comment}"
+                      </p>
+                    </div>
+
+                    {/* Reviewer */}
+                    <div className="flex items-center gap-2 pt-2 border-t border-sage-100/30">
+                      {avatar ? (
+                        <img 
+                          src={avatar} 
+                          onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                          alt={name}
+                          className="w-5.5 h-5.5 rounded-full border border-white object-cover bg-sage-50"
+                        />
+                      ) : (
+                        <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-br from-sage-500 to-sage-600 text-white flex items-center justify-center font-bold text-[8px] border border-white/80">
+                          {initials}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="font-bold text-sage-800 truncate leading-tight">{name}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
         {/* Footer note */}
         <p className="text-center poppins-regular text-sage-400 text-sm mt-12 opacity-70 leading-relaxed">

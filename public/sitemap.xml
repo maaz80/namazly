@@ -7,9 +7,65 @@
   <!-- Landing / Home page -->
   <url>
     <loc>https://namazly.com/</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Islamic Calendar -->
+  <url>
+    <loc>https://namazly.com/calendar</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Daily Prayer Timings -->
+  <url>
+    <loc>https://namazly.com/timings</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Hadith of the Day -->
+  <url>
+    <loc>https://namazly.com/hadith</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- User Reviews & Feedback -->
+  <url>
+    <loc>https://namazly.com/reviews</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Usage Guide -->
+  <url>
+    <loc>https://namazly.com/guide</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- About Namazly -->
+  <url>
+    <loc>https://namazly.com/about</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact & Support -->
+  <url>
+    <loc>https://namazly.com/contact</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
 </urlset>

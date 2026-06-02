@@ -98,28 +98,63 @@ export default function AboutPage() {
                 <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Advanced Qaza Calculator</h4>
-                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Quickly compute Qaza Salah based on years or custom durations.</p>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Quickly compute Qaza Salah based on years, days, or custom durations (includes menstruation cycle deductions).</p>
+                </div>
+              </div>
+              {/* <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Instant Offline Caching</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Loads your data instantly from cached memory, bypasses slow server wake-ups, and syncs in the background.</p>
+                </div>
+              </div> */}
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Hadith of the Day</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Daily curated authentic Hadiths in English and Arabic, with share and copy options.</p>
                 </div>
               </div>
               <div className="flex gap-2.5 items-start">
                 <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Installable PWA App</h4>
-                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Add to your home screen for fullscreen standalone native utility.</p>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Add to your home screen for standalone fullscreen native utility and offline use.</p>
                 </div>
               </div>
               <div className="flex gap-2.5 items-start">
                 <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Daily Prayer Timings</h4>
-                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Track daily local prayer times and receive reminders.</p>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Daily GPS Prayer Timings</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Real-time local prayer times with automated GPS geolocation detection or manual search.</p>
                 </div>
               </div>
               <div className="flex gap-2.5 items-start">
                 <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Islamic Calendar</h4>
-                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Browse Hijri dates and key Islamic historical holidays.</p>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Interactive Islamic Calendar</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Browse Hijri-Gregorian dates, flag holidays, and fine-tune dates with moonsighting offset settings.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Interactive Progress & Stats</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Visualize your completed salah percentage, total Rakat counts, and maintain active logs.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Secure Cloud Sync</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Link your Google account to back up and sync your progress seamlessly across multiple devices.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">User Reviews &amp; Feedback</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Submit star ratings and comments, read other user reviews, and submit constructive feedback.</p>
                 </div>
               </div>
             </div>

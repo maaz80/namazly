@@ -7,7 +7,9 @@ import {
   HiOutlineClock, 
   HiOutlineCloudUpload, 
   HiOutlineShieldCheck,
-  HiOutlineArrowLeft
+  HiOutlineArrowLeft,
+  HiOutlineStar,
+  HiOutlineChatAlt2
 } from 'react-icons/hi';
 
 /* ── Page meta hook ──────────────────────────────────────── */
@@ -131,6 +133,15 @@ export default function GuidePage() {
                 </p>
               </div>
               <div className="space-y-2 border-t border-sage-100/40 pt-3">
+                <h3 className="font-bold text-sage-800">♀ Female Menstruation Exemption Deduction</h3>
+                <p>
+                  For sisters, select <strong>Female</strong> gender inside the calculator. This displays a slider to input your average period duration (e.g. 7 days).
+                </p>
+                <p>
+                  The calculator automatically computes and deducts your average monthly period days from your total missed Qaza days (since women are exempt from prayer obligations and making them up during menstruation under Shariah). It provides a full breakdown (Gross days vs. Period exemption days) before replacing counts.
+                </p>
+              </div>
+              <div className="space-y-2 border-t border-sage-100/40 pt-3">
                 <h3 className="font-bold text-sage-800">✅ Recording Your Progress</h3>
                 <p>
                   As you make up your missed prayers, tap the green `+` button on any prayer card to increment your count. If you make a mistake, tap `-` to decrement.
@@ -208,11 +219,65 @@ export default function GuidePage() {
             </div>
           </section>
 
-          {/* 5. Privacy First Philosophy */}
+          {/* 5. Hadith of the Day */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineStar className="text-xl text-sage-500" />
+              <span>5. Hadith of the Day & Sharing</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                The <strong>Hadith of the Day</strong> page displays a beautiful daily curated authentic Hadith to keep you spiritually inspired.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">✨ English & Arabic Views</h3>
+                  <p>
+                    Read the original Arabic text in elegant typography alongside its authentic English translation and narrator references.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🔄 Randomizer & Sharing</h3>
+                  <p>
+                    Click the <strong>Random Hadith</strong> button to load other inspiring lessons. Use the <strong>Copy Text</strong> or <strong>Share</strong> buttons to copy the full formatted text or send it directly to your family and friends.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 6. User Reviews & Feedback */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineChatAlt2 className="text-xl text-sage-500" />
+              <span>6. User Reviews &amp; Feedback</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                We highly value community feedback. The <strong>User Reviews</strong> page allows you to share your experiences and see what other brothers and sisters say.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">⭐ Rating & Comments</h3>
+                  <p>
+                    Provide a star rating from 1 to 5 stars, write your comment/suggestions, and submit. If you are signed in, it will show your verified name and profile picture. If you are a guest, you can enter any name you like.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">📊 Dashboard Reviews Widget</h3>
+                  <p>
+                    A clean widget displaying the most recent user reviews is also visible at the bottom of the main <strong>Dashboard</strong> page, encouraging community interaction and continuous development.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 7. Privacy First Philosophy */}
           <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
             <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
               <HiOutlineShieldCheck className="text-xl text-sage-500" />
-              <span>5. Our Privacy-First Commitment</span>
+              <span>7. Our Privacy-First Commitment</span>
             </h2>
             <div className="space-y-2 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
               <p>

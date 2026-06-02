@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen, HiOutlineStar } from 'react-icons/hi';
+import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen, HiOutlineStar, HiOutlineChatAlt2 } from 'react-icons/hi';
 import { TbListDetails } from "react-icons/tb";
 import { MdOutlineContacts } from "react-icons/md";
 
@@ -211,6 +211,14 @@ export default function Navbar({ onAuthClick }) {
           >
             <HiOutlineStar className="text-xl text-sage-500" />
             <span>Hadith of the Day</span>
+          </a>
+          <a
+            href="/reviews"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <HiOutlineChatAlt2 className="text-xl text-sage-500" />
+            <span>User Reviews</span>
           </a>
           <a
             href="/guide"

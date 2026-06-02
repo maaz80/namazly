@@ -10,6 +10,7 @@ const Dashboard   = lazy(() => import('./pages/Dashboard'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const TimingsPage  = lazy(() => import('./pages/TimingsPage'));
 const HadithPage   = lazy(() => import('./pages/HadithPage'));
+const ReviewsPage  = lazy(() => import('./pages/ReviewsPage'));
 const GuidePage    = lazy(() => import('./pages/GuidePage'));
 const AboutPage    = lazy(() => import('./pages/AboutPage'));
 const ContactPage  = lazy(() => import('./pages/ContactPage'));
@@ -80,6 +81,12 @@ const AppRoutes = () => (
         path="/hadith"
         element={
           <HadithPage />
+        }
+      />
+      <Route
+        path="/reviews"
+        element={
+          <ReviewsPage />
         }
       />
       <Route
