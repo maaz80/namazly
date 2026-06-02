@@ -87,8 +87,39 @@ function getGreeting() {
 
 export default function Dashboard() {
   const { user, updateQazaRecord } = useAuth();
-  const [qazaRecord, setQazaRecord] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [qazaRecord, setQazaRecord] = useState(() => {
+    if (user) {
+      const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch (err) {
+          console.error('Failed to parse cached records:', err);
+        }
+      }
+      return {};
+    } else {
+      const guestRecord = localStorage.getItem('namazly_guest_record');
+      if (guestRecord) {
+        try {
+          return JSON.parse(guestRecord);
+        } catch (err) {
+          console.error('Failed to parse guest records:', err);
+        }
+      }
+      const empty = {};
+      PRAYERS.forEach((p) => { empty[p.key] = 0; });
+      return empty;
+    }
+  });
+
+  const [loading, setLoading] = useState(() => {
+    if (!user) return false;
+    const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
+    if (cached) return false;
+    return true;
+  });
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
   const [isData, setIsData] = useState(false);
@@ -102,7 +133,6 @@ export default function Dashboard() {
   /* Fetch latest records on mount, or reset instantly on logout */
   useEffect(() => {
     if (user) {
-      // 1. Instantly load from localStorage cache if it exists to avoid Render cold-start spinners
       const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
       if (cached) {
         try {
@@ -111,9 +141,11 @@ export default function Dashboard() {
         } catch (err) {
           console.error('Failed to parse cached records:', err);
         }
+      } else {
+        setLoading(true);
       }
 
-      // 2. Refresh from backend in background
+      // Refresh from backend in background
       const fetchRecords = async () => {
         try {
           const { data } = await api.get('/records');

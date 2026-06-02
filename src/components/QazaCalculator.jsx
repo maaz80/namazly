@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PRAYERS, DAYS_PER_MONTH } from '../utils/constants';
-
+import { FaCalculator } from "react-icons/fa";
 /* ── helpers ─────────────────────────────────────────── */
 function calcTotalMonths(years, months) {
   return years * 12 + months;
@@ -287,8 +287,8 @@ export default function QazaCalculator({ onApply }) {
       <div className="glass-card rounded-3xl p-6 md:p-8 shadow-lg">
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center shadow-md">
-            <span className="text-lg">🧮</span>
+          <div className="w-10 h-10 rounded-xl bg-sage-500 flex items-center justify-center shadow-md">
+            <FaCalculator className="text-xl text-white" />
           </div>
           <div>
             <h2 className="poppins-regular text-xl font-bold text-sage-900">Qaza Calculator</h2>

@@ -78,7 +78,7 @@ export default function AboutPage() {
               We strongly believe your spiritual records are sacred. Namazly guarantees:
             </p>
             <ul className="poppins-regular text-xs sm:text-sm text-sage-600 space-y-1.5 pl-4 list-disc">
-              <li><span className="font-semibold text-sage-800">Minimal Advertisements:</span> We display a few unobtrusive ads strictly to generate a little income for server hosting and active database maintenance.</li>
+              {/* <li><span className="font-semibold text-sage-800">Minimal Advertisements:</span> We display a few unobtrusive ads strictly to generate a little income for server hosting and active database maintenance.</li> */}
               <li><span className="font-semibold text-sage-800">No User Tracking:</span> We do not use analytical cookies, pixel trackers, or background telemetry.</li>
               <li><span className="font-semibold text-sage-800">Local Caching:</span> Guests can calculate and store all records strictly inside their browser.</li>
               <li><span className="font-semibold text-sage-800">Cloud Sync:</span> Users signing in via Google have their records stored in a secure cloud database.</li>

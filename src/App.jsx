@@ -9,6 +9,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Dashboard   = lazy(() => import('./pages/Dashboard'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const TimingsPage  = lazy(() => import('./pages/TimingsPage'));
+const HadithPage   = lazy(() => import('./pages/HadithPage'));
 const GuidePage    = lazy(() => import('./pages/GuidePage'));
 const AboutPage    = lazy(() => import('./pages/AboutPage'));
 const ContactPage  = lazy(() => import('./pages/ContactPage'));
@@ -73,6 +74,12 @@ const AppRoutes = () => (
         path="/timings"
         element={
           <TimingsPage />
+        }
+      />
+      <Route
+        path="/hadith"
+        element={
+          <HadithPage />
         }
       />
       <Route

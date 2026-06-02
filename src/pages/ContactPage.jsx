@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineCash, HiOutlineClipboardCopy, HiOutlineCheck } from 'react-icons/hi';
+import { MdContactMail } from 'react-icons/md';
 
 /* Page meta hook */
 function usePageMeta(title, description) {
@@ -49,8 +50,8 @@ export default function ContactPage() {
       <main className="relative z-10 max-w-4xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in w-full">
         
         {/* Title */}
-        <div className="text-center mb-8">
-          <span className="text-4xl">✉️</span>
+        <div className="text-center mb-8 flex flex-col items-center gap-2">
+          <MdContactMail className="text-4xl text-sage-500" />
           <h1 className="poppins-regular text-4xl font-bold mt-2">
             Contact &amp; <span className="gradient-text">Support</span>
           </h1>
@@ -70,7 +71,7 @@ export default function ContactPage() {
                 Developer Details
               </h2>
               <p className="poppins-regular text-sage-500 text-xs sm:text-sm mb-6 leading-relaxed">
-                Namazly is proudly developed and maintained by **Maaz Shakeel**. You can contact the developer directly for suggestions, custom features, or general feedback.
+                Namazly is proudly developed and maintained by <strong>Maaz Shakeel</strong>. You can contact the developer directly for suggestions, custom features, or general feedback.
               </p>
 
               {/* Developer Info rows */}
@@ -140,11 +141,11 @@ export default function ContactPage() {
               </p>
 
               {/* Donation box */}
-              <div className="rounded-2xl border border-amber-200/50 bg-amber-50/40 px-4 py-3 mb-6">
+              {/* <div className="rounded-2xl border border-amber-200/50 bg-amber-50/40 px-4 py-3 mb-6">
                 <p className="poppins-regular text-[11px] text-amber-800 leading-relaxed">
-                  📢 **Sadaqah Jariyah (Ongoing Charity)**: Every contribution helps us keep the app running smoothly and minimizes our reliance on advertisements. May Allah reward you beautifully!
+                  📢 Sadaqah Jariyah (Ongoing Charity): Every contribution helps us keep the app running smoothly and minimizes our reliance on advertisements. May Allah reward you beautifully!
                 </p>
-              </div>
+              </div> */}
 
               {/* UPI ID block */}
               <div className="rounded-2xl border border-sage-200/60 bg-white/70 p-4 flex items-center justify-between gap-3 shadow-inner">

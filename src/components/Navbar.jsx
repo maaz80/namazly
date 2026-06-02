@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen } from 'react-icons/hi';
+import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen, HiOutlineStar } from 'react-icons/hi';
+import { TbListDetails } from "react-icons/tb";
+import { MdOutlineContacts } from "react-icons/md";
 
 const MoonStar = () => (
   <svg
@@ -203,6 +205,14 @@ export default function Navbar({ onAuthClick }) {
             <span>Namaz Timings</span>
           </a>
           <a
+            href="/hadith"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <HiOutlineStar className="text-xl text-sage-500" />
+            <span>Hadith of the Day</span>
+          </a>
+          <a
             href="/guide"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
@@ -217,7 +227,7 @@ export default function Navbar({ onAuthClick }) {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150 border-t border-sage-100/50 pt-3.5"
           >
-            <span className="text-xl flex-shrink-0">🌙</span>
+            <TbListDetails className="text-xl text-sage-500" />
             <span>About Namazly</span>
           </a>
 
@@ -227,7 +237,7 @@ export default function Navbar({ onAuthClick }) {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
           >
-            <span className="text-xl flex-shrink-0">✉️</span>
+            <MdOutlineContacts className="text-xl text-sage-500" />
             <span>Contact &amp; Support</span>
           </a>
         </div>

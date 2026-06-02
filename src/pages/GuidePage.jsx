@@ -105,7 +105,7 @@ export default function GuidePage() {
                   Cloud Sync (Google Account)
                 </h3>
                 <p>
-                  Sign in with Google at any time. Namazly will **automatically migrate** all your local guest records straight into the secure cloud database.
+                  Sign in with Google at any time. Namazly will automatically migrate all your local guest records straight into the secure cloud database.
                 </p>
                 <p className="text-[11px] text-sage-400">
                   ✅ Access and update your records on any smartphone, tablet, or desktop.
@@ -124,19 +124,19 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <h3 className="font-bold text-sage-800">📊 Calculating Missed Prayers</h3>
                 <p>
-                  Unsure how many prayers you have missed? Open the **Qaza Calculator** on your dashboard. Enter your age of puberty, current age, and the years you spent praying regularly. 
+                  Unsure how many prayers you have missed? Open the <strong>Qaza Calculator</strong> on your dashboard. Enter your age of puberty, current age, and the years you spent praying regularly. 
                 </p>
                 <p>
-                  Tapping **Apply Calculation** automatically generates your total missed prayer counts, converting years/days into specific **Rakat totals** for each of the daily prayers (Fajr, Zohar, Asr, Maghrib, Isha Farz, and Isha Witr).
+                  Tapping Apply Calculation automatically generates your total missed prayer counts, converting years/days into specific Rakat totals for each of the daily prayers (Fajr, Zohar, Asr, Maghrib, Isha Farz, and Isha Witr).
                 </p>
               </div>
               <div className="space-y-2 border-t border-sage-100/40 pt-3">
                 <h3 className="font-bold text-sage-800">✅ Recording Your Progress</h3>
                 <p>
-                  As you make up your missed prayers, tap the green **`+`** button on any prayer card to increment your count. If you make a mistake, tap **`-`** to decrement.
+                  As you make up your missed prayers, tap the green `+` button on any prayer card to increment your count. If you make a mistake, tap `-` to decrement.
                 </p>
                 <p>
-                  The **Stats Summary** card dynamically updates your percentage completed, total rakats prayed, and visualizes your progress to keep you motivated.
+                  The <strong>Stats Summary</strong> card dynamically updates your percentage completed, total rakats prayed, and visualizes your progress to keep you motivated.
                 </p>
               </div>
               <div className="space-y-2 border-t border-sage-100/40 pt-3">
@@ -156,13 +156,13 @@ export default function GuidePage() {
             </h2>
             <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
               <p>
-                The **Islamic Calendar** page displays a dual grid combining standard Gregorian dates with their corresponding Islamic Hijri date.
+                The <strong>Islamic Calendar</strong> page displays a dual grid combining standard Gregorian dates with their corresponding Islamic Hijri date.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <h3 className="font-bold text-sage-800">🌙 Moonsighting Adjustment</h3>
                   <p>
-                    Because Islamic months depend on regional moon sightings, Hijri dates can vary by 1–2 days. Use the **Adjustment Control panel** on the calendar page to shift the Hijri dates backward or forward (`-2` to `+2` days) to align with your local mosque.
+                    Because Islamic months depend on regional moon sightings, Hijri dates can vary by 1–2 days. Use the Adjustment Control panel on the calendar page to shift the Hijri dates backward or forward (`-2` to `+2` days) to align with your local mosque.
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -183,7 +183,7 @@ export default function GuidePage() {
             </h2>
             <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
               <p>
-                The **Daily Namaz Timings** page fetches precise prayer starting times using a secure connection to the global Aladhan API.
+                The <strong>Daily Namaz Timings</strong> page fetches precise prayer starting times using a secure connection to the global Aladhan API.
               </p>
               <div className="space-y-2">
                 <h3 className="font-bold text-sage-800">🎯 GPS Coordinates vs. Manual Search</h3>
@@ -201,7 +201,7 @@ export default function GuidePage() {
                 <div className="space-y-1">
                   <h3 className="font-bold text-sage-800">🟢 Current Active Prayer</h3>
                   <p>
-                    The currently active prayer is highlighted automatically in the timings sheet with a glowing border, a pulsing marker, and an **"Active Now"** badge.
+                    The currently active prayer is highlighted automatically in the timings sheet with a glowing border, a pulsing marker, and an "Active Now" badge.
                   </p>
                 </div>
               </div>
