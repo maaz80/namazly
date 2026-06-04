@@ -285,7 +285,7 @@ export default function TimingsPage() {
               </div>
 
               {/* Glowing countdown circle */}
-              <div className="flex flex-col items-center justify-center glass-card-deep border border-white/85 rounded-full w-32 h-32 sm:w-36 sm:h-36 shadow-lg shadow-sage-600/5 border-sage-200/30 relative">
+              <div className="flex flex-col items-center justify-center glass-card-deep border rounded-full w-32 h-32 sm:w-36 sm:h-36 shadow-lg shadow-sage-600/5 border-sage-200/30 relative">
                 <span className="poppins-regular text-2xl sm:text-3xl font-black gradient-text tracking-tight tabular-nums">
                   {prayerState ? prayerState.countdown : '00:00:00'}
                 </span>
