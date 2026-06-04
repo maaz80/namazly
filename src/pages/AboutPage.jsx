@@ -1,16 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { HiOutlineBookOpen, HiOutlineCheckCircle, HiOutlineShieldCheck, HiOutlineSparkles } from 'react-icons/hi';
-
-/* Page meta hook */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -29,7 +21,8 @@ export default function AboutPage() {
 
   usePageMeta(
     'About Namazly — Qaza Salah Tracker & Privacy First App',
-    'Learn about Namazly, a beautiful, privacy-first Qaza namaz tracking application designed to help Muslims easily fulfill their missed salah.'
+    'Learn about Namazly, a beautiful, privacy-first Qaza namaz tracking application designed to help Muslims easily fulfill their missed salah.',
+    '/about'
   );
 
   return (

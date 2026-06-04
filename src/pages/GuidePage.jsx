@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   HiOutlineBookOpen, 
@@ -11,15 +11,7 @@ import {
   HiOutlineStar,
   HiOutlineChatAlt2
 } from 'react-icons/hi';
-
-/* ── Page meta hook ──────────────────────────────────────── */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -38,7 +30,8 @@ export default function GuidePage() {
 
   usePageMeta(
     'User Usage Guide — Namazly | How to Track Qaza Prayers',
-    'A complete user guide and instruction manual explaining how to estimate qaza prayers, navigate the Islamic calendar, and track daily timings.'
+    'A complete user guide and instruction manual explaining how to estimate qaza prayers, navigate the Islamic calendar, and track daily timings.',
+    '/guide'
   );
 
   return (

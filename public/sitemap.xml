@@ -6,7 +6,7 @@
 
   <!-- Landing / Home page -->
   <url>
-    <loc>https://namazly.com/</loc>
+    <loc>https://namazly.in/</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -14,7 +14,7 @@
 
   <!-- Islamic Calendar -->
   <url>
-    <loc>https://namazly.com/calendar</loc>
+    <loc>https://namazly.in/calendar</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -22,7 +22,7 @@
 
   <!-- Daily Prayer Timings -->
   <url>
-    <loc>https://namazly.com/timings</loc>
+    <loc>https://namazly.in/timings</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -30,7 +30,7 @@
 
   <!-- Hadith of the Day -->
   <url>
-    <loc>https://namazly.com/hadith</loc>
+    <loc>https://namazly.in/hadith</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -38,7 +38,7 @@
 
   <!-- User Reviews & Feedback -->
   <url>
-    <loc>https://namazly.com/reviews</loc>
+    <loc>https://namazly.in/reviews</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -46,7 +46,7 @@
 
   <!-- Usage Guide -->
   <url>
-    <loc>https://namazly.com/guide</loc>
+    <loc>https://namazly.in/guide</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -54,7 +54,7 @@
 
   <!-- About Namazly -->
   <url>
-    <loc>https://namazly.com/about</loc>
+    <loc>https://namazly.in/about</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -62,10 +62,18 @@
 
   <!-- Contact & Support -->
   <url>
-    <loc>https://namazly.com/contact</loc>
+    <loc>https://namazly.in/contact</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+  </url>
+
+  <!-- FAQ Page -->
+  <url>
+    <loc>https://namazly.in/faq</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>

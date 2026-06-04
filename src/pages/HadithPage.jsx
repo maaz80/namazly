@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHadithOfTheDay, getRandomHadith } from '../utils/hadiths';
 import { HiOutlineArrowLeft, HiOutlineDuplicate, HiOutlineShare, HiOutlineRefresh, HiOutlineCheck } from 'react-icons/hi';
-
-/* ── Page meta hook ──────────────────────────────────────── */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -33,7 +25,8 @@ export default function HadithPage() {
 
   usePageMeta(
     'Daily Hadith — Namazly | Hadith of the Day',
-    'Read beautiful, curated daily Hadiths on prayer, character, and Islamic teachings with Arabic and English translation.'
+    'Read beautiful, curated daily Hadiths on prayer, character, and Islamic teachings with Arabic and English translation.',
+    '/hadith'
   );
 
   const handleCopy = async () => {

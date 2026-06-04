@@ -4,14 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { HiOutlineArrowLeft, HiStar, HiOutlineChatAlt2, HiCheckCircle } from 'react-icons/hi';
 import { TfiThought } from "react-icons/tfi";
-/* ── Page meta hook ──────────────────────────────────────── */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -44,7 +37,8 @@ export default function ReviewsPage() {
 
   usePageMeta(
     'User Reviews & Feedback — Namazly',
-    'Read what users say about Namazly Qaza Tracker, submit your star ratings, and help us improve with your feedback.'
+    'Read what users say about Namazly Qaza Tracker, submit your star ratings, and help us improve with your feedback.',
+    '/reviews'
   );
 
   // Fetch reviews on mount

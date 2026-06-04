@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineCash, HiOutlineClipboardCopy, HiOutlineCheck } from 'react-icons/hi';
 import { MdContactMail } from 'react-icons/md';
-
-/* Page meta hook */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -31,7 +23,8 @@ export default function ContactPage() {
 
   usePageMeta(
     'Contact Developer & Support — Namazly | Qaza Prayer App',
-    'Reach out to Maaz Shakeel, the developer of Namazly. Feel free to contact for support, queries, feedback, or support via UPI donation.'
+    'Reach out to Maaz Shakeel, the developer of Namazly. Feel free to contact for support, queries, feedback, or support via UPI donation.',
+    '/contact'
   );
 
   const copyToClipboard = (text, type) => {

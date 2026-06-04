@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-/* ── Page meta hook ──────────────────────────────────────── */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -69,7 +61,8 @@ export default function TimingsPage() {
 
   usePageMeta(
     'Daily Namaz Timings — Namazly | Real-time Prayer Schedule',
-    'Get precise, location-based daily prayer times, dynamic remaining countdowns, and automatic geolocation updates.'
+    'Get precise, location-based daily prayer times, dynamic remaining countdowns, and automatic geolocation updates.',
+    '/timings'
   );
 
   // Fetch timings by Coords or City/Country

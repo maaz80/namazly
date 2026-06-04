@@ -4,7 +4,7 @@ Disallow: /dashboard
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://namazly.com/sitemap.xml
+Sitemap: https://namazly.in/sitemap.xml
 
 # Crawl-delay for polite bots
 Crawl-delay: 10

@@ -9,6 +9,7 @@ import AuthModal from '../components/AuthModal';
 import api from '../utils/api';
 import { PRAYERS } from '../utils/constants';
 import { HiStar } from 'react-icons/hi';
+import { IoIosArrowForward } from "react-icons/io";
 
 /* ── Clear All Confirmation Modal ────────────────────── */
 function ClearAllModal({ onConfirm, onCancel }) {
@@ -395,14 +396,14 @@ export default function Dashboard() {
         <section className="mt-12 space-y-4 animate-fade-in content-auto">
           <div className="flex items-center justify-between border-b border-sage-100/50 pb-2">
             <h2 className="poppins-regular text-base sm:text-lg font-bold text-sage-900 flex items-center gap-2">
-              ⭐ User Reviews &amp; Feedback
+              User Reviews 
             </h2>
             <button
               onClick={() => navigate('/reviews')}
               className="text-xs font-semibold text-sage-600 hover:text-sage-800 transition-colors cursor-pointer bg-transparent border-0 flex items-center gap-1"
             >
-              <span>Write/View All Reviews</span>
-              <span>&rarr;</span>
+              <span>View All</span>
+              <span><IoIosArrowForward /></span>
             </button>
           </div>
 

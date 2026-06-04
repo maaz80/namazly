@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
-/* ── Page meta hook ──────────────────────────────────────── */
-function usePageMeta(title, description) {
-  useEffect(() => {
-    // Update document title
-    document.title = title;
-    // Update meta description
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', description);
-    // Update OG title/desc dynamically
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    const ogDesc  = document.querySelector('meta[property="og:description"]');
-    if (ogTitle) ogTitle.setAttribute('content', title);
-    if (ogDesc)  ogDesc.setAttribute('content', description);
-  }, [title, description]);
-}
+import usePageMeta from '../hooks/usePageMeta';
 
 /* ── Decorative background orbs ─────────────────────────── */
 const Orbs = () => (
@@ -134,7 +119,8 @@ export default function LandingPage() {
 
   usePageMeta(
     'Namazly — Qaza Prayer Tracker & Calculator',
-    'Calculate, track, and reduce your missed Qaza prayers with Namazly. Beautiful, cloud-synced, and free.'
+    'Calculate, track, and reduce your missed Qaza prayers with Namazly. Beautiful, cloud-synced, and free.',
+    '/'
   );
 
   const googleLogin = useGoogleLogin({
@@ -307,9 +293,18 @@ export default function LandingPage() {
 
       {/* ── Footer ────────────────────────────────────────── */}
       <footer
-        className="relative z-10 text-center py-6 text-xs text-sage-400 poppins-regular"
+        className="relative z-10 text-center py-6 text-xs text-sage-400 poppins-regular flex flex-col items-center gap-2"
         role="contentinfo"
       >
+        <div className="flex items-center gap-3">
+          <a href="/about" className="hover:text-sage-600 transition-colors no-underline">About</a>
+          <span className="text-sage-300">&bull;</span>
+          <a href="/faq" className="hover:text-sage-600 transition-colors no-underline font-semibold">FAQs</a>
+          <span className="text-sage-300">&bull;</span>
+          <a href="/guide" className="hover:text-sage-600 transition-colors no-underline">Guide</a>
+          <span className="text-sage-300">&bull;</span>
+          <a href="/contact" className="hover:text-sage-600 transition-colors no-underline">Contact</a>
+        </div>
         <p>Built with sincerity &bull; Namazly &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
