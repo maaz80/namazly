@@ -15,6 +15,8 @@ const GuidePage    = lazy(() => import('./pages/GuidePage'));
 const AboutPage    = lazy(() => import('./pages/AboutPage'));
 const ContactPage  = lazy(() => import('./pages/ContactPage'));
 const FaqPage      = lazy(() => import('./pages/FaqPage'));
+const AdminLogin   = lazy(() => import('./pages/AdminLogin'));
+const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -114,6 +116,8 @@ const AppRoutes = () => (
           <FaqPage />
         }
       />
+      <Route path="/1adminMs1" element={<AdminLogin />} />
+      <Route path="/1adminMs1/dashboard" element={<AdminDash />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Suspense>
