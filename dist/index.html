@@ -56,7 +56,7 @@
   <!-- ── Font Performance ──────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
     media="print" onload="this.media='all'">
 
@@ -94,18 +94,12 @@
       }
     }
     </script>
-
-  <!-- ✅ Baaki CSS non-blocking load -->
-  <link rel="preload" as="style" href="/assets/index-C7WFohWC.css" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript>
-    <link rel="stylesheet" href="/assets/index-C7WFohWC.css" />
-  </noscript>
-  <script type="module" crossorigin src="/assets/js/index-CESEJ_SN.js"></script>
+  <script type="module" crossorigin src="/assets/js/index-CR6EERyI.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-react-Bspgqbbm.js">
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-oauth-iRzhRu0J.js">
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-router-BcrC8qqp.js">
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-axios-C4NBEVWH.js">
-  <!-- <link rel="stylesheet" crossorigin href="/assets/css/index-C7WFohWC.css"> -->
+  <link rel="stylesheet" crossorigin href="/assets/css/index-DO3kMDDq.css">
 </head>
 
 <body>
@@ -161,9 +155,6 @@
           window.removeEventListener(event, loadGoogleAnalytics);
         });
       }
-
-      // Auto fallback: loading if user is idle for 4 seconds
-      setTimeout(loadGoogleAnalytics, 4000);
 
       addListeners();
     })();

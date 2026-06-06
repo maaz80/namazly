@@ -365,9 +365,12 @@ export default function AdminDashboard() {
                   <div key={u._id || i} className="px-5 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors">
                     <img
                       src={u.avatar || '/icon-192.png'}
-                      alt=""
+                      alt={u.name || 'User avatar'}
+                      width="32"
+                      height="32"
                       className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
                       onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                      loading="lazy"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white/80 font-semibold poppins-regular truncate">{u.name}</p>
@@ -400,6 +403,7 @@ export default function AdminDashboard() {
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                   placeholder="Search by name or email..."
+                  aria-label="Search users"
                   className="block w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25
                              bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular"
                 />
@@ -433,8 +437,8 @@ export default function AdminDashboard() {
                       <tr key={u._id} className="hover:bg-white/5 transition-colors">
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
-                            <img src={u.avatar || '/icon-192.png'} alt="" className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
-                              onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} />
+                            <img src={u.avatar || '/icon-192.png'} alt={u.name || 'User avatar'} width="32" height="32" className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
+                              onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} loading="lazy" />
                             <span className="text-sm text-white/80 font-semibold poppins-regular truncate max-w-[140px]">{u.name}</span>
                           </div>
                         </td>
@@ -499,8 +503,8 @@ export default function AdminDashboard() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 min-w-0 flex-1">
                         {userAvatar ? (
-                          <img src={userAvatar} alt="" className="w-9 h-9 rounded-full border border-white/10 object-cover flex-shrink-0 bg-white/10"
-                            onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} />
+                          <img src={userAvatar} alt={userName} width="36" height="36" className="w-9 h-9 rounded-full border border-white/10 object-cover flex-shrink-0 bg-white/10"
+                            onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} loading="lazy" />
                         ) : (
                           <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400 text-sm font-bold">
                             {userName.charAt(0).toUpperCase()}

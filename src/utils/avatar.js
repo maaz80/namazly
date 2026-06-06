@@ -1,3 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
+
 /**
  * Optimizes Google profile picture URLs to request a specific size and format (WebP).
  * 
@@ -15,7 +19,8 @@ export function getOptimizedAvatar(url, size = 64) {
     // - c: crop to square
     // - rw: serve WebP for browsers that support it
     const base = url.split('=')[0];
-    return `${base}=s${size}-c-rw`;
+    const googleUrl = `${base}=s${size}-c-rw`;
+    return `${API_URL}/reviews/proxy-avatar?url=${encodeURIComponent(googleUrl)}`;
   }
   
   return url;

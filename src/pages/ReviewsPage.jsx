@@ -268,6 +268,8 @@ export default function ReviewsPage() {
                     src={getOptimizedAvatar(user.avatar, 64)}
                     onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                     alt={user.name}
+                    width="32"
+                    height="32"
                     className="w-8 h-8 rounded-full border border-white"
                   />
                   <div>
@@ -390,7 +392,10 @@ export default function ReviewsPage() {
                           src={getOptimizedAvatar(avatar, 64)} 
                           onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                           alt={name}
+                          width="28"
+                          height="28"
                           className="w-7 h-7 rounded-full border border-white object-cover shadow-sm bg-sage-50"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-7 h-7 rounded-full bg-gradient-to-br from-sage-500 to-sage-600 text-white flex items-center justify-center font-bold text-[9px] poppins-regular shadow-sm border border-white/80">

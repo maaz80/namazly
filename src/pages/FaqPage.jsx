@@ -178,6 +178,7 @@ export default function FaqPage() {
               setSearchQuery(e.target.value);
               setExpandedIndex(null); // Collapse open accordion to avoid confusion
             }}
+            aria-label="Search FAQs"
             className="block w-full pl-11 pr-4 py-3.5 border-0 rounded-2xl poppins-regular text-sm text-sage-800
                        glass-card shadow-md focus:ring-2 focus:ring-sage-500 outline-none placeholder-sage-400
                        transition-all duration-200"

@@ -87,6 +87,7 @@ function CycleDaysInput({ cycleDays, onChange }) {
         step={1}
         value={cycleDays}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
+        aria-label="Menstruation cycle days"
         className="w-full h-2 rounded-full appearance-none cursor-pointer"
         style={{
           background: `linear-gradient(to right, #fb7185 0%, #fb7185 ${((cycleDays - 3) / 7) * 100}%, rgba(255,255,255,0.5) ${((cycleDays - 3) / 7) * 100}%, rgba(255,255,255,0.5) 100%)`,
@@ -308,11 +309,12 @@ export default function QazaCalculator({ onApply }) {
         <div className="grid grid-cols-2 gap-4 mb-5">
           {/* Years */}
           <div>
-            <label className="block poppins-regular text-xs font-semibold text-sage-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="calc-years" className="block poppins-regular text-xs font-semibold text-sage-600 mb-1.5 uppercase tracking-wider">
               Years
             </label>
             <div className="relative">
               <input
+                id="calc-years"
                 type="number"
                 min="0"
                 value={years}
@@ -329,11 +331,12 @@ export default function QazaCalculator({ onApply }) {
 
           {/* Months */}
           <div>
-            <label className="block poppins-regular text-xs font-semibold text-sage-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="calc-months" className="block poppins-regular text-xs font-semibold text-sage-600 mb-1.5 uppercase tracking-wider">
               Months
             </label>
             <div className="relative">
               <input
+                id="calc-months"
                 type="number"
                 min="0"
                 max="11"

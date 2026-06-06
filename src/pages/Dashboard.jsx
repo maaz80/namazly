@@ -489,7 +489,10 @@ export default function Dashboard() {
                           src={getOptimizedAvatar(avatar, 48)}
                           onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                           alt={name}
+                          width="22"
+                          height="22"
                           className="w-5.5 h-5.5 rounded-full border border-white object-cover bg-sage-50"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-br from-sage-500 to-sage-600 text-white flex items-center justify-center font-bold text-[8px] border border-white/80">
@@ -519,16 +522,16 @@ export default function Dashboard() {
               <button
                 onClick={() => setActiveArticleIndex((prev) => (prev - 1 + ARTICLES.length) % ARTICLES.length)}
                 aria-label="Previous Article"
-                className="p-1.5 rounded-lg glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
+                className="w-12 h-12 flex items-center justify-center rounded-xl glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
               >
-                <HiOutlineChevronLeft className="w-4 h-4" />
+                <HiOutlineChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setActiveArticleIndex((prev) => (prev + 1) % ARTICLES.length)}
                 aria-label="Next Article"
-                className="p-1.5 rounded-lg glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
+                className="w-12 h-12 flex items-center justify-center rounded-xl glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
               >
-                <HiOutlineChevronRight className="w-4 h-4" />
+                <HiOutlineChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -561,15 +564,20 @@ export default function Dashboard() {
             })}
 
             {/* Pagination Indicator Dots */}
-            <div className="flex justify-center gap-1.5 mt-6">
+            <div className="flex justify-center mt-3">
               {ARTICLES.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveArticleIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 border-0 cursor-pointer ${idx === activeArticleIndex ? 'bg-sage-600 w-4' : 'bg-sage-200 hover:bg-sage-300'
-                    }`}
+                  className="w-12 h-12 flex items-center justify-center border-0 bg-transparent cursor-pointer transition-all"
                   aria-label={`Go to article ${idx + 1}`}
-                />
+                >
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      idx === activeArticleIndex ? 'bg-sage-600 w-5' : 'bg-sage-200 hover:bg-sage-300'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </div>
