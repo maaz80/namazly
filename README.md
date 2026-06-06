@@ -1,6 +1,16 @@
 # 🕌 Namazly Client — Frontend Web Application
 
-Namazly is a beautiful, privacy-first, distraction-free Qaza Namaz tracking application designed to help Muslims easily calculate and steadily fulfill their missed salah. This repository contains the **Frontend Client** of the application, built with React 18, Vite, Tailwind CSS, and a premium Glassmorphic user interface.
+## 🌐 Live Web Application: [https://namazly.in](https://namazly.in)
+
+**Namazly** is a beautiful, privacy-first, and distraction-free **Qaza Namaz Tracker & Calculator** designed to help Muslims easily calculate, record, and steadily fulfill their missed prayers (salah). 
+
+Visit the live app: 🚀 **[namazly.in](https://namazly.in)**
+
+### 🔍 Search Keywords & SEO Tags
+* **Missed Prayers Tracker**: Fulfill your Qaza-e-Umri with a beautiful visual interface.
+* **Qaza Namaz Calculator Online**: Easily calculate missed salah based on puberty years, with automatic menstruation cycle deductions for sisters.
+* **Islamic Prayer Manager**: Clean, distraction-free, privacy-focused guest storage with zero cookies and optional Google Cloud sync.
+* **Hanafi & Standard Madhhab Timings**: Dynamic geolocation-based prayer timings.
 
 ---
 
