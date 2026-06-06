@@ -15,6 +15,12 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
   /* Persist with debounce */
   const saveToDb = useCallback(async (newValue) => {
     setStatus('saving');
+    
+    // Track namaz management event dynamically
+    import('../utils/analytics')
+      .then(({ trackNamazManagement }) => trackNamazManagement())
+      .catch(err => console.error('Failed to load analytics dynamically on adjust:', err));
+
     if (isGuest) {
       const updated = { ...qazaRecord, [prayer.key]: Math.max(0, newValue) };
       onUpdate(updated);

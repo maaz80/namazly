@@ -90,6 +90,21 @@ const MiniBarChart = ({ data, labels, color = '#34d399', title }) => {
   );
 };
 
+/* ─── Helpers ───────────────────────────────────────────── */
+const formatMonthKey = (key) => {
+  if (!key || key.length < 7) return key;
+  const [year, month] = key.split('-');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const idx = parseInt(month, 10) - 1;
+  return idx >= 0 && idx < 12 ? `${months[idx]} ${year.slice(2)}` : key;
+};
+
+const formatWeekKey = (key) => {
+  if (!key || !key.includes('-W')) return key;
+  const [year, week] = key.split('-W');
+  return `Wk ${week} (${year.slice(2)})`;
+};
+
 /* ─── User Growth Line Chart (CSS-based) ───────────────── */
 const UserGrowthChart = ({ data }) => {
   if (!data || data.length === 0) {
@@ -97,7 +112,7 @@ const UserGrowthChart = ({ data }) => {
       <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
         <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4 flex items-center gap-2">
           <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
-          User Growth (Last 30 Days)
+          User Growth (Last 12 Months)
         </h3>
         <p className="text-xs text-white/30 poppins-regular text-center py-8">No data available yet</p>
       </div>
@@ -111,11 +126,11 @@ const UserGrowthChart = ({ data }) => {
     <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
       <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4 flex items-center gap-2">
         <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
-        User Signups (Last 30 Days)
+        User Signups (Last 12 Months)
       </h3>
       <div className="flex items-end gap-[3px] h-28 overflow-hidden">
         {data.map((d, i) => (
-          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${d._id}: ${d.count} users`}>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${formatMonthKey(d._id)}: ${d.count} users`}>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -127,9 +142,12 @@ const UserGrowthChart = ({ data }) => {
           </div>
         ))}
       </div>
-      <div className="flex justify-between mt-2">
-        <span className="text-[9px] text-white/25 poppins-regular">{data[0]?._id?.slice(5)}</span>
-        <span className="text-[9px] text-white/25 poppins-regular">{data[data.length - 1]?._id?.slice(5)}</span>
+      <div className="flex justify-between mt-2 text-[9px] text-white/25 poppins-regular">
+        <span>{formatMonthKey(data[0]?._id)}</span>
+        <span>{formatMonthKey(data[Math.floor(data.length / 4)]?._id)}</span>
+        <span>{formatMonthKey(data[Math.floor(data.length / 2)]?._id)}</span>
+        <span>{formatMonthKey(data[Math.floor(3 * data.length / 4)]?._id)}</span>
+        <span>{formatMonthKey(data[data.length - 1]?._id)}</span>
       </div>
     </div>
   );
@@ -190,7 +208,7 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
       </div>
       <div className="flex items-end gap-[3px] h-28 overflow-hidden">
         {data.map((d, i) => (
-          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${d._id}: ${d.count} visits`}>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${filter === 'week' ? formatWeekKey(d._id) : filter === 'month' ? formatMonthKey(d._id) : d._id}: ${d.count} visits`}>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -202,13 +220,28 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
           </div>
         ))}
       </div>
-      <div className="flex justify-between mt-2">
-        <span className="text-[9px] text-white/25 poppins-regular">
-          {filter === 'week' ? data[0]?._id : data[0]?._id?.slice(5)}
-        </span>
-        <span className="text-[9px] text-white/25 poppins-regular">
-          {filter === 'week' ? data[data.length - 1]?._id : data[data.length - 1]?._id?.slice(5)}
-        </span>
+      <div className="flex justify-between mt-2 text-[9px] text-white/25 poppins-regular">
+        {filter === 'day' ? (
+          <>
+            <span>{data[0]?._id?.slice(5)}</span>
+            {data.length > 3 && <span>{data[Math.floor(data.length / 2)]?._id?.slice(5)}</span>}
+            <span>{data[data.length - 1]?._id?.slice(5)}</span>
+          </>
+        ) : filter === 'week' ? (
+          <>
+            {data.map((d, i) => (
+              <span key={i}>{formatWeekKey(d._id)}</span>
+            ))}
+          </>
+        ) : (
+          <>
+            <span>{formatMonthKey(data[0]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(data.length / 4)]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(data.length / 2)]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(3 * data.length / 4)]?._id)}</span>
+            <span>{formatMonthKey(data[data.length - 1]?._id)}</span>
+          </>
+        )}
       </div>
     </div>
   );
@@ -483,11 +516,16 @@ export default function AdminDashboard() {
               </div>
               <div className="lg:col-span-2 rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
                 <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4">📊 Conversion Analytics</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
                     <p className="text-xs text-white/40 uppercase tracking-wider font-semibold poppins-regular">Namaz Calculated</p>
                     <p className="text-3xl font-bold text-white poppins-regular mt-1">{stats.calculatedNamazCount}</p>
                     <p className="text-[10px] text-white/30 poppins-regular mt-1">Total calculations logged</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
+                    <p className="text-xs text-white/40 uppercase tracking-wider font-semibold poppins-regular">Namaz Managed</p>
+                    <p className="text-3xl font-bold text-white poppins-regular mt-1">{stats.namazManagedCount}</p>
+                    <p className="text-[10px] text-white/30 poppins-regular mt-1">Adjusted counts logged</p>
                   </div>
                   <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
                     <p className="text-xs text-white/40 uppercase tracking-wider font-semibold poppins-regular">Avg Visits / {visitFilter}</p>
@@ -586,6 +624,7 @@ export default function AdminDashboard() {
                         <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">IP Address</th>
                         <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">Platform / OS</th>
                         <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">Namaz Calc</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">Namaz Managed</th>
                         <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">PWA Install</th>
                         <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">
                           {visitorsType === 'unique' ? 'Last Seen' : 'Date & Time'}
@@ -624,6 +663,15 @@ export default function AdminDashboard() {
                               {v.calculatedNamaz ? (
                                 <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/10">
                                   🕌 Yes
+                                </span>
+                              ) : (
+                                <span className="text-white/20 text-xs">—</span>
+                              )}
+                            </td>
+                            <td className="px-5 py-3 text-center">
+                              {v.namazManaged ? (
+                                <span className="px-2 py-0.5 rounded text-[10px] bg-sky-500/20 text-sky-400 font-semibold border border-sky-500/10">
+                                  📊 Yes
                                 </span>
                               ) : (
                                 <span className="text-white/20 text-xs">—</span>

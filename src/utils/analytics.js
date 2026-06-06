@@ -81,3 +81,13 @@ export const trackPwaInstall = async () => {
     console.error('Analytics PWA install error:', err);
   }
 };
+
+// Track when a user manually manages/adjusts a namaz count
+export const trackNamazManagement = async () => {
+  const sessionToken = getSessionToken();
+  try {
+    await api.post('/analytics/manage', { sessionToken });
+  } catch (err) {
+    console.error('Analytics manage error:', err);
+  }
+};
