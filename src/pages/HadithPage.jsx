@@ -25,7 +25,7 @@ export default function HadithPage() {
   const [animate, setAnimate] = useState(true);
 
   usePageMeta(
-    'Daily Hadith — Namazly | Hadith of the Day',
+    'Daily Hadith — Hadith of the Day | Namazly',
     'Read beautiful, curated daily Hadiths on prayer, character, and Islamic teachings with Arabic and English translation.',
     '/hadith'
   );

@@ -19,7 +19,7 @@ export default function DisclaimerPage() {
   const navigate = useNavigate();
 
   usePageMeta(
-    'Legal Disclaimer — Namazly | Important Usage Warnings',
+    'Legal Disclaimer — Important Usage Warnings | Namazly',
     'Read the Namazly disclaimer regarding Islamic calculations, moonsighting adjustments, and prayer time estimations.',
     '/disclaimer'
   );

@@ -22,7 +22,7 @@ export default function ContactPage() {
   const [copiedText, setCopiedText] = useState(null); // 'upi' | 'email' | null
 
   usePageMeta(
-    'Contact Developer & Support — Namazly | Qaza Namaz App',
+    'Contact Developer & Support — Qaza Namaz App | Namazly',
     'Reach out to Maaz Shakeel, the developer of Namazly. Feel free to contact for support, queries, feedback, or support via UPI donation.',
     '/contact'
   );

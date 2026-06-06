@@ -61,7 +61,7 @@ export default function CalendarPage() {
   });
 
   usePageMeta(
-    'Islamic Calendar — Namazly | Clean Hijri-Gregorian Dual View',
+    'Islamic Calendar — Clean Hijri-Gregorian Dual View | Namazly',
     'Interactive Hijri & Gregorian dual calendar with moonsighting adjustment controls and upcoming Islamic holidays.',
     '/calendar'
   );

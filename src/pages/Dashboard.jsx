@@ -163,8 +163,8 @@ export default function Dashboard() {
   /* Update page title per auth state */
   useEffect(() => {
     document.title = user
-      ? `${user.name?.split(' ')[0]}'s Qaza Tracker — Namazly`
-      : 'Dashboard — Namazly | Qaza Namaz Tracker';
+      ? `${user.name?.split(' ')[0]}'s Qaza Calculator — Namazly`
+      : 'Qaza Namaz Calculator and Manager | Namazly';
   }, [user]);
 
   /* Fetch latest records on mount, or reset instantly on logout */
@@ -264,6 +264,11 @@ export default function Dashboard() {
     PRAYERS.forEach((p) => {
       updated[p.key] = days * p.rakats; // SET, not add
     });
+
+    // Track namaz calculation in analytics dynamically
+    import('../utils/analytics')
+      .then(({ trackNamazCalculation }) => trackNamazCalculation())
+      .catch(err => console.error('Failed to load analytics dynamically on calculate:', err));
 
     if (!user) {
       setQazaRecord(updated);

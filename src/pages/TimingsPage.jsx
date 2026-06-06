@@ -89,7 +89,7 @@ export default function TimingsPage() {
   const lastFetchedRef = useRef({ city: '', country: '', method: '', school: '', lat: null, lon: null });
 
   usePageMeta(
-    'Daily Namaz Timings — Namazly | Real-time Prayer Schedule',
+    'Daily Namaz Timings — Real-time Prayer Schedule | Namazly',
     'Get precise, location-based daily prayer times, dynamic remaining countdowns, and automatic geolocation updates.',
     '/timings'
   );

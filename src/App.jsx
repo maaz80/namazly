@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
@@ -53,9 +53,25 @@ const PageLoader = () => (
 );
 
 // ── Routes ────────────────────────────────────────────────
-const AppRoutes = () => (
-  <Suspense fallback={<PageLoader />}>
-    <Routes>
+const AppRoutes = () => {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // Wait 2.5 seconds (after load and interaction CPU is idle) before fetching analytics
+    const timer = setTimeout(() => {
+      import('./utils/analytics')
+        .then((m) => {
+          m.trackVisit(user?.email);
+        })
+        .catch((err) => console.error('Failed to load analytics dynamically:', err));
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [user]);
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
       {/* <Route
         path="/"
         element={
@@ -136,6 +152,7 @@ const AppRoutes = () => (
     </Routes>
   </Suspense>
 );
+}
 
 // ── App root ──────────────────────────────────────────────
 export default function App() {

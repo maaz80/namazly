@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { HiOutlineArrowLeft, HiStar, HiOutlineChatAlt2, HiCheckCircle } from 'react-icons/hi';
 import { getOptimizedAvatar } from '../utils/avatar';
-import { TfiThought } from "react-icons/tfi";
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 
@@ -145,8 +144,11 @@ export default function ReviewsPage() {
         {/* Header Block */}
         <section className="text-center space-y-2 animate-fade-in">
           {/* <span className="text-4xl">⭐</span> */}
-          <h1 className="poppins-regular text-3xl md:text-4xl font-bold text-sage-900 leading-tight">
+          {/* <h1 className="poppins-regular text-3xl md:text-4xl font-bold text-sage-900 leading-tight">
             Share Your Experience
+          </h1> */}
+          <h1 className="poppins-regular text-4xl font-bold mt-2">
+            Share Your <span className="gradient-text">Experience</span>
           </h1>
           <p className="poppins-regular text-sage-500 text-sm max-w-md mx-auto">
             Your feedback helps us make Namazly better for Muslims around the world. Rate us and share your suggestions!
@@ -332,7 +334,7 @@ export default function ReviewsPage() {
         {/* Reviews List Section (Bottom section) */}
         <section className="space-y-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <h2 className="poppins-regular text-lg font-bold text-sage-900 border-b border-sage-100/50 pb-2 flex items-center gap-2">
-            <TfiThought /> Recent Reviews
+             Recent Reviews
           </h2>
 
           {loading ? (

@@ -30,7 +30,7 @@ export default function GuidePage() {
   const navigate = useNavigate();
 
   usePageMeta(
-    'User Usage Guide — Namazly | How to Track Qaza Namaz',
+    'User Usage Guide — How to Track Qaza Namaz | Namazly',
     'A complete user guide and instruction manual explaining how to estimate qaza namaz, navigate the Islamic calendar, and track daily timings.',
     '/guide'
   );

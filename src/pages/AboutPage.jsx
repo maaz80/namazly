@@ -20,7 +20,7 @@ export default function AboutPage() {
   const navigate = useNavigate();
 
   usePageMeta(
-    'About Namazly — Qaza Salah Tracker & Privacy First App',
+    'About Qaza Namaz Calculator and Manager | Namazly',
     'Learn about Namazly, a beautiful, privacy-first Qaza namaz tracking application designed to help Muslims easily fulfill their missed salah.',
     '/about'
   );

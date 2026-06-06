@@ -86,7 +86,7 @@ export default function FaqPage() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   usePageMeta(
-    'Frequently Asked Questions — Namazly Qaza Namaz Tracker',
+    'Frequently Asked Questions — Namazly Qaza Namaz Calculator',
     'Get answers to commonly asked questions about Qaza Namaz calculation, Islamic rulings on missed namaz, data sync, and using the Namazly app.',
     '/faq'
   );

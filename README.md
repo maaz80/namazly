@@ -2,7 +2,7 @@
 
 ## 🌐 Live Web Application: [https://namazly.in](https://namazly.in)
 
-**Namazly** is a beautiful, privacy-first, and distraction-free **Qaza Namaz Tracker & Calculator** designed to help Muslims easily calculate, record, and steadily fulfill their missed prayers (salah). 
+**Namazly** is a beautiful, privacy-first, and distraction-free **Qaza Namaz Calculator and Manager** designed to help Muslims easily calculate, record, and steadily fulfill their missed prayers (salah). 
 
 Visit the live app: 🚀 **[namazly.in](https://namazly.in)**
 

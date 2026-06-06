@@ -50,9 +50,10 @@ export default function InstallPwaModal() {
     // Listen for successful installation to instantly dismiss the modal
     const handleAppInstalled = () => {
       console.log('🎉 Namazly PWA installed successfully!');
-      // Track PWA install count for admin analytics
-      const currentCount = parseInt(localStorage.getItem('namazly_pwa_install_count') || '0', 10);
-      localStorage.setItem('namazly_pwa_install_count', (currentCount + 1).toString());
+      // Track PWA install count dynamically
+      import('../utils/analytics')
+        .then(({ trackPwaInstall }) => trackPwaInstall())
+        .catch(err => console.error('Failed to load analytics dynamically on install:', err));
       setShowModal(false);
       setDeferredPrompt(null);
     };

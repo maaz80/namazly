@@ -19,7 +19,7 @@ export default function PrivacyPage() {
   const navigate = useNavigate();
 
   usePageMeta(
-    'Privacy Policy — Namazly | Privacy First Qaza Tracker',
+    'Privacy Policy — Privacy First Qaza Tracker | Namazly',
     'Namazly is a privacy-first app. Read our Privacy Policy to see how we protect your personal salah details and sync them securely.',
     '/privacy-policy'
   );

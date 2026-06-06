@@ -72,17 +72,17 @@ const MiniBarChart = ({ data, labels, color = '#34d399', title }) => {
       <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4">{title}</h3>
       <div className="flex items-end gap-2 h-32">
         {data.map((val, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <span className="text-[10px] text-white/40 poppins-regular">{val}</span>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end gap-1">
+            <span className="text-[10px] text-white/40 poppins-regular text-center">{val}</span>
             <div
               className="w-full rounded-t-md transition-all duration-500"
               style={{
-                height: `${Math.max((val / max) * 100, 4)}%`,
+                height: `${Math.max((val / max) * 75, 4)}%`,
                 background: `linear-gradient(to top, ${color}66, ${color})`,
                 minHeight: '4px',
               }}
             />
-            <span className="text-[10px] text-white/30 poppins-regular">{labels[i]}</span>
+            <span className="text-[10px] text-white/30 poppins-regular text-center">{labels[i]}</span>
           </div>
         ))}
       </div>
@@ -115,7 +115,7 @@ const UserGrowthChart = ({ data }) => {
       </h3>
       <div className="flex items-end gap-[3px] h-28 overflow-hidden">
         {data.map((d, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center justify-end min-w-0" title={`${d._id}: ${d.count} users`}>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${d._id}: ${d.count} users`}>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -133,6 +133,96 @@ const UserGrowthChart = ({ data }) => {
       </div>
     </div>
   );
+};
+
+/* ─── Visitor Traffic Chart (CSS-based) ────────────────── */
+const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-white/70 poppins-regular flex items-center gap-2">
+            <HiOutlineGlobe className="w-4 h-4 text-emerald-400" />
+            Website Traffic
+          </h3>
+          <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
+            {['day', 'week', 'month'].map(f => (
+              <button
+                key={f}
+                onClick={() => onFilterChange(f)}
+                className={`px-2 py-1 rounded cursor-pointer border-0 capitalize transition-all ${
+                  filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs text-white/30 poppins-regular text-center py-8">No visitor data available yet</p>
+      </div>
+    );
+  }
+
+  const counts = data.map(d => d.count);
+  const max = Math.max(...counts, 1);
+
+  return (
+    <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-white/70 poppins-regular flex items-center gap-2">
+          <HiOutlineGlobe className="w-4 h-4 text-emerald-400" />
+          Website Traffic
+        </h3>
+        <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
+          {['day', 'week', 'month'].map(f => (
+            <button
+              key={f}
+              onClick={() => onFilterChange(f)}
+              className={`px-2.5 py-1 rounded cursor-pointer border-0 capitalize transition-all ${
+                filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-end gap-[3px] h-28 overflow-hidden">
+        {data.map((d, i) => (
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${d._id}: ${d.count} visits`}>
+            <div
+              className="w-full rounded-t-sm transition-all duration-500"
+              style={{
+                height: `${Math.max((d.count / max) * 100, 4)}%`,
+                background: 'linear-gradient(to top, rgba(52,211,153,0.3), rgba(52,211,153,0.8))',
+                minHeight: '3px',
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between mt-2">
+        <span className="text-[9px] text-white/25 poppins-regular">
+          {filter === 'week' ? data[0]?._id : data[0]?._id?.slice(5)}
+        </span>
+        <span className="text-[9px] text-white/25 poppins-regular">
+          {filter === 'week' ? data[data.length - 1]?._id : data[data.length - 1]?._id?.slice(5)}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Helpers ───────────────────────────────────────────── */
+const parseUserAgent = (ua) => {
+  if (!ua) return 'Unknown';
+  if (ua.includes('Android')) return 'Android';
+  if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
+  if (ua.includes('Windows')) return 'Windows';
+  if (ua.includes('Macintosh')) return 'Mac';
+  if (ua.includes('Linux')) return 'Linux';
+  return 'Mobile';
 };
 
 /* ─── Tab Button ───────────────────────────────────────── */
@@ -164,11 +254,15 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(null);
-  const [pwaInstalls, setPwaInstalls] = useState(() => {
-    // PWA install count is a client-side metric, so we read from localStorage
-    // In production, this would be tracked via analytics
-    return parseInt(localStorage.getItem('namazly_pwa_install_count') || '0', 10);
-  });
+  const [visitFilter, setVisitFilter] = useState('day');
+
+  // NEW visitors list pagination & toggle states
+  const [visitors, setVisitors] = useState([]);
+  const [visitorsType, setVisitorsType] = useState('all'); // 'all' or 'unique'
+  const [visitorsPage, setVisitorsPage] = useState(1);
+  const [visitorsTotalPages, setVisitorsTotalPages] = useState(1);
+  const [visitorsTotal, setVisitorsTotal] = useState(0);
+  const [visitorsLoading, setVisitorsLoading] = useState(false);
 
   // Check admin auth on mount
   useEffect(() => {
@@ -178,9 +272,9 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
-  const loadStats = useCallback(async () => {
+  const loadStats = useCallback(async (filter = 'day') => {
     try {
-      const data = await adminFetch('/admin/stats');
+      const data = await adminFetch(`/admin/stats?visitFilter=${filter}`);
       if (data.success) setStats(data.stats);
     } catch (err) {
       if (err.message === 'UNAUTHORIZED') navigate('/1adminMs1', { replace: true });
@@ -210,19 +304,53 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
+  // NEW load visitors function
+  const loadVisitors = useCallback(async (page = 1, type = 'all') => {
+    setVisitorsLoading(true);
+    try {
+      const data = await adminFetch(`/admin/visitors?page=${page}&limit=15&type=${type}`);
+      if (data.success) {
+        setVisitors(data.visitors);
+        setVisitorsTotal(data.total);
+        setVisitorsPage(data.page);
+        setVisitorsTotalPages(data.totalPages);
+      }
+    } catch (err) {
+      if (err.message === 'UNAUTHORIZED') navigate('/1adminMs1', { replace: true });
+    } finally {
+      setVisitorsLoading(false);
+    }
+  }, [navigate]);
+
+  // Load stats when filter changes
+  useEffect(() => {
+    loadStats(visitFilter);
+  }, [visitFilter, loadStats]);
+
+  // Load visitors when page or type changes
+  useEffect(() => {
+    if (activeTab === 'visitors') {
+      loadVisitors(visitorsPage, visitorsType);
+    }
+  }, [activeTab, visitorsPage, visitorsType, loadVisitors]);
+
   // Initial load
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      await Promise.all([loadStats(), loadUsers(), loadReviews()]);
+      await Promise.all([loadStats(visitFilter), loadUsers(), loadReviews()]);
       setLoading(false);
     };
     init();
-  }, [loadStats, loadUsers, loadReviews]);
+  }, [loadUsers, loadReviews]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([loadStats(), loadUsers(usersPage, userSearch), loadReviews()]);
+    if (activeTab === 'visitors') {
+      await Promise.all([loadStats(visitFilter), loadVisitors(visitorsPage, visitorsType)]);
+    } else {
+      await Promise.all([loadStats(visitFilter), loadUsers(usersPage, userSearch), loadReviews()]);
+    }
     setRefreshing(false);
   };
 
@@ -318,6 +446,7 @@ export default function AdminDashboard() {
         {/* ─── Tab Navigation ──────────────────────────────── */}
         <div className="flex flex-wrap gap-2 mb-6">
           <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={HiOutlineChartBar} label="Overview" />
+          <TabButton active={activeTab === 'visitors'} onClick={() => setActiveTab('visitors')} icon={HiOutlineGlobe} label="Visitors" />
           <TabButton active={activeTab === 'users'} onClick={() => { setActiveTab('users'); loadUsers(1, userSearch); }} icon={HiOutlineUsers} label="Users" />
           <TabButton active={activeTab === 'reviews'} onClick={() => { setActiveTab('reviews'); loadReviews(); }} icon={HiOutlineStar} label="Reviews" />
         </div>
@@ -328,22 +457,45 @@ export default function AdminDashboard() {
         {activeTab === 'overview' && stats && (
           <div className="space-y-6 animate-fade-in">
             {/* Stat Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
               <StatCard icon={HiOutlineUsers} label="Total Users" value={stats.totalUsers} sub="All registered accounts" color="emerald" delay={0} />
               <StatCard icon={HiOutlineCalendar} label="Today's Signups" value={stats.todayUsers} sub="New accounts today" color="blue" delay={50} />
               <StatCard icon={HiOutlineStar} label="Total Reviews" value={stats.totalReviews} sub={`Avg: ${stats.avgRating} ⭐`} color="amber" delay={100} />
-              <StatCard icon={HiOutlineDeviceMobile} label="PWA Installs" value={pwaInstalls} sub="App installations" color="violet" delay={150} />
+              <StatCard icon={HiOutlineGlobe} label="Total Visits" value={stats.totalVisits} sub={`Unique: ${stats.uniqueVisitors}`} color="rose" delay={150} />
+              <StatCard icon={HiOutlineDeviceMobile} label="PWA Installs" value={stats.pwaInstalls} sub="App installations" color="violet" delay={200} />
             </div>
 
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <VisitorGrowthChart data={stats.visitorGrowth} filter={visitFilter} onFilterChange={setVisitFilter} />
               <UserGrowthChart data={stats.userGrowth} />
-              <MiniBarChart
-                data={stats.ratingDistribution}
-                labels={['1★', '2★', '3★', '4★', '5★']}
-                color="#fbbf24"
-                title="⭐ Rating Distribution"
-              />
+            </div>
+
+            {/* Lower Analytics Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-1">
+                <MiniBarChart
+                  data={stats.ratingDistribution}
+                  labels={['1★', '2★', '3★', '4★', '5★']}
+                  color="#fbbf24"
+                  title="⭐ Rating Distribution"
+                />
+              </div>
+              <div className="lg:col-span-2 rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
+                <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4">📊 Conversion Analytics</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
+                    <p className="text-xs text-white/40 uppercase tracking-wider font-semibold poppins-regular">Namaz Calculated</p>
+                    <p className="text-3xl font-bold text-white poppins-regular mt-1">{stats.calculatedNamazCount}</p>
+                    <p className="text-[10px] text-white/30 poppins-regular mt-1">Total calculations logged</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-center">
+                    <p className="text-xs text-white/40 uppercase tracking-wider font-semibold poppins-regular">Avg Visits / {visitFilter}</p>
+                    <p className="text-3xl font-bold text-white poppins-regular mt-1">{stats.avgVisits}</p>
+                    <p className="text-[10px] text-white/30 poppins-regular mt-1">In selected timeframe</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Recent Users */}
@@ -384,6 +536,147 @@ export default function AdminDashboard() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════ */}
+        {/* VISITORS TAB                                        */}
+        {/* ════════════════════════════════════════════════════ */}
+        {activeTab === 'visitors' && stats && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Toggles & Summary info */}
+            <div className="flex justify-between items-center flex-wrap gap-3">
+              <div className="flex bg-white/5 rounded-xl p-0.5 border border-white/10 text-xs">
+                <button
+                  onClick={() => { setVisitorsType('all'); setVisitorsPage(1); }}
+                  className={`px-4 py-2 rounded-lg cursor-pointer border-0 font-semibold transition-all ${
+                    visitorsType === 'all' ? 'bg-emerald-500/20 text-emerald-400' : 'text-white/40 hover:text-white/60 bg-transparent'
+                  }`}
+                >
+                  All Sessions ({stats.totalVisits})
+                </button>
+                <button
+                  onClick={() => { setVisitorsType('unique'); setVisitorsPage(1); }}
+                  className={`px-4 py-2 rounded-lg cursor-pointer border-0 font-semibold transition-all ${
+                    visitorsType === 'unique' ? 'bg-emerald-500/20 text-emerald-400' : 'text-white/40 hover:text-white/60 bg-transparent'
+                  }`}
+                >
+                  Unique Visitors ({stats.uniqueVisitors})
+                </button>
+              </div>
+              
+              <p className="text-xs text-white/30 poppins-regular">
+                Showing {visitors.length} of {visitorsTotal} visitors · Page {visitorsPage} of {visitorsTotalPages}
+              </p>
+            </div>
+
+            {visitorsLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="w-8 h-8 rounded-full animate-spin border-2 border-emerald-400/30 border-t-emerald-400" />
+              </div>
+            ) : (
+              <>
+                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">
+                          {visitorsType === 'unique' ? 'Visitor (Email / IP)' : 'Session (Email / IP)'}
+                        </th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">IP Address</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">Platform / OS</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">Namaz Calc</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">PWA Install</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">
+                          {visitorsType === 'unique' ? 'Last Seen' : 'Date & Time'}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {visitors.map((v, i) => {
+                        const identifier = v.email || v.ip;
+                        const isEmail = !!v.email;
+                        return (
+                          <tr key={v._id || i} className="hover:bg-white/5 transition-colors">
+                            <td className="px-5 py-3">
+                              <div className="flex items-center gap-2">
+                                {isEmail ? (
+                                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] text-emerald-400 font-bold uppercase">
+                                    {v.email.charAt(0)}
+                                  </div>
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-white/40 font-bold">
+                                    G
+                                  </div>
+                                )}
+                                <span className={`text-sm font-semibold poppins-regular truncate max-w-[200px] ${isEmail ? 'text-white/80' : 'text-white/50 font-mono text-xs'}`}>
+                                  {identifier}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-5 py-3 text-xs text-white/30 font-mono">{v.ip}</td>
+                            <td className="px-5 py-3 text-xs text-white/40 poppins-regular">
+                              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5">
+                                {parseUserAgent(v.userAgent)}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 text-center">
+                              {v.calculatedNamaz ? (
+                                <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/10">
+                                  🕌 Yes
+                                </span>
+                              ) : (
+                                <span className="text-white/20 text-xs">—</span>
+                              )}
+                            </td>
+                            <td className="px-5 py-3 text-center">
+                              {v.isPwaInstall ? (
+                                <span className="px-2 py-0.5 rounded text-[10px] bg-violet-500/20 text-violet-400 font-semibold border border-violet-500/10">
+                                  📱 Yes
+                                </span>
+                              ) : (
+                                <span className="text-white/20 text-xs">—</span>
+                              )}
+                            </td>
+                            <td className="px-5 py-3 text-xs text-white/30 poppins-regular">
+                              {formatDate(v.createdAt)} · {formatTime(v.createdAt)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {visitors.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="px-5 py-10 text-center text-xs text-white/20 poppins-regular">No visitor sessions recorded yet</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                {visitorsTotalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <button
+                      onClick={() => setVisitorsPage(prev => Math.max(prev - 1, 1))}
+                      disabled={visitorsPage <= 1}
+                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed border-0 cursor-pointer transition-all"
+                    >
+                      <HiOutlineChevronLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-xs text-white/40 poppins-regular px-2">
+                      {visitorsPage} / {visitorsTotalPages}
+                    </span>
+                    <button
+                      onClick={() => setVisitorsPage(prev => Math.min(prev + 1, visitorsTotalPages))}
+                      disabled={visitorsPage >= visitorsTotalPages}
+                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed border-0 cursor-pointer transition-all"
+                    >
+                      <HiOutlineChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
 
