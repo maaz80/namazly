@@ -76,4 +76,20 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://namazly.in/privacy-policy</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Disclaimer -->
+  <url>
+    <loc>https://namazly.in/disclaimer</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
 </urlset>

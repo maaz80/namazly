@@ -38,8 +38,11 @@ export default function usePageMeta(title, description, path = '') {
 
     // 5. Update Canonical Link
     let canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) {
-      canonical.setAttribute('href', `https://namazly.in${path}`);
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
     }
+    canonical.setAttribute('href', `https://namazly.in${path}`);
   }, [title, description, path]);
 }

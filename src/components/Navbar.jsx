@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen, HiOutlineStar, HiOutlineChatAlt2, HiOutlineQuestionMarkCircle } from 'react-icons/hi';
 import { TbListDetails } from "react-icons/tb";
 import { MdOutlineContacts } from "react-icons/md";
+import { getOptimizedAvatar } from '../utils/avatar';
 
 const MoonStar = () => (
   <svg
@@ -113,7 +114,7 @@ export default function Navbar({ onAuthClick }) {
                            hover:bg-white/60 transition-all duration-200 cursor-pointer"
               >
                 <img
-                  src={user.avatar || '/icon-192.png'}
+                  src={getOptimizedAvatar(user.avatar, 64)}
                   onError={(e) => {
                     e.currentTarget.src = '/icon-192.png';
                   }}

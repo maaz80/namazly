@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { HiOutlineArrowLeft, HiStar, HiOutlineChatAlt2, HiCheckCircle } from 'react-icons/hi';
+import { getOptimizedAvatar } from '../utils/avatar';
 import { TfiThought } from "react-icons/tfi";
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -124,7 +126,7 @@ export default function ReviewsPage() {
       <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
           >
             <HiOutlineArrowLeft className="w-4 h-4" strokeWidth={2.5} />
@@ -263,7 +265,7 @@ export default function ReviewsPage() {
               {user && (
                 <div className="flex items-center gap-3 bg-sage-50/40 border border-sage-100 rounded-xl p-3">
                   <img
-                    src={user.avatar || '/icon-192.png'}
+                    src={getOptimizedAvatar(user.avatar, 64)}
                     onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                     alt={user.name}
                     className="w-8 h-8 rounded-full border border-white"
@@ -385,7 +387,7 @@ export default function ReviewsPage() {
                     <div className="flex items-center gap-2.5 border-t border-sage-100/30 pt-3">
                       {avatar ? (
                         <img 
-                          src={avatar} 
+                          src={getOptimizedAvatar(avatar, 64)} 
                           onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                           alt={name}
                           className="w-7 h-7 rounded-full border border-white object-cover shadow-sm bg-sage-50"
@@ -410,10 +412,7 @@ export default function ReviewsPage() {
 
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center py-6 text-xs text-sage-400 poppins-regular mt-4">
-        <p>Namazly &copy; {new Date().getFullYear()}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

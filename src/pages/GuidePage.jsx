@@ -12,6 +12,7 @@ import {
   HiOutlineChatAlt2
 } from 'react-icons/hi';
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -29,8 +30,8 @@ export default function GuidePage() {
   const navigate = useNavigate();
 
   usePageMeta(
-    'User Usage Guide — Namazly | How to Track Qaza Prayers',
-    'A complete user guide and instruction manual explaining how to estimate qaza prayers, navigate the Islamic calendar, and track daily timings.',
+    'User Usage Guide — Namazly | How to Track Qaza Namaz',
+    'A complete user guide and instruction manual explaining how to estimate qaza namaz, navigate the Islamic calendar, and track daily timings.',
     '/guide'
   );
 
@@ -43,7 +44,7 @@ export default function GuidePage() {
       <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
           >
             <HiOutlineArrowLeft className="w-4 h-4 text-sage-600" />
@@ -88,7 +89,7 @@ export default function GuidePage() {
                   Guest Mode (Offline-first)
                 </h3>
                 <p>
-                  You can use Namazly instantly without registering. Any calculated and recorded prayers are stored securely directly inside your browser's local storage.
+                  You can use Namazly instantly without registering. Any calculated and recorded namaz are stored securely directly inside your browser's local storage.
                 </p>
                 <p className="text-[11px] text-sage-400">
                   ⚠️ Clearing your browser cache or cookies may wipe guest tracker history.
@@ -117,12 +118,12 @@ export default function GuidePage() {
             </h2>
             <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
               <div className="space-y-2">
-                <h3 className="font-bold text-sage-800">📊 Calculating Missed Prayers</h3>
+                <h3 className="font-bold text-sage-800">📊 Calculating Missed Namaz</h3>
                 <p>
-                  Unsure how many prayers you have missed? Open the <strong>Qaza Calculator</strong> on your dashboard. Enter your age of puberty, current age, and the years you spent praying regularly. 
+                  Unsure how many namaz you have missed? Open the <strong>Qaza Calculator</strong> on your dashboard. Enter your age of puberty, current age, and the years you spent praying regularly. 
                 </p>
                 <p>
-                  Tapping Apply Calculation automatically generates your total missed prayer counts, converting years/days into specific Rakat totals for each of the daily prayers (Fajr, Zohar, Asr, Maghrib, Isha Farz, and Isha Witr).
+                  Tapping Apply Calculation automatically generates your total missed namaz counts, converting years/days into specific Rakat totals for each of the daily prayers (Fajr, Zohar, Asr, Maghrib, Isha Farz, and Isha Witr).
                 </p>
               </div>
               <div className="space-y-2 border-t border-sage-100/40 pt-3">
@@ -131,7 +132,7 @@ export default function GuidePage() {
                   For sisters, select <strong>Female</strong> gender inside the calculator. This displays a slider to input your average period duration (e.g. 7 days).
                 </p>
                 <p>
-                  The calculator automatically computes and deducts your average monthly period days from your total missed Qaza days (since women are exempt from prayer obligations and making them up during menstruation under Shariah). It provides a full breakdown (Gross days vs. Period exemption days) before replacing counts.
+                  The calculator automatically computes and deducts your average monthly period days from your total missed Qaza days (since women are exempt from namaz obligations and making them up during menstruation under Shariah). It provides a full breakdown (Gross days vs. Period exemption days) before replacing counts.
                 </p>
               </div>
               <div className="space-y-2 border-t border-sage-100/40 pt-3">
@@ -278,7 +279,7 @@ export default function GuidePage() {
               </p>
               <ul className="list-disc pl-5 space-y-1.5">
                 <li>**No Ads or Distractions**: Namazly is entirely free, contains zero ads, and does not sell features or track your browsing habits.</li>
-                <li>**Secure Google Auth**: Google Sign-in is handled securely. We only store your email, name, avatar link, and qaza prayer counts.</li>
+                <li>**Secure Google Auth**: Google Sign-in is handled securely. We only store your email, name, avatar link, and qaza namaz counts.</li>
                 <li>**Zero Metadata Selling**: We never sell, rent, or share personal profiles or location data with third parties.</li>
               </ul>
             </div>
@@ -286,13 +287,8 @@ export default function GuidePage() {
 
         </div>
 
-        {/* Bottom helper */}
-        <section className="text-center poppins-regular text-sage-500 text-xs py-4 space-y-1.5 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <p>Need support or have suggestions? Reach out via our GitHub repository.</p>
-          <p className="text-sage-400 text-[10px]">Built with sincerity &bull; Namazly &copy; {new Date().getFullYear()}</p>
-        </section>
-
       </main>
+      <Footer />
     </div>
   );
 }

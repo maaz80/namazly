@@ -41,7 +41,7 @@ export default function PrayerTracker({ qazaRecord, onUpdate, isGuest, onSaveAtt
             <span className="text-white text-lg">🕌</span>
           </div>
           <div>
-            <h2 className="poppins-regular text-xl font-bold text-sage-900">Prayer Tracker</h2>
+            <h2 className="poppins-regular text-xl font-bold text-sage-900">Namaz Tracker</h2>
             <p className="poppins-regular text-xs text-sage-500">Tap ± to update pending rakats</p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function PrayerTracker({ qazaRecord, onUpdate, isGuest, onSaveAtt
       {/* Column labels */}
       <div className="hidden md:flex items-center gap-3 md:gap-4 px-5 mb-3">
         <div className="flex-[2] poppins-regular text-[10px] uppercase tracking-widest text-sage-400 font-semibold">
-          Prayer
+          Namaz
         </div>
         <div className="flex-[1.5] text-center poppins-regular text-[10px] uppercase tracking-widest text-sage-400 font-semibold">
           Pending Rakats

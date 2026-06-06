@@ -15,6 +15,8 @@ const GuidePage    = lazy(() => import('./pages/GuidePage'));
 const AboutPage    = lazy(() => import('./pages/AboutPage'));
 const ContactPage  = lazy(() => import('./pages/ContactPage'));
 const FaqPage      = lazy(() => import('./pages/FaqPage'));
+const PrivacyPage   = lazy(() => import('./pages/PrivacyPage'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const AdminLogin   = lazy(() => import('./pages/AdminLogin'));
 const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
 
@@ -28,7 +30,7 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
-  return !user ? children : <Navigate to="/dashboard" replace />;
+  return !user ? children : <Navigate to="/" replace />;
 };
 
 // ── Page-level Suspense fallback ──────────────────────────
@@ -54,16 +56,16 @@ const PageLoader = () => (
 const AppRoutes = () => (
   <Suspense fallback={<PageLoader />}>
     <Routes>
-      <Route
+      {/* <Route
         path="/"
         element={
           <PublicRoute>
             <LandingPage />
           </PublicRoute>
         }
-      />
+      /> */}
       <Route
-        path="/dashboard"
+        path="/"
         element={
           <Dashboard />
         }
@@ -114,6 +116,18 @@ const AppRoutes = () => (
         path="/faq"
         element={
           <FaqPage />
+        }
+      />
+      <Route
+        path="/privacy-policy"
+        element={
+          <PrivacyPage />
+        }
+      />
+      <Route
+        path="/disclaimer"
+        element={
+          <DisclaimerPage />
         }
       />
       <Route path="/1adminMs1" element={<AdminLogin />} />

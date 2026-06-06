@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* ── Decorative background orbs ─────────────────────────── */
 const Background = () => (
@@ -175,7 +176,7 @@ export default function CalendarPage() {
       <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -399,10 +400,7 @@ export default function CalendarPage() {
 
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="relative z-10 text-center py-6 text-xs text-sage-400 poppins-regular">
-        <p>Namazly &copy; {new Date().getFullYear()}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

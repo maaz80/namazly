@@ -118,8 +118,8 @@ export default function LandingPage() {
   const navigate   = useNavigate();
 
   usePageMeta(
-    'Namazly — Qaza Prayer Tracker & Calculator',
-    'Calculate, track, and reduce your missed Qaza prayers with Namazly. Beautiful, cloud-synced, and free.',
+    'Namazly — Qaza Namaz Calculator and Manager',
+    'Calculate, track, and reduce your missed Qaza namaz with Namazly. Beautiful, cloud-synced, and free.',
     '/'
   );
 
@@ -129,7 +129,7 @@ export default function LandingPage() {
       setError('');
       try {
         await login(null, tokenResponse.access_token);
-        navigate('/dashboard');
+        navigate('/');
       } catch (err) {
         setError('Sign-in failed. Please try again.');
       } finally {
@@ -210,7 +210,7 @@ export default function LandingPage() {
           </p>
 
           <p className="poppins-regular text-sage-600 text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-md mx-auto">
-            Calculate, track, and reduce your Qaza prayers with a beautiful,
+            Calculate, track, and reduce your Qaza namaz with a beautiful,
             distraction-free experience.
           </p>
 
@@ -241,7 +241,7 @@ export default function LandingPage() {
             </div>
 
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/')}
               aria-label="Continue without signing in — use as guest"
               className="w-[280px] mx-auto flex items-center justify-center gap-2 py-3 rounded-xl
                          poppins-regular text-sm font-semibold text-sage-700 bg-white/60 border border-white/80

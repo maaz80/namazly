@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineCash, HiOutlineClipboardCopy, HiOutlineCheck } from 'react-icons/hi';
+import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineCash, HiOutlineClipboardCopy, HiOutlineCheck, HiOutlineArrowLeft } from 'react-icons/hi';
 import { MdContactMail } from 'react-icons/md';
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -22,7 +22,7 @@ export default function ContactPage() {
   const [copiedText, setCopiedText] = useState(null); // 'upi' | 'email' | null
 
   usePageMeta(
-    'Contact Developer & Support — Namazly | Qaza Prayer App',
+    'Contact Developer & Support — Namazly | Qaza Namaz App',
     'Reach out to Maaz Shakeel, the developer of Namazly. Feel free to contact for support, queries, feedback, or support via UPI donation.',
     '/contact'
   );
@@ -38,13 +38,28 @@ export default function ContactPage() {
       style={{ background: 'linear-gradient(135deg, #e8f5ee 0%, #f5f0e8 60%, #eef2ee 100%)' }}>
       <Background />
 
-      <Navbar onAuthClick={() => navigate('/')} />
+      {/* Navigation Header */}
+      <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
+        <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
+          >
+            <HiOutlineArrowLeft className="w-4 h-4 text-sage-600" />
+            <span className="hidden sm:inline">Dashboard</span>
+          </button>
+          
+          <span className="poppins-regular text-lg font-bold gradient-text">Contact &amp; Support</span>
+          
+          <div className="w-10" /> {/* Spacer */}
+        </div>
+      </nav>
 
       <main className="relative z-10 max-w-4xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in w-full">
         
         {/* Title */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
-          <MdContactMail className="text-4xl text-sage-500" />
+          {/* <MdContactMail className="text-4xl text-sage-500" /> */}
           <h1 className="poppins-regular text-4xl font-bold mt-2">
             Contact &amp; <span className="gradient-text">Support</span>
           </h1>
@@ -172,6 +187,7 @@ export default function ContactPage() {
         </div>
 
       </main>
+      <Footer />
     </div>
   );
 }

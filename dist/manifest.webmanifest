@@ -1,7 +1,7 @@
 {
   "name": "Namazly",
   "short_name": "Namazly",
-  "description": "Track and calculate your missed Qaza prayers. Beautiful, cloud-synced, and free.",
+  "description": "Calculate and manage your missed namaz. Beautiful, cloud-synced, and free.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#e8f5ee",

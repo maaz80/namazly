@@ -6,11 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- ── Primary Meta ─────────────────────────────────── -->
-  <title>Namazly — Qaza Prayer Tracker & Calculator</title>
+  <title>Namazly — Qaza Namaz Calculator and Manager</title>
   <meta name="description"
-    content="Track, calculate, and reduce your missed Qaza prayers with Namazly. A beautiful, distraction-free Islamic prayer tracker with cloud sync." />
+    content="Track, calculate, and reduce your missed Qaza namaz with Namazly. A beautiful, distraction-free Islamic namaz manager with cloud sync." />
   <meta name="keywords"
-    content="qaza namaz, qaza prayer tracker, missed prayers, islamic prayer calculator, namaz tracker, qaza salah, prayer app" />
+    content="qaza namaz, qaza namaz manager, missed namaz, islamic namaz calculator, namaz manager, qaza salah, prayer app" />
   <meta name="author" content="Namazly" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <link rel="canonical" href="https://namazly.in/" />
@@ -20,24 +20,24 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://namazly.in/" />
   <meta property="og:site_name" content="Namazly" />
-  <meta property="og:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
+  <meta property="og:title" content="Namazly — Qaza Namaz Calculator and Manager" />
   <meta property="og:description"
-    content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
+    content="Calculate and track your missed Qaza namaz beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
   <meta property="og:image" content="https://namazly.in/icon-512.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
-  <meta property="og:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
+  <meta property="og:image:alt" content="Namazly — Qaza Namaz Calculator and Manager app icon" />
   <meta property="og:locale" content="en_US" />
 
   <!-- ── Twitter Card ───────────────────────────────────── -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@namazly" />
   <meta name="twitter:creator" content="@namazly" />
-  <meta name="twitter:title" content="Namazly — Qaza Prayer Tracker & Calculator" />
+  <meta name="twitter:title" content="Namazly — Qaza Namaz Calculator and Manager" />
   <meta name="twitter:description"
-    content="Calculate and track your missed Qaza prayers beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
+    content="Calculate and track your missed Qaza namaz beautifully. Never lose count again. Free, cloud-synced, and mobile-friendly." />
   <meta name="twitter:image" content="https://namazly.in/icon-512.png" />
-  <meta name="twitter:image:alt" content="Namazly — Qaza Prayer Tracker app icon" />
+  <meta name="twitter:image:alt" content="Namazly — Qaza Namaz Calculator and Manager app icon" />
 
   <!-- ── Mobile / PWA ──────────────────────────────────── -->
   <meta name="theme-color" content="#2d6850" />
@@ -50,6 +50,7 @@
 
   <!-- ── Favicon ───────────────────────────────────────── -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" href="/icon-192.png" />
 
   <!-- ── Font Performance ──────────────────────────────── -->
@@ -70,7 +71,7 @@
       "@type": "WebApplication",
       "name": "Namazly",
       "url": "https://namazly.in",
-      "description": "Track, calculate, and reduce your missed Qaza prayers. A beautiful, distraction-free Islamic prayer tracker with cloud sync.",
+      "description": "Track, calculate, and reduce your missed Qaza namaz. A beautiful, distraction-free Islamic prayer manager with cloud sync.",
       "applicationCategory": "LifestyleApplication",
       "operatingSystem": "Web, iOS, Android",
       "offers": {
@@ -79,8 +80,8 @@
         "priceCurrency": "USD"
       },
       "featureList": [
-        "Qaza prayer calculator",
-        "Missed prayer tracker",
+        "Qaza namaz calculator",
+        "Missed namaz Manager",
         "Cloud sync across devices",
         "Google sign-in",
         "Guest mode",
@@ -98,6 +99,64 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <!-- Google Analytics Lazy Loader (Lighthouse Score Safe) -->
+  <script>
+    (function () {
+      const GA_TRACKING_ID = 'G-69TXE4Y0RL'; // Replace with your Measurement ID
+      let gaLoaded = false;
+
+      function loadGoogleAnalytics() {
+        if (gaLoaded) return;
+        gaLoaded = true;
+
+        // 1. Inject gtag script dynamically
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+        document.head.appendChild(script);
+
+        // 2. Initialize tracking parameters
+        script.onload = function () {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+
+          // Strict Privacy configuration (Anonymize IP address)
+          gtag('config', GA_TRACKING_ID, {
+            'anonymize_ip': true,
+            'send_page_view': false // Stop double pageviews
+          });
+
+          // Trigger manual page view on interaction
+          gtag('event', 'page_view', {
+            page_path: window.location.pathname
+          });
+        };
+
+        removeListeners();
+      }
+
+      // Capture user interaction before loading heavy telemetry script
+      const events = ['mouseover', 'keydown', 'touchmove', 'touchstart', 'scroll'];
+
+      function addListeners() {
+        events.forEach(event => {
+          window.addEventListener(event, loadGoogleAnalytics, { passive: true });
+        });
+      }
+
+      function removeListeners() {
+        events.forEach(event => {
+          window.removeEventListener(event, loadGoogleAnalytics);
+        });
+      }
+
+      // Auto fallback: loading if user is idle for 4 seconds
+      setTimeout(loadGoogleAnalytics, 4000);
+
+      addListeners();
+    })();
+  </script>
 </body>
 
 </html>

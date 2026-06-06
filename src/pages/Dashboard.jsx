@@ -8,8 +8,10 @@ import StatsSummary from '../components/StatsSummary';
 import AuthModal from '../components/AuthModal';
 import api from '../utils/api';
 import { PRAYERS } from '../utils/constants';
-import { HiStar } from 'react-icons/hi';
+import { HiStar, HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineBookOpen } from 'react-icons/hi';
 import { IoIosArrowForward } from "react-icons/io";
+import { getOptimizedAvatar } from '../utils/avatar';
+import Footer from '../components/Footer';
 
 /* ── Clear All Confirmation Modal ────────────────────── */
 function ClearAllModal({ onConfirm, onCancel }) {
@@ -28,14 +30,14 @@ function ClearAllModal({ onConfirm, onCancel }) {
           Clear All Data?
         </h3>
         <p className="poppins-regular text-sage-500 text-sm text-center mb-5 leading-relaxed">
-          This will permanently reset <span className="font-semibold text-rose-500">all your Qaza prayer counts</span> to zero.
+          This will permanently reset <span className="font-semibold text-rose-500">all your Qaza namaz counts</span> to zero.
           This action <span className="font-semibold">cannot be undone</span>.
         </p>
 
         {/* Warning box */}
         <div className="rounded-2xl border border-rose-200/60 bg-rose-50/40 px-4 py-3 mb-5">
           <p className="poppins-regular text-xs text-rose-600 leading-relaxed">
-            ⚠️ All prayer records (Fajr, Dhuhr, Asr, Maghrib, Isha, Witr) will be set to <span className="font-bold">0 rakats</span>.
+            ⚠️ All namaz records (Fajr, Dhuhr, Asr, Maghrib, Isha, Witr) will be set to <span className="font-bold">0 rakats</span>.
             Make sure you truly want to start fresh before confirming.
           </p>
         </div>
@@ -56,7 +58,7 @@ function ClearAllModal({ onConfirm, onCancel }) {
                        hover:from-rose-600 hover:to-red-600
                        shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            Yes, Clear All 🗑️
+            Yes, Clear All
           </button>
         </div>
       </div>
@@ -88,11 +90,40 @@ function getGreeting() {
   return 'Good night';
 }
 
+const ARTICLES = [
+  {
+    title: "How to Calculate Qaza Namaz: A Step-by-Step Guide",
+    tag: "Calculation & Tracking",
+    summary: "Learn how to easily perform Qaza Namaz calculations for missed prayers in Islam. Get accurate counts for Qaza-e-Umri based on puberty and missed years.",
+    content: "Performing missed prayers or Qaza Salah is an obligatory debt (Fard) in Islamic jurisprudence. If you have years of pending prayers, calculating them manually can be difficult. The best way is to use a Qaza Namaz calculator online to estimate your missed prayers from the age of puberty (Baligh). Our tool allows sisters to input their menstruation cycles to deduct exempt days, ensuring precise tracking. To pray Qaza Namaz fast and efficiently, we recommend tracking each Qaza-e-Umri daily alongside your regular Salah."
+  },
+  {
+    title: "The Rules of Qaza Salah: Obligation of Missed Prayers",
+    tag: "Islamic Rulings",
+    summary: "What does the Quran and Hadith say about missed prayers in Islam? Learn the rulings on Qaza Namaz and the obligation of Witr Qaza.",
+    content: "Missing a prayer is a serious matter, and according to the consensus of scholars (including Deoband and traditional schools), making up missed prayers is mandatory. In the Hanafi madhhab, the three Rakat Witr prayer of Isha is Wajib, meaning Witr Qaza Namaz is also obligatory to make up. When performing Qaza, one must make a clear Niyat (intention) for the specific missed prayer (e.g., 'I intend to pray the first missed Fajr'). There are three prohibited times for Qaza Namaz: during sunrise (Tulu), sunset (Ghurub), and when the sun is at its zenith (Zawaal)."
+  },
+  {
+    title: "How to Perform Qaza-e-Umri Salah Quickly & Consistently",
+    tag: "Salah Recovery",
+    summary: "Tips on how to pray missed prayers in Islam and maintain a consistent recovery track without getting overwhelmed.",
+    content: "Many Muslims struggle with the order (Tarteeb) of performing Qaza prayers. If you have years of missed prayers, the most practical method is to pray one Qaza Salah alongside each daily Fard prayer. For example, pray one Qaza Fajr right after your daily Fajr. To make the process faster, you can focus on the obligatory parts (Fard and Wajib) of the Salah and keep a structured tracker. Using an online Qaza tracker like Namazly helps you sync your progress to the cloud so you never lose count of your Qaza-e-Umri recovery journey."
+  }
+];
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, updateQazaRecord } = useAuth();
   const [dashboardReviews, setDashboardReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
+  const [activeArticleIndex, setActiveArticleIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveArticleIndex((prev) => (prev + 1) % ARTICLES.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
   const [qazaRecord, setQazaRecord] = useState(() => {
     if (user) {
       const cached = localStorage.getItem(`namazly_user_record_${user.id}`);
@@ -133,7 +164,7 @@ export default function Dashboard() {
   useEffect(() => {
     document.title = user
       ? `${user.name?.split(' ')[0]}'s Qaza Tracker — Namazly`
-      : 'Dashboard — Namazly | Qaza Prayer Tracker';
+      : 'Dashboard — Namazly | Qaza Namaz Tracker';
   }, [user]);
 
   /* Fetch latest records on mount, or reset instantly on logout */
@@ -285,7 +316,7 @@ export default function Dashboard() {
     return (
       <div
         role="status"
-        aria-label="Loading your prayer records"
+        aria-label="Loading your namaz records"
         aria-live="polite"
         className="min-h-screen flex items-center justify-center"
         style={{ background: 'linear-gradient(135deg, #e8f5ee 0%, #f5f0e8 50%, #eef2ee 100%)' }}
@@ -312,7 +343,7 @@ export default function Dashboard() {
       <main
         className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10"
         id="main-content"
-        aria-label="Qaza prayer tracker dashboard"
+        aria-label="Qaza namaz manager dashboard"
       >
         {/* Welcome banner */}
         <div className="mb-8 animate-fade-in">
@@ -322,7 +353,7 @@ export default function Dashboard() {
             <span className="text-sage-800 text-2xl md:text-3xl font-medium"> 🌙</span>
           </h1>
           <p className="poppins-regular text-sage-500 mt-1.5">
-            {user ? 'May Allah accept your prayers and ease your journey.' : 'Estimate, track, and manage your missed prayers locally.'}
+            {user ? 'May Allah accept your namaz and ease your journey.' : 'Estimate, track, and manage your missed namaz locally.'}
           </p>
         </div>
 
@@ -372,7 +403,6 @@ export default function Dashboard() {
                            transition-all duration-200 active:scale-[0.98] cursor-pointer
                            flex items-center justify-center gap-2"
               >
-                <span>🗑️</span>
                 <span>Clear All Data</span>
               </button>
             </div>
@@ -396,7 +426,7 @@ export default function Dashboard() {
         <section className="mt-12 space-y-4 animate-fade-in content-auto">
           <div className="flex items-center justify-between border-b border-sage-100/50 pb-2">
             <h2 className="poppins-regular text-base sm:text-lg font-bold text-sage-900 flex items-center gap-2">
-              User Reviews 
+              User Reviews
             </h2>
             <button
               onClick={() => navigate('/reviews')}
@@ -428,8 +458,8 @@ export default function Dashboard() {
                 });
 
                 return (
-                  <div 
-                    key={rev._id} 
+                  <div
+                    key={rev._id}
                     className="glass-card rounded-2xl p-4 shadow-sm border border-white/70 flex flex-col justify-between gap-3 text-xs leading-relaxed"
                   >
                     <div className="space-y-1.5">
@@ -437,9 +467,9 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-0.5">
                           {[1, 2, 3, 4, 5].map(s => (
-                            <HiStar 
-                              key={s} 
-                              className={`w-3.5 h-3.5 ${s <= rev.rating ? 'text-amber-400' : 'text-sage-200'}`} 
+                            <HiStar
+                              key={s}
+                              className={`w-3.5 h-3.5 ${s <= rev.rating ? 'text-amber-400' : 'text-sage-200'}`}
                             />
                           ))}
                         </div>
@@ -455,8 +485,8 @@ export default function Dashboard() {
                     {/* Reviewer */}
                     <div className="flex items-center gap-2 pt-2 border-t border-sage-100/30">
                       {avatar ? (
-                        <img 
-                          src={avatar} 
+                        <img
+                          src={getOptimizedAvatar(avatar, 48)}
                           onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
                           alt={name}
                           className="w-5.5 h-5.5 rounded-full border border-white object-cover bg-sage-50"
@@ -477,6 +507,74 @@ export default function Dashboard() {
           )}
         </section>
 
+        {/* Articles SEO Carousel */}
+        <section className="mt-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2">
+              <span>Islamic Articles</span>
+            </h2>
+
+            {/* Manual Controls */}
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setActiveArticleIndex((prev) => (prev - 1 + ARTICLES.length) % ARTICLES.length)}
+                aria-label="Previous Article"
+                className="p-1.5 rounded-lg glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
+              >
+                <HiOutlineChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setActiveArticleIndex((prev) => (prev + 1) % ARTICLES.length)}
+                aria-label="Next Article"
+                className="p-1.5 rounded-lg glass-card border border-white/60 hover:bg-white/80 active:scale-90 transition-all text-sage-600 cursor-pointer bg-transparent"
+              >
+                <HiOutlineChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="glass-card rounded-3xl p-6 md:p-8 shadow-md border border-white/80 relative overflow-hidden bg-gradient-to-br from-sage-50/20 to-cream-50/20 min-h-[350px] sm:min-h-[260px] md:min-h-[320px]">
+            {ARTICLES.map((article, idx) => {
+              const isActive = idx === activeArticleIndex;
+              return (
+                <article
+                  key={idx}
+                  className={`transition-all duration-500 ease-in-out ${isActive ? 'block opacity-100 translate-x-0' : 'hidden opacity-0'
+                    }`}
+                >
+                  <div className="space-y-3 text-left">
+                    <span className="px-2.5 py-1 rounded-full bg-sage-200/50 text-sage-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">
+                      {article.tag}
+                    </span>
+                    <h3 className="poppins-regular text-xl font-bold text-sage-900 leading-tight">
+                      {article.title}
+                    </h3>
+                    <p className="poppins-regular text-xs font-semibold text-sage-400">
+                      {article.summary}
+                    </p>
+                    <p className="poppins-regular text-xs sm:text-sm text-sage-600 leading-relaxed pt-1 select-text">
+                      {article.content}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
+
+            {/* Pagination Indicator Dots */}
+            <div className="flex justify-center gap-1.5 mt-6">
+              {ARTICLES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveArticleIndex(idx)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 border-0 cursor-pointer ${idx === activeArticleIndex ? 'bg-sage-600 w-4' : 'bg-sage-200 hover:bg-sage-300'
+                    }`}
+                  aria-label={`Go to article ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Footer note */}
         <p className="text-center poppins-regular text-sage-400 text-sm mt-12 opacity-70 leading-relaxed">
           وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ
@@ -485,6 +583,8 @@ export default function Dashboard() {
           "And establish prayer and give zakah" — Quran 2:43
         </p>
       </main>
+
+      <Footer />
 
       {/* On-Demand Authentication Modal */}
       <AuthModal

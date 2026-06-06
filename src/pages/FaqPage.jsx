@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import { 
   HiOutlineChevronDown, 
   HiOutlineSearch, 
@@ -11,6 +10,7 @@ import {
   HiOutlineArrowLeft
 } from 'react-icons/hi';
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -27,17 +27,17 @@ const Background = () => (
 const FAQ_DATA = [
   {
     question: "What is Qaza Namaz (Salah) and why is it mandatory?",
-    answer: "Qaza Namaz refers to a prayer that was missed during its prescribed time. In Islamic jurisprudence (Shariah), performing missed obligatory (Fard) prayers is considered a spiritual debt owed to Allah, and it is mandatory (Fard) to make them up as soon as possible.",
+    answer: "Qaza Namaz refers to a namaz that was missed during its prescribed time. In Islamic jurisprudence (Shariah), performing missed obligatory (Fard) namaz is considered a spiritual debt owed to Allah, and it is mandatory (Fard) to make them up as soon as possible.",
     category: "shariah"
   },
   {
-    question: "How does the Namazly Qaza Calculator estimate my missed prayers?",
-    answer: "Our smart Qaza Calculator takes your age, the age of puberty (when prayer becomes obligatory in Islam), and the approximate years or months you prayed regularly. It then calculates the remaining duration of missed days and converts them into precise counts for all 6 daily obligatory prayers, including Isha Witr.",
+    question: "How does the Namazly Qaza Calculator estimate my missed namaz?",
+    answer: "Our smart Qaza Calculator takes your age, the age of puberty (when namaz becomes obligatory in Islam), and the approximate years or months you prayed regularly. It then calculates the remaining duration of missed days and converts them into precise counts for all 6 daily obligatory namaz, including Isha Witr.",
     category: "calculation"
   },
   {
     question: "What is the menstruation (period) deduction feature for sisters?",
-    answer: "Under Islamic Shariah, women are exempt from performing salah during their menstruation cycle, and they are not required to make them up later. By selecting the female gender option in our calculator, you can input your average period length, and the calculator will automatically subtract those days from your total missed Qaza days.",
+    answer: "Under Islamic Shariah, women are exempt from performing namaz during their menstruation cycle, and they are not required to make them up later. By selecting the female gender option in our calculator, you can input your average period length, and the calculator will automatically subtract those days from your total missed Qaza days.",
     category: "calculation"
   },
   {
@@ -86,8 +86,8 @@ export default function FaqPage() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   usePageMeta(
-    'Frequently Asked Questions — Namazly Qaza Prayer Tracker',
-    'Get answers to commonly asked questions about Qaza Namaz calculation, Islamic rulings on missed prayers, data sync, and using the Namazly app.',
+    'Frequently Asked Questions — Namazly Qaza Namaz Tracker',
+    'Get answers to commonly asked questions about Qaza Namaz calculation, Islamic rulings on missed namaz, data sync, and using the Namazly app.',
     '/faq'
   );
 
@@ -136,24 +136,27 @@ export default function FaqPage() {
       style={{ background: 'linear-gradient(135deg, #e8f5ee 0%, #f5f0e8 60%, #eef2ee 100%)' }}>
       <Background />
 
-      <Navbar onAuthClick={() => navigate('/')} />
+      {/* Navigation Header */}
+      <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
+        <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
+          >
+            <HiOutlineArrowLeft className="w-4 h-4 text-sage-600" />
+            <span className="hidden sm:inline">Dashboard</span>
+          </button>
+          
+          <span className="poppins-regular text-lg font-bold gradient-text">FAQs</span>
+          
+          <div className="w-10" /> {/* Spacer */}
+        </div>
+      </nav>
 
       <main className="relative z-10 max-w-3xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-start w-full animate-fade-in">
-        
-        {/* Navigation Breadcrumb / Back button */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 text-sage-600 hover:text-sage-800 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
-          >
-            <HiOutlineArrowLeft className="w-4 h-4 text-sage-500" />
-            <span>Back to Dashboard</span>
-          </button>
-        </div>
 
         {/* Title */}
         <div className="text-center mb-8">
-          <span className="text-4xl" role="img" aria-label="Book and Question Mark">📖</span>
           <h1 className="poppins-regular text-4xl font-bold mt-2">
             Frequently Asked <span className="gradient-text">Questions</span>
           </h1>
@@ -270,6 +273,7 @@ export default function FaqPage() {
         </div>
 
       </main>
+      <Footer />
     </div>
   );
 }

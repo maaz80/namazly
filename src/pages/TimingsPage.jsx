@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
+import Footer from '../components/Footer';
 
 /* Decorative background orbs */
 const Background = () => (
@@ -32,6 +33,28 @@ const PRAYER_ICONS = {
   Isha: '🌌'
 };
 
+const CALCULATION_METHODS = [
+  { id: '1', name: 'University of Islamic Sciences, Karachi (South Asia)' },
+  { id: '2', name: 'Islamic Society of North America (ISNA)' },
+  { id: '3', name: 'Muslim World League (MWL)' },
+  { id: '4', name: 'Umm Al-Qura University, Makkah' },
+  { id: '5', name: 'Egyptian General Authority of Survey' },
+  { id: '7', name: 'Institute of Geophysics, University of Tehran' },
+  { id: '8', name: 'Gulf Region' },
+  { id: '9', name: 'Kuwait' },
+  { id: '10', name: 'Qatar' },
+  { id: '11', name: 'Majlis Ugama Islam Singapura' },
+  { id: '12', name: 'Union Organization islamique de France' },
+  { id: '13', name: 'Diyanet İşleri Başkanlığı (Turkey)' },
+  { id: '14', name: 'Spiritual Administration of Muslims of Russia' },
+  { id: '15', name: 'Moonsighting Committee Worldwide' }
+];
+
+const SCHOOLS = [
+  { id: '0', name: 'Standard (Shafi\'i, Maliki, Hanbali)' },
+  { id: '1', name: 'Hanafi' }
+];
+
 const parsePrayerTime = (timeStr, baseDate = new Date()) => {
   const [hours, minutes] = timeStr.split(':').map(Number);
   const date = new Date(baseDate);
@@ -50,6 +73,11 @@ export default function TimingsPage() {
   const [searchCity, setSearchCity] = useState(city);
   const [searchCountry, setSearchCountry] = useState(country);
   const [usingCoords, setUsingCoords] = useState(false);
+  const [coords, setCoords] = useState(null);
+
+  // Timing Calculation states
+  const [method, setMethod] = useState(() => localStorage.getItem('namazly_timing_method') || '1');
+  const [school, setSchool] = useState(() => localStorage.getItem('namazly_timing_school') || '1');
 
   // Timings from API
   const [timings, setTimings] = useState(null);
@@ -58,6 +86,7 @@ export default function TimingsPage() {
   // Real-time calculation states
   const [prayerState, setPrayerState] = useState(null);
   const timerRef = useRef(null);
+  const lastFetchedRef = useRef({ city: '', country: '', method: '', school: '', lat: null, lon: null });
 
   usePageMeta(
     'Daily Namaz Timings — Namazly | Real-time Prayer Schedule',
@@ -67,14 +96,30 @@ export default function TimingsPage() {
 
   // Fetch timings by Coords or City/Country
   const fetchTimings = async (lat = null, lon = null) => {
+    const latVal = lat !== null ? lat : (usingCoords && coords ? coords.lat : null);
+    const lonVal = lon !== null ? lon : (usingCoords && coords ? coords.lon : null);
+
+    // Skip duplicate fetches
+    if (
+      city === lastFetchedRef.current.city &&
+      country === lastFetchedRef.current.country &&
+      method === lastFetchedRef.current.method &&
+      school === lastFetchedRef.current.school &&
+      latVal === lastFetchedRef.current.lat &&
+      lonVal === lastFetchedRef.current.lon &&
+      timings !== null
+    ) {
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
       let url = '';
-      if (lat !== null && lon !== null) {
-        url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`;
+      if (latVal !== null && lonVal !== null) {
+        url = `https://api.aladhan.com/v1/timings?latitude=${latVal}&longitude=${lonVal}&method=${method}&school=${school}`;
       } else {
-        url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`;
+        url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${method}&school=${school}`;
       }
 
       const res = await fetch(url);
@@ -83,14 +128,26 @@ export default function TimingsPage() {
       if (data && data.code === 200) {
         setTimings(data.data.timings);
         setMeta(data.data.meta);
-        if (lat !== null && lon !== null) {
+
+        // Update ref with successfully fetched parameters
+        lastFetchedRef.current = {
+          city: latVal !== null ? (data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates') : city,
+          country: latVal !== null ? country : country,
+          method,
+          school,
+          lat: latVal,
+          lon: lonVal
+        };
+
+        if (latVal !== null && lonVal !== null) {
           setUsingCoords(true);
-          // try parsing location details if available from API metadata
+          setCoords({ lat: latVal, lon: lonVal });
           const localCity = data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates';
           setCity(localCity);
           setSearchCity(localCity);
         } else {
           setUsingCoords(false);
+          setCoords(null);
           localStorage.setItem('namazly_city', city);
           localStorage.setItem('namazly_country', country);
         }
@@ -110,6 +167,8 @@ export default function TimingsPage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          setCoords({ lat: latitude, lon: longitude });
+          setUsingCoords(true);
           fetchTimings(latitude, longitude);
         },
         () => {
@@ -195,12 +254,12 @@ export default function TimingsPage() {
     setCountry(searchCountry);
   };
 
-  // Re-fetch when city/country values are committed
+  // Re-fetch when city, country, method, or school values change
   useEffect(() => {
     if (loading) return; // avoid double fetch on init
     fetchTimings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city, country]);
+  }, [city, country, method, school]);
 
   // Get current location from coordinates button
   const handleUseLocation = () => {
@@ -227,7 +286,7 @@ export default function TimingsPage() {
       <nav className="sticky top-0 z-50 glass-card border-b border-white/60">
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -252,7 +311,6 @@ export default function TimingsPage() {
               {city}
             </h1>
             <p className="poppins-regular text-sage-500 font-semibold mt-0.5 text-xs sm:text-sm flex items-center justify-center md:justify-start gap-1">
-              <span>📍</span>
               <span>{usingCoords ? 'Auto-detected via GPS' : `${city}, ${country}`}</span>
             </p>
           </div>
@@ -261,7 +319,6 @@ export default function TimingsPage() {
             onClick={handleUseLocation}
             className="px-4 py-2 rounded-xl glass-card border border-white/80 text-xs font-semibold text-sage-700 hover:bg-white/95 hover:text-sage-900 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <span>🎯</span>
             <span>Use GPS Location</span>
           </button>
         </section>
@@ -347,8 +404,56 @@ export default function TimingsPage() {
 
         {/* Timings List Card */}
         <section className="animate-slide-up w-full" style={{ animationDelay: '0.2s' }}>
-          <div className="glass-card rounded-3xl p-4 sm:p-6 shadow-sm">
+          <div className="glass-card rounded-3xl p-4 sm:p-6 shadow-sm flex flex-col gap-5">
             
+            {/* Preferences / Calculation Settings Section */}
+            <div className="p-4 rounded-2xl bg-white/40 border border-white/50 space-y-3">
+              <h3 className="poppins-regular text-xs font-bold text-sage-800 flex items-center gap-1.5 uppercase tracking-wider">
+                <span>⚙️</span>
+                <span>Calculation Settings</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="pref-method" className="poppins-regular text-[11px] font-semibold text-sage-600">
+                    Calculation Method
+                  </label>
+                  <select
+                    id="pref-method"
+                    value={method}
+                    onChange={(e) => setMethod(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
+                  >
+                    {CALCULATION_METHODS.map((m) => (
+                      <option key={m.id} value={m.id} className="bg-emerald-50 text-sage-900">
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="pref-school" className="poppins-regular text-[11px] font-semibold text-sage-600">
+                    Asr Jurisprudence (Madhhab)
+                  </label>
+                  <select
+                    id="pref-school"
+                    value={school}
+                    onChange={(e) => setSchool(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
+                  >
+                    {SCHOOLS.map((s) => (
+                      <option key={s.id} value={s.id} className="bg-emerald-50 text-sage-900">
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="poppins-regular text-[10px] text-sage-500 leading-relaxed">
+                💡 <strong>Discrepancy Tip:</strong> Different regions use different calculation methods (e.g. Karachi in South Asia, ISNA in North America) and jurisprudence schools. Adjust these options to match your local mosque's timings.
+              </p>
+            </div>
+
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-3">
                 <div className="w-10 h-10 rounded-full border-2 border-sage-300 border-t-sage-600 animate-spin" />
@@ -454,10 +559,7 @@ export default function TimingsPage() {
 
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center py-6 text-xs text-sage-400 poppins-regular mt-4">
-        <p>Namazly &copy; {new Date().getFullYear()}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
