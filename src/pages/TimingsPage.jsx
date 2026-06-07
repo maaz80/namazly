@@ -55,6 +55,51 @@ const SCHOOLS = [
   { id: '1', name: 'Hanafi' }
 ];
 
+const LOCATION_DATA = {
+  "India": [
+    "Jaunpur", "Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", "Surat", 
+    "Pune", "Jaipur", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", 
+    "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad", "Meerut", "Rajkot", 
+    "Varanasi", "Srinagar", "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai", "Ranchi", "Howrah", 
+    "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", 
+    "Guwahati", "Chandigarh", "Solapur", "Bareilly", "Moradabad", "Mysore", "Gurgaon", "Aligarh", 
+    "Jalandhar", "Tiruchirappalli", "Bhubaneswar", "Salem", "Mira-Bhayandar", "Warangal", "Guntur", 
+    "Bhiwandi", "Saharanpur", "Gorakhpur", "Bikaner", "Amravati", "Noida", "Jamshedpur", "Bhilai", 
+    "Cuttack", "Firozabad", "Kochi", "Nellore", "Bhavnagar", "Dehradun", "Durgapur", "Asansol", 
+    "Rourkela", "Nanded", "Kolhapur", "Ajmer", "Akola", "Gulbarga", "Jamnagar", "Ujjain", "Jhansi", 
+    "Ulhasnagar", "Jammu", "Mangalore", "Belgaum", "Tirunelveli", "Malegaon", "Gaya", "Jalgaon", 
+    "Udaipur", "Kozhikode", "Akbarpur", "Muzaffarnagar", "Rampur", "Patiala"
+  ],
+  "Pakistan": [
+    "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Gujranwala", "Peshawar", "Multan", "Hyderabad", 
+    "Islamabad", "Quetta", "Bahawalpur", "Sargodha", "Sialkot", "Sukkur"
+  ],
+  "Bangladesh": [
+    "Dhaka", "Chittagong", "Khulna", "Sylhet", "Rajshahi", "Mymensingh", "Barisal", "Rangpur"
+  ],
+  "Saudi Arabia": [
+    "Makkah", "Madinah", "Riyadh", "Jeddah", "Dammam", "Taif", "Tabuk", "Buraydah", "Al Khobar"
+  ],
+  "United Arab Emirates": [
+    "Dubai", "Abu Dhabi", "Sharjah", "Al Ain", "Ajman"
+  ],
+  "United Kingdom": [
+    "London", "Birmingham", "Manchester", "Glasgow", "Newcastle", "Sheffield", "Liverpool", "Leeds"
+  ],
+  "United States": [
+    "New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas"
+  ],
+  "Canada": [
+    "Toronto", "Montreal", "Vancouver", "Calgary", "Edmonton", "Ottawa"
+  ],
+  "Australia": [
+    "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Canberra"
+  ],
+  "Turkey": [
+    "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Konya"
+  ]
+};
+
 const parsePrayerTime = (timeStr, baseDate = new Date()) => {
   const [hours, minutes] = timeStr.split(':').map(Number);
   const date = new Date(baseDate);
@@ -70,10 +115,28 @@ export default function TimingsPage() {
   // Location states
   const [city, setCity] = useState(() => localStorage.getItem('namazly_city') || 'Mumbai');
   const [country, setCountry] = useState(() => localStorage.getItem('namazly_country') || 'India');
-  const [searchCity, setSearchCity] = useState(city);
-  const [searchCountry, setSearchCountry] = useState(country);
   const [usingCoords, setUsingCoords] = useState(false);
   const [coords, setCoords] = useState(null);
+
+  // Dropdown / Form selection states
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    return LOCATION_DATA[country] ? country : 'Other';
+  });
+  const [selectedCity, setSelectedCity] = useState(() => {
+    if (LOCATION_DATA[country] && LOCATION_DATA[country].includes(city)) {
+      return city;
+    }
+    return 'Other';
+  });
+  const [customCountry, setCustomCountry] = useState(() => {
+    return LOCATION_DATA[country] ? '' : country;
+  });
+  const [customCity, setCustomCity] = useState(() => {
+    if (LOCATION_DATA[country] && LOCATION_DATA[country].includes(city)) {
+      return '';
+    }
+    return city;
+  });
 
   // Timing Calculation states
   const [method, setMethod] = useState(() => localStorage.getItem('namazly_timing_method') || '1');
@@ -94,15 +157,50 @@ export default function TimingsPage() {
     '/timings'
   );
 
+  // Keep dropdown selection states in sync with active city/country
+  useEffect(() => {
+    if (LOCATION_DATA[country]) {
+      setSelectedCountry(country);
+      if (LOCATION_DATA[country].includes(city)) {
+        setSelectedCity(city);
+        setCustomCity('');
+      } else {
+        setSelectedCity('Other');
+        setCustomCity(city);
+      }
+      setCustomCountry('');
+    } else {
+      setSelectedCountry('Other');
+      setCustomCountry(country);
+      setSelectedCity('Other');
+      setCustomCity(city);
+    }
+  }, [city, country]);
+
+  const handleCountryChange = (e) => {
+    const c = e.target.value;
+    setSelectedCountry(c);
+    if (c !== 'Other') {
+      const citiesOfCountry = LOCATION_DATA[c];
+      setSelectedCity(citiesOfCountry[0]);
+      setCustomCountry('');
+      setCustomCity('');
+    } else {
+      setSelectedCity('Other');
+      setCustomCountry('');
+      setCustomCity('');
+    }
+  };
+
   // Fetch timings by Coords or City/Country
-  const fetchTimings = async (lat = null, lon = null) => {
+  const fetchTimings = async (lat = null, lon = null, targetCity = city, targetCountry = country) => {
     const latVal = lat !== null ? lat : (usingCoords && coords ? coords.lat : null);
     const lonVal = lon !== null ? lon : (usingCoords && coords ? coords.lon : null);
 
     // Skip duplicate fetches
     if (
-      city === lastFetchedRef.current.city &&
-      country === lastFetchedRef.current.country &&
+      targetCity === lastFetchedRef.current.city &&
+      targetCountry === lastFetchedRef.current.country &&
       method === lastFetchedRef.current.method &&
       school === lastFetchedRef.current.school &&
       latVal === lastFetchedRef.current.lat &&
@@ -119,7 +217,7 @@ export default function TimingsPage() {
       if (latVal !== null && lonVal !== null) {
         url = `https://api.aladhan.com/v1/timings?latitude=${latVal}&longitude=${lonVal}&method=${method}&school=${school}`;
       } else {
-        url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${method}&school=${school}`;
+        url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(targetCity)}&country=${encodeURIComponent(targetCountry)}&method=${method}&school=${school}`;
       }
 
       const res = await fetch(url);
@@ -131,8 +229,8 @@ export default function TimingsPage() {
 
         // Update ref with successfully fetched parameters
         lastFetchedRef.current = {
-          city: latVal !== null ? (data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates') : city,
-          country: latVal !== null ? country : country,
+          city: latVal !== null ? (data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates') : targetCity,
+          country: latVal !== null ? targetCountry : targetCountry,
           method,
           school,
           lat: latVal,
@@ -144,12 +242,11 @@ export default function TimingsPage() {
           setCoords({ lat: latVal, lon: lonVal });
           const localCity = data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates';
           setCity(localCity);
-          setSearchCity(localCity);
         } else {
           setUsingCoords(false);
           setCoords(null);
-          localStorage.setItem('namazly_city', city);
-          localStorage.setItem('namazly_country', country);
+          localStorage.setItem('namazly_city', targetCity);
+          localStorage.setItem('namazly_country', targetCountry);
         }
       } else {
         setError('Could not retrieve prayer times. Please verify the city name.');
@@ -161,24 +258,9 @@ export default function TimingsPage() {
     }
   };
 
-  // Attempt Geolocation on mount
+  // Fetch timings on mount (No auto-geolocation request)
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCoords({ lat: latitude, lon: longitude });
-          setUsingCoords(true);
-          fetchTimings(latitude, longitude);
-        },
-        () => {
-          // If denied, fetch by pre-saved or default City/Country
-          fetchTimings();
-        }
-      );
-    } else {
-      fetchTimings();
-    }
+    fetchTimings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -249,15 +331,27 @@ export default function TimingsPage() {
   // Search Submit
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (!searchCity.trim()) return;
-    setCity(searchCity);
-    setCountry(searchCountry);
+    
+    let finalCountry = selectedCountry;
+    if (selectedCountry === 'Other') {
+      if (!customCountry.trim()) return;
+      finalCountry = customCountry.trim();
+    }
+
+    let finalCity = selectedCity;
+    if (selectedCountry === 'Other' || selectedCity === 'Other') {
+      if (!customCity.trim()) return;
+      finalCity = customCity.trim();
+    }
+
+    setCity(finalCity);
+    setCountry(finalCountry);
   };
 
   // Re-fetch when city, country, method, or school values change
   useEffect(() => {
     if (loading) return; // avoid double fetch on init
-    fetchTimings();
+    fetchTimings(null, null, city, country);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, country, method, school]);
 
@@ -364,34 +458,95 @@ export default function TimingsPage() {
                   <span>Search Prayer Times</span>
                 </h3>
                 <p className="poppins-regular text-[11px] text-sage-400 mb-3">
-                  Enter any global city to fetch accurate local timings.
+                  Select a country and city, or type your own.
                 </p>
-                <form onSubmit={handleSearchSubmit} className="space-y-2.5">
-                  <div>
-                    <label htmlFor="search-city" className="sr-only">City</label>
-                    <input
-                      id="search-city"
-                      type="text"
-                      placeholder="City (e.g. London)"
-                      value={searchCity}
-                      onChange={(e) => setSearchCity(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="search-country" className="sr-only">Country</label>
-                    <input
+                <form onSubmit={handleSearchSubmit} className="space-y-2.5 text-left">
+                  {/* Country Selector */}
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="search-country" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                      Country
+                    </label>
+                    <select
                       id="search-country"
-                      type="text"
-                      placeholder="Country (e.g. United Kingdom)"
-                      value={searchCountry}
-                      onChange={(e) => setSearchCountry(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
-                    />
+                      value={selectedCountry}
+                      onChange={handleCountryChange}
+                      className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
+                    >
+                      {Object.keys(LOCATION_DATA).map((c) => (
+                        <option key={c} value={c} className="bg-emerald-50 text-sage-900">{c}</option>
+                      ))}
+                      <option value="Other" className="bg-emerald-50 text-sage-900">Other (Type custom)</option>
+                    </select>
                   </div>
+
+                  {/* Custom Country Input (only if Country is 'Other') */}
+                  {selectedCountry === 'Other' && (
+                    <div>
+                      <label htmlFor="custom-country" className="sr-only">Enter Country</label>
+                      <input
+                        id="custom-country"
+                        type="text"
+                        placeholder="Enter Country Name (e.g. India)"
+                        value={customCountry}
+                        onChange={(e) => setCustomCountry(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {/* City Selector */}
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="search-city" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                      City
+                    </label>
+                    {selectedCountry !== 'Other' ? (
+                      <select
+                        id="search-city"
+                        value={selectedCity}
+                        onChange={(e) => {
+                          setSelectedCity(e.target.value);
+                          if (e.target.value !== 'Other') setCustomCity('');
+                        }}
+                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
+                      >
+                        {LOCATION_DATA[selectedCountry].map((ct) => (
+                          <option key={ct} value={ct} className="bg-emerald-50 text-sage-900">{ct}</option>
+                        ))}
+                        <option value="Other" className="bg-emerald-50 text-sage-900">Other (Type custom)</option>
+                      </select>
+                    ) : (
+                      <input
+                        id="custom-city"
+                        type="text"
+                        placeholder="Enter City Name (e.g. Mumbai)"
+                        value={customCity}
+                        onChange={(e) => setCustomCity(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                        required
+                      />
+                    )}
+                  </div>
+
+                  {/* Custom City Input (if country is selected but city is 'Other') */}
+                  {selectedCountry !== 'Other' && selectedCity === 'Other' && (
+                    <div>
+                      <label htmlFor="custom-city-input" className="sr-only">Enter City</label>
+                      <input
+                        id="custom-city-input"
+                        type="text"
+                        placeholder="Enter City Name"
+                        value={customCity}
+                        onChange={(e) => setCustomCity(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                        required
+                      />
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full py-2.5 rounded-xl poppins-regular text-xs font-semibold text-white bg-sage-600 hover:bg-sage-700 shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer border-0"
+                    className="w-full py-2.5 rounded-xl poppins-regular text-xs font-semibold text-white bg-sage-600 hover:bg-sage-700 shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer border-0 mt-2"
                   >
                     Fetch Timings
                   </button>

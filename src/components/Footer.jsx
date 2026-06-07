@@ -68,6 +68,11 @@ export default function Footer() {
                 </button>
               </li>
               <li>
+                <button onClick={() => navigate('/masail')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                  Islamic Masail
+                </button>
+              </li>
+              <li>
                 <button onClick={() => navigate('/guide')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
                   Usage Guide
                 </button>

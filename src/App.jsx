@@ -19,6 +19,8 @@ const PrivacyPage   = lazy(() => import('./pages/PrivacyPage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const AdminLogin   = lazy(() => import('./pages/AdminLogin'));
 const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
+const MasailPage   = lazy(() => import('./pages/MasailPage'));
+const MaslaDetailPage = lazy(() => import('./pages/MaslaDetailPage'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -146,6 +148,8 @@ const AppRoutes = () => {
           <DisclaimerPage />
         }
       />
+      <Route path="/masail" element={<MasailPage />} />
+      <Route path="/masail/:slug" element={<MaslaDetailPage />} />
       <Route path="/1adminMs1" element={<AdminLogin />} />
       <Route path="/1adminMs1/dashboard" element={<AdminDash />} />
       <Route path="*" element={<Navigate to="/" replace />} />

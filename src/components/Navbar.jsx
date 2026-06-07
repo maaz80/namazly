@@ -222,6 +222,14 @@ export default function Navbar({ onAuthClick }) {
             <span>User Reviews</span>
           </a>
           <a
+            href="/masail"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <HiOutlineBookOpen className="text-xl text-sage-500" />
+            <span>Islamic Masail</span>
+          </a>
+          <a
             href="/guide"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"

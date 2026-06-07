@@ -49,9 +49,11 @@
   <link rel="manifest" href="/manifest.webmanifest" />
 
   <!-- ── Favicon ───────────────────────────────────────── -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
 
   <!-- ── Font Performance ──────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,6 +68,16 @@
   </noscript>
 
   <!-- ── JSON-LD Structured Data ───────────────────────── -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Real Qaza Namaz Calculator and Manager | Namazly",
+      "alternateName": ["Namazly Qaza Calculator", "Namazly App"],
+      "url": "https://namazly.in/"
+    }
+  </script>
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -96,23 +108,23 @@
     }
     </script>
   <!-- ✅ Baaki CSS non-blocking load -->
-  <link rel="preload" as="style" href="/assets/css/index-DO3kMDDq.css"
+  <link rel="preload" as="style" href="/assets/css/index-BCGGAtum.css"
     onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
-    <link rel="stylesheet" href="/assets/css/index-DO3kMDDq.css" />
+    <link rel="stylesheet" href="/assets/css/index-BCGGAtum.css" />
   </noscript>
-  <script type="module" crossorigin src="/assets/js/index-DA5vuaKG.js"></script>
+  <script type="module" crossorigin src="/assets/js/index-BoEYmnhO.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-react-Bspgqbbm.js">
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-oauth-iRzhRu0J.js">
-  <link rel="modulepreload" crossorigin href="/assets/js/vendor-router-BcrC8qqp.js">
+  <link rel="modulepreload" crossorigin href="/assets/js/vendor-router-DIS60QWV.js">
   <link rel="modulepreload" crossorigin href="/assets/js/vendor-axios-C4NBEVWH.js">
-  <link rel="stylesheet" crossorigin href="/assets/css/index-BWBT8SUR.css">
+  <!-- <link rel="stylesheet" crossorigin href="/assets/css/index-BCGGAtum.css"> -->
 </head>
 
 <body>
   <div id="root"></div>
   <!-- Google Analytics Lazy Loader (Lighthouse Score Safe) -->
-  <script>
+  <!-- <script>
     (function () {
       const GA_TRACKING_ID = 'G-69TXE4Y0RL'; // Replace with your Measurement ID
       let gaLoaded = false;
@@ -165,7 +177,7 @@
 
       addListeners();
     })();
-  </script>
+  </script> -->
 </body>
 
 </html>
