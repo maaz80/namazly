@@ -571,7 +571,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      <main id="main-content" tabIndex="-1" className="max-w-7xl mx-auto px-4 md:px-8 py-6">
 
         {/* ─── Tab Navigation ──────────────────────────────── */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -1210,7 +1210,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

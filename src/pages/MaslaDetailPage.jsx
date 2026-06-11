@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 import api from '../utils/api';
 import { HiOutlineArrowLeft, HiOutlineChevronRight, HiOutlineBookOpen, HiOutlineUser } from 'react-icons/hi';
+import { MASAIL_DATA } from '../utils/masailData';
 
 const Background = () => (
   <>
@@ -19,10 +20,19 @@ const Background = () => (
 export default function MaslaDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  
+  // Start with static masla so LCP is instant and SEO index gets content immediately
+  const [masla, setMasla] = useState(() => {
+    return MASAIL_DATA.find(m => m.slug === slug) || null;
+  });
+  const [related, setRelated] = useState(() => {
+    const staticMasla = MASAIL_DATA.find(m => m.slug === slug);
+    if (!staticMasla) return [];
+    return MASAIL_DATA.filter(m => m.category === staticMasla.category && m.slug !== slug).slice(0, 5);
+  });
+  const [loading, setLoading] = useState(!masla);
   const [error, setError] = useState('');
-  const [masla, setMasla] = useState(null);
-  const [related, setRelated] = useState([]);
+  const [views, setViews] = useState(0);
 
   // Dynamically configure meta parameters based on active content
   const pageTitle = masla ? `${masla.question} — Answer & Reference | Namazly` : 'Islamic Ruling details | Namazly';
@@ -30,26 +40,47 @@ export default function MaslaDetailPage() {
 
   usePageMeta(pageTitle, pageDesc, `/masail/${slug}`);
 
-  const fetchMaslaDetails = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await api.get(`/masail/detail/${slug}`);
-      if (res.data.success) {
-        setMasla(res.data.masla);
-        setRelated(res.data.related);
-      } else {
-        setError('Masla not found.');
-      }
-    } catch (err) {
-      setError('Connection error or Masla not found.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchMaslaDetails();
+    // 1. Initial lookup from static MASAIL_DATA for fast render
+    const staticMasla = MASAIL_DATA.find(m => m.slug === slug);
+    if (staticMasla) {
+      setMasla(staticMasla);
+      setRelated(MASAIL_DATA.filter(m => m.category === staticMasla.category && m.slug !== slug).slice(0, 5));
+      setError('');
+      setLoading(false);
+      setViews(staticMasla.views || 0);
+    } else {
+      setMasla(null);
+      setRelated([]);
+      setLoading(true);
+      setError('');
+      setViews(0);
+    }
+
+    // 2. Fetch/update details from database in background (or foreground if new dynamic masla)
+    api.get(`/masail/detail/${slug}`)
+      .then(res => {
+        if (res.data && res.data.success) {
+          setMasla(res.data.masla);
+          setRelated(res.data.related);
+          setViews(res.data.masla.views);
+          setError('');
+        } else {
+          if (!staticMasla) {
+            setError('Ruling not found.');
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching live masla details:', err);
+        if (!staticMasla) {
+          setError('Ruling not found or connection error.');
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
     // Scroll to top when loading new masla
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
@@ -79,7 +110,7 @@ export default function MaslaDetailPage() {
       </nav>
 
       {/* Main Content Area */}
-      <main className="relative z-10 max-w-3xl mx-auto px-4 py-6 md:py-8 flex-1 w-full space-y-6">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-3xl mx-auto px-4 py-6 md:py-8 flex-1 w-full space-y-6">
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-3">
@@ -106,7 +137,7 @@ export default function MaslaDetailPage() {
                 {masla.category}
               </span>
               <span className="flex items-center gap-1">
-                👁️ {masla.views || 0} times read
+                👁️ {views || masla.views || 0} times read
               </span>
             </div>
 

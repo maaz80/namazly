@@ -3,7 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 import api from '../utils/api';
-import { HiOutlineSearch, HiOutlineBookOpen, HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
+import { HiOutlineSearch, HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
+import { MASAIL_DATA } from '../utils/masailData';
 
 const Background = () => (
   <>
@@ -16,18 +17,19 @@ const Background = () => (
   </>
 );
 
+const staticCategories = ['All', ...new Set(MASAIL_DATA.map(m => m.category))];
+
 export default function MasailPage() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [masail, setMasail] = useState([]);
-  const [categories, setCategories] = useState(['All']);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchText, setSearchText] = useState(''); // debounced/submit search
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
+  
+  // Start with static dataset so LCP and SEO index render immediately
+  const [masailList, setMasailList] = useState(MASAIL_DATA);
+  const [dbCategories, setDbCategories] = useState([]);
+  const [viewsMap, setViewsMap] = useState({});
 
   usePageMeta(
     'Islamic Masail & Answers — Ask and Learn Rulings | Namazly',
@@ -35,29 +37,37 @@ export default function MasailPage() {
     '/masail'
   );
 
-  const fetchMasail = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await api.get(`/masail?page=${page}&category=${activeCategory}&search=${encodeURIComponent(searchText)}`);
-      if (res.data.success) {
-        setMasail(res.data.masail);
-        setCategories(res.data.categories);
-        setTotalPages(res.data.totalPages);
-        setTotal(res.data.total);
-      } else {
-        setError('Failed to fetch Masail.');
-      }
-    } catch (err) {
-      setError('Connection error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Background fetch to load live view counts and merge newly added/dynamic database items
   useEffect(() => {
-    fetchMasail();
-  }, [page, activeCategory, searchText]);
+    api.get('/masail?limit=250')
+      .then(res => {
+        if (res.data && res.data.success) {
+          const dbMasail = res.data.masail;
+          const merged = [...dbMasail];
+          
+          // Fallback merge: ensure all static items are in the array
+          MASAIL_DATA.forEach(staticItem => {
+            if (!merged.some(m => m.slug === staticItem.slug)) {
+              merged.push(staticItem);
+            }
+          });
+          
+          setMasailList(merged);
+          
+          if (res.data.categories) {
+            setDbCategories(res.data.categories);
+          }
+
+          // Build views map
+          const map = {};
+          dbMasail.forEach(m => {
+            map[m.slug] = m.views;
+          });
+          setViewsMap(map);
+        }
+      })
+      .catch(err => console.error("Error loading live masail database:", err));
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -70,6 +80,38 @@ export default function MasailPage() {
     setActiveCategory(cat);
   };
 
+  // 1. Filter by category and search query
+  const filteredMasail = React.useMemo(() => {
+    return masailList.filter(item => {
+      if (activeCategory !== 'All' && item.category !== activeCategory) {
+        return false;
+      }
+      if (searchText) {
+        const query = searchText.toLowerCase();
+        const questionMatch = item.question?.toLowerCase().includes(query);
+        const answerMatch = item.answer?.toLowerCase().includes(query);
+        return questionMatch || answerMatch;
+      }
+      return true;
+    });
+  }, [masailList, activeCategory, searchText]);
+
+  // 2. Paginate (12 items per page)
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(filteredMasail.length / itemsPerPage) || 1;
+
+  const displayedMasail = React.useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    return filteredMasail.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredMasail, page]);
+
+  const categoriesList = React.useMemo(() => {
+    if (dbCategories.length > 0) {
+      return dbCategories;
+    }
+    return staticCategories;
+  }, [dbCategories]);
+
   return (
     <div className="min-h-screen relative flex flex-col"
       style={{ background: 'linear-gradient(135deg, #e8f5ee 0%, #f5f0e8 60%, #eef2ee 100%)' }}>
@@ -80,6 +122,7 @@ export default function MasailPage() {
         <div className="max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <button
             onClick={() => navigate('/')}
+            aria-label="Go to Dashboard"
             className="flex items-center gap-2 text-sage-700 hover:text-sage-900 transition-colors poppins-regular text-sm font-semibold cursor-pointer bg-transparent border-0"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -95,7 +138,7 @@ export default function MasailPage() {
       </nav>
 
       {/* Main Content Area */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-6 md:py-8 flex-1 w-full space-y-6">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-6 md:py-8 flex-1 w-full space-y-6">
         
         {/* Banner Section */}
         <section className="glass-card rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-3 animate-fade-in bg-gradient-to-br from-sage-50/50 via-white/50 to-cream-50/30">
@@ -137,7 +180,7 @@ export default function MasailPage() {
 
           {/* Categories Horizontal Tabs */}
           <div className="md:col-span-2 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            {categories.map((cat) => (
+            {categoriesList.map((cat) => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
@@ -156,17 +199,7 @@ export default function MasailPage() {
 
         {/* Results Area */}
         <section className="animate-slide-up" style={{ animationDelay: '0.15s' }}>
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-3">
-              <div className="w-10 h-10 rounded-full border-2 border-sage-300 border-t-sage-600 animate-spin" />
-              <p className="poppins-regular text-sage-500 text-xs">Loading rulings…</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-20 text-rose-500 poppins-regular text-sm space-y-2">
-              <p className="text-2xl">⚠️</p>
-              <p className="font-semibold">{error}</p>
-            </div>
-          ) : masail.length === 0 ? (
+          {displayedMasail.length === 0 ? (
             <div className="glass-card rounded-3xl p-10 text-center text-sage-500 poppins-regular text-sm space-y-2">
               <p className="text-3xl">🔍</p>
               <p className="font-semibold">No Masail found matching your criteria.</p>
@@ -175,7 +208,7 @@ export default function MasailPage() {
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {masail.map((item) => (
+                {displayedMasail.map((item) => (
                   <Link
                     key={item._id}
                     to={`/masail/${item.slug}`}
@@ -187,12 +220,12 @@ export default function MasailPage() {
                           {item.category}
                         </span>
                         <span className="text-[10px] text-sage-400 font-semibold flex items-center gap-1">
-                          👁️ {item.views || 0} views
+                          👁️ {viewsMap[item.slug] || 0} views
                         </span>
                       </div>
-                      <h3 className="poppins-regular text-base font-bold text-sage-900 leading-snug group-hover:text-sage-700 transition-colors">
+                      <h2 className="poppins-regular text-base font-bold text-sage-900 leading-snug group-hover:text-sage-700 transition-colors">
                         {item.question}
-                      </h3>
+                      </h2>
                       <p className="poppins-regular text-xs text-sage-600 line-clamp-3 leading-relaxed">
                         {item.answer}
                       </p>
@@ -214,6 +247,7 @@ export default function MasailPage() {
                   <button
                     onClick={() => setPage(prev => Math.max(prev - 1, 1))}
                     disabled={page <= 1}
+                    aria-label="Previous Page"
                     className="p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer"
                   >
                     <HiOutlineChevronLeft className="w-4 h-4" />
@@ -224,6 +258,7 @@ export default function MasailPage() {
                   <button
                     onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={page >= totalPages}
+                    aria-label="Next Page"
                     className="p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer"
                   >
                     <HiOutlineChevronRight className="w-4 h-4" />

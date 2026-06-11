@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 
-export default function AuthModal({ isOpen, onClose }) {
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your_google_client_id_here';
+
+function AuthModalContent({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -24,8 +26,6 @@ export default function AuthModal({ isOpen, onClose }) {
       setError('Google sign-in failed');
     }
   });
-
-  if (!isOpen) return null;
 
   return (
     <div
@@ -103,5 +103,14 @@ export default function AuthModal({ isOpen, onClose }) {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthModal(props) {
+  if (!props.isOpen) return null;
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthModalContent {...props} />
+    </GoogleOAuthProvider>
   );
 }

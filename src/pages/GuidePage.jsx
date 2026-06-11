@@ -58,7 +58,7 @@ export default function GuidePage() {
       </nav>
 
       {/* Main Container */}
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
         
         {/* Banner Card */}
         <section className="glass-card rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-3 animate-fade-in">

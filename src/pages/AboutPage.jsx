@@ -47,7 +47,7 @@ export default function AboutPage() {
         </div>
       </nav>
 
-      <main className="relative z-10 max-w-3xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-3xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in">
         
         {/* Title */}
         <div className="text-center mb-8">

@@ -46,7 +46,7 @@
   /* Skip to main content — screen reader / keyboard nav */
   .skip-link {
     position: absolute;
-    top: -100%;
+    top: -9999px;
     left: 0;
     z-index: 9999;
     padding: 0.5rem 1rem;
@@ -56,10 +56,10 @@
     font-weight: 600;
     border-radius: 0 0 0.5rem 0;
     text-decoration: none;
-    transition: top 0.15s;
   }
-  .skip-link:focus {
+  .skip-link:focus, .skip-link:focus-visible {
     top: 0;
+    outline: none;
   }
 
   /* Focus ring — visible for keyboard navigation */

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const MoonStar = () => (
   <svg
@@ -37,12 +37,12 @@ export default function Footer() {
           
           {/* Col 1: Branding & Description */}
           <div className="md:col-span-5 space-y-4">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+            <Link to="/" className="flex items-center gap-2 no-underline cursor-pointer">
               <MoonStar />
               <span className="poppins-regular text-lg font-bold gradient-text tracking-tight">
                 Namazly
               </span>
-            </div>
+            </Link>
             <p className="poppins-regular text-xs text-sage-500 leading-relaxed max-w-sm">
               Namazly is a privacy-first, distraction-free Qaza Namaz tracking application designed to help Muslims easily calculate, organize, and steadily reduce their missed salah.
             </p>
@@ -50,64 +50,64 @@ export default function Footer() {
 
           {/* Col 2: Quick Links */}
           <div className="md:col-span-3 space-y-3">
-            <h4 className="poppins-regular text-xs font-bold text-sage-800 uppercase tracking-wider">Quick Utilities</h4>
-            <ul className="space-y-2 list-none p-0 m-0">
+            <h3 className="poppins-regular text-xs font-bold text-sage-800 uppercase tracking-wider">Quick Utilities</h3>
+            <ul className="space-y-2 list-none p-0 m-0 text-left">
               <li>
-                <button onClick={() => navigate('/calendar')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/calendar" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Islamic Calendar
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/timings')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/timings" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Namaz Timings
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/hadith')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/hadith" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Hadith of the Day
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/masail')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/masail" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Islamic Masail
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/guide')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/guide" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Usage Guide
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
 
           {/* Col 3: Legal & Support */}
           <div className="md:col-span-4 space-y-3">
-            <h4 className="poppins-regular text-xs font-bold text-sage-800 uppercase tracking-wider">Legal &amp; Support</h4>
-            <ul className="space-y-2 list-none p-0 m-0">
+            <h3 className="poppins-regular text-xs font-bold text-sage-800 uppercase tracking-wider">Legal &amp; Support</h3>
+            <ul className="space-y-2 list-none p-0 m-0 text-left">
               <li>
-                <button onClick={() => navigate('/about')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/about" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   About Namazly
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/contact')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/contact" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Contact &amp; Support
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/faq')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/faq" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Frequently Asked Questions
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/privacy-policy')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/privacy-policy" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Privacy Policy
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => navigate('/disclaimer')} className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors border-0 bg-transparent p-0 cursor-pointer">
+                <Link to="/disclaimer" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Disclaimer
-                </button>
+                </Link>
               </li>
             </ul>
           </div>

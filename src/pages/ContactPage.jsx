@@ -55,7 +55,7 @@ export default function ContactPage() {
         </div>
       </nav>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in w-full">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-4xl mx-auto px-4 md:px-8 py-10 flex-1 flex flex-col justify-center animate-fade-in w-full">
         
         {/* Title */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">

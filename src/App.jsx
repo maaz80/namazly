@@ -3,10 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import InstallPwaModal from './components/InstallPwaModal';
+import Dashboard from './pages/Dashboard';
 
 // ── Code-split routes — loaded on demand ──────────────────
 const LandingPage = lazy(() => import('./pages/LandingPage'));
-const Dashboard   = lazy(() => import('./pages/Dashboard'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const TimingsPage  = lazy(() => import('./pages/TimingsPage'));
 const HadithPage   = lazy(() => import('./pages/HadithPage'));

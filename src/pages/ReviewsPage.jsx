@@ -139,7 +139,7 @@ export default function ReviewsPage() {
       </nav>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-4xl mx-auto px-4 py-8 flex-1 w-full flex flex-col space-y-8">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-4xl mx-auto px-4 py-8 flex-1 w-full flex flex-col space-y-8">
         
         {/* Header Block */}
         <section className="text-center space-y-2 animate-fade-in">

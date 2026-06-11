@@ -100,7 +100,7 @@ export default function HadithPage() {
       </nav>
 
       {/* Main content */}
-      <main className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1 w-full flex flex-col items-center justify-center space-y-6">
+      <main id="main-content" tabIndex="-1" className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1 w-full flex flex-col items-center justify-center space-y-6">
         
         {/* Toggle Controls */}
         <div className="flex items-center gap-2 glass-card-deep rounded-2xl p-1 border border-white/40 shadow-sm animate-fade-in">

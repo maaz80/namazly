@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import QazaCalculator from '../components/QazaCalculator';
 import PrayerTracker from '../components/PrayerTracker';
 import StatsSummary from '../components/StatsSummary';
-import AuthModal from '../components/AuthModal';
+
+const AuthModal = lazy(() => import('../components/AuthModal'));
 import api from '../utils/api';
 import { PRAYERS } from '../utils/constants';
 import { HiStar, HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineBookOpen } from 'react-icons/hi';
@@ -348,6 +349,7 @@ export default function Dashboard() {
       <main
         className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10"
         id="main-content"
+        tabIndex="-1"
         aria-label="Qaza namaz manager dashboard"
       >
         {/* Welcome banner */}
@@ -600,10 +602,14 @@ export default function Dashboard() {
       <Footer />
 
       {/* On-Demand Authentication Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
+      {isAuthModalOpen && (
+        <Suspense fallback={null}>
+          <AuthModal
+            isOpen={isAuthModalOpen}
+            onClose={() => setIsAuthModalOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* Clear All Data Confirmation Modal */}
       {showClearModal && (

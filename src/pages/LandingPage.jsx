@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
@@ -110,8 +110,10 @@ function GoogleSignInButton({ onClick, isLoading }) {
   );
 }
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your_google_client_id_here';
+
 /* ── Landing Page ────────────────────────────────────────── */
-export default function LandingPage() {
+function LandingPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError]         = useState('');
   const { login }  = useAuth();
@@ -178,6 +180,7 @@ export default function LandingPage() {
       <main
         className="relative z-10 flex-1 flex items-start justify-center px-4 sm:px-6 pb-8 sm:py-3 pt-4"
         id="main-content"
+        tabIndex="-1"
       >
         <div className="max-w-4xl w-full text-center animate-fade-in">
 
@@ -308,5 +311,13 @@ export default function LandingPage() {
         <p>Built with sincerity &bull; Namazly &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <LandingPageContent />
+    </GoogleOAuthProvider>
   );
 }

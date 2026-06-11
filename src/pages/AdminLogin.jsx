@@ -60,7 +60,7 @@ export default function AdminLogin() {
       style={{ background: 'linear-gradient(135deg, #1a372d 0%, #255342 30%, #1f4336 60%, #0f2219 100%)' }}>
       <Background />
 
-      <div className="relative z-10 w-full max-w-md animate-fade-in">
+      <main id="main-content" tabIndex="-1" className="relative z-10 w-full max-w-md animate-fade-in">
         {/* Admin badge */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-emerald-300 text-xs font-semibold poppins-regular mb-4">
@@ -168,7 +168,7 @@ export default function AdminLogin() {
         <p className="text-center text-white/20 text-xs poppins-regular mt-6">
           Restricted area · Authorized personnel only
         </p>
-      </div>
+      </main>
     </div>
   );
 }
