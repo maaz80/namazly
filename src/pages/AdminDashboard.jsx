@@ -634,6 +634,45 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* Page Views Table */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-white/10">
+                <h3 className="text-sm font-semibold text-white/70 poppins-regular flex items-center gap-2">
+                  <HiOutlineGlobe className="w-4 h-4 text-emerald-400" />
+                  Page Views (Page-wise Visit Counts)
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-white/10 bg-white/5 text-white/40 uppercase tracking-wider font-semibold poppins-regular">
+                      <th className="px-5 py-3">Page Path (URL)</th>
+                      <th className="px-5 py-3 text-right">Views</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-white/80 poppins-regular">
+                    {stats.pageViews?.map((pv, i) => (
+                      <tr key={pv._id || i} className="hover:bg-white/5 transition-colors">
+                        <td className="px-5 py-3 font-mono text-emerald-300 truncate max-w-xs sm:max-w-lg" title={pv.path}>
+                          {pv.path}
+                        </td>
+                        <td className="px-5 py-3 text-right font-semibold text-white">
+                          {pv.views.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                    {(!stats.pageViews || stats.pageViews.length === 0) && (
+                      <tr>
+                        <td colSpan="2" className="px-5 py-8 text-center text-white/20">
+                          No page views tracked yet.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {/* Recent Users */}
             <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">

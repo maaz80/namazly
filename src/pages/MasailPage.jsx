@@ -22,8 +22,14 @@ const staticCategories = ['All', ...new Set(MASAIL_DATA.map(m => m.category))];
 export default function MasailPage() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchText, setSearchText] = useState(''); // debounced/submit search
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('q') || '';
+  });
+  const [searchText, setSearchText] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('q') || '';
+  });
   const [page, setPage] = useState(1);
   
   // Start with static dataset so LCP and SEO index render immediately

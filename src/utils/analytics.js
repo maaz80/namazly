@@ -91,3 +91,24 @@ export const trackNamazManagement = async () => {
     console.error('Analytics manage error:', err);
   }
 };
+
+// Local cache for deduplication
+let lastTrackedPath = '';
+let lastTrackedTime = 0;
+
+// Track pageview path dynamically (deduplicated to prevent StrictMode double-counts)
+export const trackPageView = async (path) => {
+  const now = Date.now();
+  if (path === lastTrackedPath && (now - lastTrackedTime) < 1000) {
+    return; // Skip duplicate tracking within 1 second
+  }
+  lastTrackedPath = path;
+  lastTrackedTime = now;
+
+  try {
+    await api.post('/analytics/pageview', { path });
+  } catch (err) {
+    console.error('Analytics pageview error:', err);
+  }
+};
+

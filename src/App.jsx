@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import InstallPwaModal from './components/InstallPwaModal';
@@ -21,6 +21,8 @@ const AdminLogin   = lazy(() => import('./pages/AdminLogin'));
 const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
 const MasailPage   = lazy(() => import('./pages/MasailPage'));
 const MaslaDetailPage = lazy(() => import('./pages/MaslaDetailPage'));
+const ZakatCalculatorPage = lazy(() => import('./pages/ZakatCalculatorPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -57,6 +59,19 @@ const PageLoader = () => (
 // ── Routes ────────────────────────────────────────────────
 const AppRoutes = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Only track if the React router path matches the actual browser address bar path
+    // (This avoids tracking the home page "/" during transitional lazy-loading / initial router sync)
+    if (location.pathname === window.location.pathname) {
+      import('./utils/analytics')
+        .then((m) => {
+          m.trackPageView(location.pathname);
+        })
+        .catch((err) => console.error('Failed to track pageview:', err));
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     // Wait 2.5 seconds (after load and interaction CPU is idle) before fetching analytics
@@ -150,9 +165,10 @@ const AppRoutes = () => {
       />
       <Route path="/masail" element={<MasailPage />} />
       <Route path="/masail/:slug" element={<MaslaDetailPage />} />
+      <Route path="/zakat-calculator" element={<ZakatCalculatorPage />} />
       <Route path="/1adminMs1" element={<AdminLogin />} />
       <Route path="/1adminMs1/dashboard" element={<AdminDash />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   </Suspense>
 );

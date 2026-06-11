@@ -5,6 +5,3 @@ Disallow: /api/
 
 # Sitemap location
 Sitemap: https://namazly.in/sitemap.xml
-
-# Crawl-delay for polite bots
-Crawl-delay: 10

@@ -21,7 +21,8 @@ const staticPages = [
   { path: '/faq', priority: '0.7', changefreq: 'weekly' },
   { path: '/privacy-policy', priority: '0.4', changefreq: 'monthly' },
   { path: '/disclaimer', priority: '0.4', changefreq: 'monthly' },
-  { path: '/masail', priority: '0.9', changefreq: 'daily' }
+  { path: '/masail', priority: '0.9', changefreq: 'daily' },
+  { path: '/zakat-calculator', priority: '0.8', changefreq: 'weekly' }
 ];
 
 const today = new Date().toISOString().split('T')[0];

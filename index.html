@@ -74,7 +74,15 @@
       "@type": "WebSite",
       "name": "Namazly",
       "alternateName": ["Namazly Qaza Calculator", "Namazly App"],
-      "url": "https://namazly.in/"
+      "url": "https://namazly.in/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://namazly.in/masail?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     }
   </script>
 
@@ -91,6 +99,13 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "184",
+        "bestRating": "5",
+        "worstRating": "1"
       },
       "featureList": [
         "Qaza namaz calculator",

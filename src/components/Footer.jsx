@@ -73,6 +73,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/zakat-calculator" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
+                  Zakat Calculator
+                </Link>
+              </li>
+              <li>
                 <Link to="/guide" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Usage Guide
                 </Link>
