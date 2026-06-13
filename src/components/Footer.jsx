@@ -78,6 +78,26 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/tasbih" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
+                  Tasbih Counter
+                </Link>
+              </li>
+              <li>
+                <Link to="/halal-checker" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
+                  Halal Food Checker
+                </Link>
+              </li>
+              <li>
+                <Link to="/qibla" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
+                  Qibla Finder
+                </Link>
+              </li>
+              <li>
+                <Link to="/nearby-mosques" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
+                  Nearby Mosques
+                </Link>
+              </li>
+              <li>
                 <Link to="/guide" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Usage Guide
                 </Link>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { HiMenu, HiX, HiOutlineCalendar, HiOutlineClock, HiOutlineLogout, HiChevronDown, HiOutlineBookOpen, HiOutlineStar, HiOutlineChatAlt2, HiOutlineQuestionMarkCircle, HiOutlineCalculator } from 'react-icons/hi';
-import { TbListDetails } from "react-icons/tb";
+import { TbListDetails, TbCompass, TbCircleDot, TbSearch, TbMap } from "react-icons/tb";
 import { MdOutlineContacts } from "react-icons/md";
 import { getOptimizedAvatar } from '../utils/avatar';
 
@@ -187,7 +187,7 @@ export default function Navbar({ onAuthClick }) {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="w-64 absolute right-4 md:right-72 top-16 glass-dropdown rounded-2xl p-4 flex flex-col space-y-3 shadow-xl border border-white/80 animate-scale-in origin-top-right z-50"
+          className="w-64 absolute right-4 md:right-72 top-16 glass-dropdown rounded-2xl p-4 flex flex-col space-y-3 shadow-xl border border-white/80 animate-scale-in origin-top-right z-50 max-h-[calc(100vh-5rem)] overflow-y-auto"
         >
           <a
             href="/calendar"
@@ -214,14 +214,6 @@ export default function Navbar({ onAuthClick }) {
             <span>Hadith of the Day</span>
           </a>
           <a
-            href="/reviews"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
-          >
-            <HiOutlineChatAlt2 className="text-xl text-sage-500" />
-            <span>User Reviews</span>
-          </a>
-          <a
             href="/masail"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
@@ -238,6 +230,38 @@ export default function Navbar({ onAuthClick }) {
             <span>Zakat Calculator</span>
           </a>
           <a
+            href="/tasbih"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <TbCircleDot className="text-xl text-sage-500" />
+            <span>Tasbih Counter</span>
+          </a>
+          <a
+            href="/halal-checker"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <TbSearch className="text-xl text-sage-500" />
+            <span>Halal Food Checker</span>
+          </a>
+          <a
+            href="/qibla"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <TbCompass className="text-xl text-sage-500" />
+            <span>Qibla Finder</span>
+          </a>
+          <a
+            href="/nearby-mosques"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <TbMap className="text-xl text-sage-500" />
+            <span>Nearby Mosques</span>
+          </a>
+          <a
             href="/guide"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
@@ -252,6 +276,14 @@ export default function Navbar({ onAuthClick }) {
           >
             <HiOutlineQuestionMarkCircle className="text-xl text-sage-500" />
             <span>FAQs</span>
+          </a>
+          <a
+            href="/reviews"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/60 text-sage-800 poppins-regular text-sm font-semibold transition-all duration-150"
+          >
+            <HiOutlineChatAlt2 className="text-xl text-sage-500" />
+            <span>User Reviews</span>
           </a>
           
           {/* About link */}

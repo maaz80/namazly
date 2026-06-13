@@ -22,6 +22,10 @@ const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
 const MasailPage   = lazy(() => import('./pages/MasailPage'));
 const MaslaDetailPage = lazy(() => import('./pages/MaslaDetailPage'));
 const ZakatCalculatorPage = lazy(() => import('./pages/ZakatCalculatorPage'));
+const TasbihPage = lazy(() => import('./pages/TasbihPage'));
+const HalalCheckerPage = lazy(() => import('./pages/HalalCheckerPage'));
+const QiblaFinderPage = lazy(() => import('./pages/QiblaFinderPage'));
+const MosqueFinderPage = lazy(() => import('./pages/MosqueFinderPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // ── Route guards ──────────────────────────────────────────
@@ -166,6 +170,10 @@ const AppRoutes = () => {
       <Route path="/masail" element={<MasailPage />} />
       <Route path="/masail/:slug" element={<MaslaDetailPage />} />
       <Route path="/zakat-calculator" element={<ZakatCalculatorPage />} />
+      <Route path="/tasbih" element={<TasbihPage />} />
+      <Route path="/halal-checker" element={<HalalCheckerPage />} />
+      <Route path="/qibla" element={<QiblaFinderPage />} />
+      <Route path="/nearby-mosques" element={<MosqueFinderPage />} />
       <Route path="/1adminMs1" element={<AdminLogin />} />
       <Route path="/1adminMs1/dashboard" element={<AdminDash />} />
       <Route path="*" element={<NotFoundPage />} />

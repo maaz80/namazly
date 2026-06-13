@@ -22,7 +22,11 @@ const staticPages = [
   { path: '/privacy-policy', priority: '0.4', changefreq: 'monthly' },
   { path: '/disclaimer', priority: '0.4', changefreq: 'monthly' },
   { path: '/masail', priority: '0.9', changefreq: 'daily' },
-  { path: '/zakat-calculator', priority: '0.8', changefreq: 'weekly' }
+  { path: '/zakat-calculator', priority: '0.8', changefreq: 'weekly' },
+  { path: '/tasbih', priority: '0.8', changefreq: 'weekly' },
+  { path: '/halal-checker', priority: '0.8', changefreq: 'weekly' },
+  { path: '/qibla', priority: '0.8', changefreq: 'weekly' },
+  { path: '/nearby-mosques', priority: '0.8', changefreq: 'weekly' }
 ];
 
 const today = new Date().toISOString().split('T')[0];
