@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 import api from '../utils/api';
 import { HiOutlineSearch, HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
-import { MASAIL_DATA } from '../utils/masailData';
 
 const Background = () => (
   <>
@@ -16,8 +15,6 @@ const Background = () => (
       style={{ backgroundImage: 'radial-gradient(#255342 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
   </>
 );
-
-const staticCategories = ['All', ...new Set(MASAIL_DATA.map(m => m.category))];
 
 export default function MasailPage() {
   const navigate = useNavigate();
@@ -32,9 +29,8 @@ export default function MasailPage() {
   });
   const [page, setPage] = useState(1);
   
-  // Start with static dataset so LCP and SEO index render immediately
-  const [masailList, setMasailList] = useState(MASAIL_DATA);
-  const [dbCategories, setDbCategories] = useState([]);
+  const [masailList, setMasailList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [viewsMap, setViewsMap] = useState({});
 
   usePageMeta(
@@ -43,36 +39,28 @@ export default function MasailPage() {
     '/masail'
   );
 
-  // Background fetch to load live view counts and merge newly added/dynamic database items
+  // Load from local static JSON and fetch view counts from the server
   useEffect(() => {
-    api.get('/masail?limit=250')
+    // 1. Fetch the 5000 masail from public JSON
+    fetch('/masail.json')
+      .then(res => res.json())
+      .then(data => {
+        setMasailList(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error loading masail.json:", err);
+        setLoading(false);
+      });
+
+    // 2. Fetch the view counts map from database
+    api.get('/masail/views')
       .then(res => {
         if (res.data && res.data.success) {
-          const dbMasail = res.data.masail;
-          const merged = [...dbMasail];
-          
-          // Fallback merge: ensure all static items are in the array
-          MASAIL_DATA.forEach(staticItem => {
-            if (!merged.some(m => m.slug === staticItem.slug)) {
-              merged.push(staticItem);
-            }
-          });
-          
-          setMasailList(merged);
-          
-          if (res.data.categories) {
-            setDbCategories(res.data.categories);
-          }
-
-          // Build views map
-          const map = {};
-          dbMasail.forEach(m => {
-            map[m.slug] = m.views;
-          });
-          setViewsMap(map);
+          setViewsMap(res.data.viewsMap || {});
         }
       })
-      .catch(err => console.error("Error loading live masail database:", err));
+      .catch(err => console.error("Error loading live views map:", err));
   }, []);
 
   const handleSearchSubmit = (e) => {
@@ -87,7 +75,7 @@ export default function MasailPage() {
   };
 
   // 1. Filter by category and search query
-  const filteredMasail = React.useMemo(() => {
+  const filteredMasail = useMemo(() => {
     return masailList.filter(item => {
       if (activeCategory !== 'All' && item.category !== activeCategory) {
         return false;
@@ -106,17 +94,15 @@ export default function MasailPage() {
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredMasail.length / itemsPerPage) || 1;
 
-  const displayedMasail = React.useMemo(() => {
+  const displayedMasail = useMemo(() => {
     const startIndex = (page - 1) * itemsPerPage;
     return filteredMasail.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredMasail, page]);
 
-  const categoriesList = React.useMemo(() => {
-    if (dbCategories.length > 0) {
-      return dbCategories;
-    }
-    return staticCategories;
-  }, [dbCategories]);
+  const categoriesList = useMemo(() => {
+    const categories = new Set(masailList.map(m => m.category));
+    return ['All', ...categories];
+  }, [masailList]);
 
   return (
     <div className="min-h-screen relative flex flex-col"
@@ -147,15 +133,15 @@ export default function MasailPage() {
       <main id="main-content" tabIndex="-1" className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-6 md:py-8 flex-1 w-full space-y-6">
         
         {/* Banner Section */}
-        <section className="glass-card rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-3 animate-fade-in bg-gradient-to-br from-sage-50/50 via-white/50 to-cream-50/30">
-          <span className="px-3 py-1 rounded-full bg-sage-200/50 text-sage-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">
-            Deeni Masail
+        <section className="glass-card rounded-3xl p-6 sm:p-8 shadow-sm text-center space-y-3 bg-gradient-to-br from-sage-50/50 via-white/50 to-cream-50/30">
+          <span className="px-3 py-1 rounded-full bg-emerald-200/50 text-emerald-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">
+            📖 Fatawa Usmani (Mufti Taqi Usmani)
           </span>
-          <h1 className="poppins-regular text-3xl sm:text-4xl font-black text-sage-900 leading-tight">
+          <h1 className="poppins-regular text-2xl sm:text-3xl font-black text-sage-900 leading-tight">
             Authentic Answers to Your Queries
           </h1>
-          <p className="poppins-regular text-xs sm:text-sm text-sage-600 max-w-lg mx-auto">
-            Find rulings based on authentic books and Islamic authorities regarding Wazu, Salah, and daily life.
+          <p className="poppins-regular text-xs sm:text-sm text-sage-700 max-w-2xl mx-auto leading-relaxed">
+            Is website par maujood tamam deeni masail aur unke jawabaat maroof Islamic jurist aur scholar <strong>Mufti Muhammad Taqi Usmani Sahab</strong> ki mashhoor kitab <strong>'Fatawa Usmani'</strong> se liye gaye hain. Yeh masail Darul Uloom Karachi ke registers se compile kiye gaye hain, jisme aapko Namaz, Wazu, aur Ghusl ke alawa jadeed (modern) masail aur Islamic banking ke hawale se authentic Shariah rulings milengi.
           </p>
         </section>
 
@@ -205,7 +191,33 @@ export default function MasailPage() {
 
         {/* Results Area */}
         <section className="animate-slide-up" style={{ animationDelay: '0.15s' }}>
-          {displayedMasail.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="glass-card rounded-3xl p-5 shadow-sm flex flex-col justify-between text-left h-56 shimmer-block"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="w-16 h-4 bg-sage-200/50 rounded-full" />
+                      <div className="w-12 h-3 bg-sage-200/30 rounded-lg" />
+                    </div>
+                    <div className="w-3/4 h-5 bg-sage-200/60 rounded-lg" />
+                    <div className="space-y-1.5">
+                      <div className="w-full h-3.5 bg-sage-200/40 rounded" />
+                      <div className="w-full h-3.5 bg-sage-200/40 rounded" />
+                      <div className="w-2/3 h-3.5 bg-sage-200/40 rounded" />
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-sage-100/40 flex justify-between items-center">
+                    <div className="w-20 h-3 bg-sage-200/30 rounded-lg" />
+                    <div className="w-16 h-3 bg-sage-200/50 rounded-lg" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : displayedMasail.length === 0 ? (
             <div className="glass-card rounded-3xl p-10 text-center text-sage-500 poppins-regular text-sm space-y-2">
               <p className="text-3xl">🔍</p>
               <p className="font-semibold">No Masail found matching your criteria.</p>
@@ -237,7 +249,7 @@ export default function MasailPage() {
                       </p>
                     </div>
 
-                    <div className="pt-4 mt-4 border-t border-sage-100/40 flex items-center justify-between text-[10px] text-sage-400 font-medium">
+                    <div className="pt-4 mt-4 border-t border-sage-100/40 flex flex-col md:flex-row gap-3 items-end md:items-center justify-between text-[10px] text-sage-400 font-medium">
                       <span>Ref: <strong className="text-sage-500">{item.reference || 'N/A'}</strong></span>
                       <span className="text-sage-600 font-bold group-hover:translate-x-1 transition-transform flex items-center gap-0.5">
                         Read Answer <span className="text-xs">&rarr;</span>

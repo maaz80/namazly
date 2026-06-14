@@ -82,11 +82,11 @@ export default function Footer() {
                   Tasbih Counter
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/halal-checker" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Halal Food Checker
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/qibla" className="poppins-regular text-xs text-sage-500 hover:text-sage-700 transition-colors no-underline cursor-pointer">
                   Qibla Finder

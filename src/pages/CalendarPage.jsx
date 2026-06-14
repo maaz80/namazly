@@ -35,6 +35,12 @@ const ISLAMIC_EVENTS = [
   { name: 'Eid al-Adha', month: 'dhualhijjah', day: 10, emoji: '🐑', desc: 'The Festival of Sacrifice (10 Dhu al-Hijjah).' }
 ];
 
+const ISLAMIC_MONTHS = [
+  'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
+  'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
+  'Ramadan', 'Shawwal', "Dhu al-Qi'dah", "Dhu al-Hijjah"
+];
+
 const getNormalizedMonthKey = (monthStr) => {
   const norm = monthStr.toLowerCase();
   if (norm.includes('muharram')) return 'muharram';
@@ -97,12 +103,14 @@ export default function CalendarPage() {
 
     try {
       const dayFormatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', { day: 'numeric' });
-      const monthFormatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', { month: 'long' });
+      const monthFormatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', { month: 'numeric' });
       const yearFormatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', { year: 'numeric' });
 
       const hDay = parseInt(dayFormatter.format(date), 10) || 1;
-      const hMonthStr = monthFormatter.format(date);
-      const hYearStr = yearFormatter.format(date).replace('AH', '').trim();
+      const hMonthNum = parseInt(monthFormatter.format(date), 10) || 1;
+      const hYearStr = yearFormatter.format(date).replace(/[^0-9]/g, '').trim();
+
+      const hMonthStr = ISLAMIC_MONTHS[hMonthNum - 1] || 'Ramadan';
 
       return {
         day: hDay,

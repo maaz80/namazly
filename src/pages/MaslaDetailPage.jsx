@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 import api from '../utils/api';
 import { HiOutlineArrowLeft, HiOutlineChevronRight, HiOutlineBookOpen, HiOutlineUser } from 'react-icons/hi';
-import { MASAIL_DATA } from '../utils/masailData';
 
 const Background = () => (
   <>
@@ -21,16 +20,9 @@ export default function MaslaDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   
-  // Start with static masla so LCP is instant and SEO index gets content immediately
-  const [masla, setMasla] = useState(() => {
-    return MASAIL_DATA.find(m => m.slug === slug) || null;
-  });
-  const [related, setRelated] = useState(() => {
-    const staticMasla = MASAIL_DATA.find(m => m.slug === slug);
-    if (!staticMasla) return [];
-    return MASAIL_DATA.filter(m => m.category === staticMasla.category && m.slug !== slug).slice(0, 5);
-  });
-  const [loading, setLoading] = useState(!masla);
+  const [masla, setMasla] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [views, setViews] = useState(0);
 
@@ -41,43 +33,27 @@ export default function MaslaDetailPage() {
   usePageMeta(pageTitle, pageDesc, `/masail/${slug}`);
 
   useEffect(() => {
-    // 1. Initial lookup from static MASAIL_DATA for fast render
-    const staticMasla = MASAIL_DATA.find(m => m.slug === slug);
-    if (staticMasla) {
-      setMasla(staticMasla);
-      setRelated(MASAIL_DATA.filter(m => m.category === staticMasla.category && m.slug !== slug).slice(0, 5));
-      setError('');
-      setLoading(false);
-      setViews(staticMasla.views || 0);
-    } else {
-      setMasla(null);
-      setRelated([]);
-      setLoading(true);
-      setError('');
-      setViews(0);
-    }
+    setLoading(true);
+    setError('');
 
-    // 2. Fetch/update details from database in background (or foreground if new dynamic masla)
+    // Fetch the specific masla and related rulings directly from the API in a single request (under 1 KB)
     api.get(`/masail/detail/${slug}`)
       .then(res => {
         if (res.data && res.data.success) {
           setMasla(res.data.masla);
-          setRelated(res.data.related);
-          setViews(res.data.masla.views);
+          setRelated(res.data.related || []);
+          setViews(res.data.views || 0);
           setError('');
         } else {
-          if (!staticMasla) {
-            setError('Ruling not found.');
-          }
+          setMasla(null);
+          setRelated([]);
+          setError(res.data?.message || 'Ruling not found.');
         }
+        setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching live masla details:', err);
-        if (!staticMasla) {
-          setError('Ruling not found or connection error.');
-        }
-      })
-      .finally(() => {
+        console.error('Error loading masla detail:', err);
+        setError(err.response?.data?.message || 'Error loading ruling details.');
         setLoading(false);
       });
 
@@ -113,9 +89,18 @@ export default function MaslaDetailPage() {
       <main id="main-content" tabIndex="-1" className="relative z-10 max-w-3xl mx-auto px-4 py-6 md:py-8 flex-1 w-full space-y-6">
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-3">
-            <div className="w-10 h-10 rounded-full border-2 border-sage-300 border-t-sage-600 animate-spin" />
-            <p className="poppins-regular text-sage-500 text-xs">Loading ruling details…</p>
+          <div className="space-y-6">
+            {/* Category breadcrumb skeleton */}
+            <div className="flex items-center justify-between text-xs">
+              <div className="w-24 h-6 bg-sage-200/50 rounded-full shimmer-block" />
+              <div className="w-20 h-4 bg-sage-200/30 rounded-lg shimmer-block" />
+            </div>
+
+            {/* Question Box skeleton */}
+            <div className="glass-card rounded-3xl p-5 sm:p-6 border border-white/80 h-28 shimmer-block" />
+
+            {/* Answer Box skeleton */}
+            <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/80 h-72 shimmer-block" />
           </div>
         ) : error ? (
           <div className="text-center py-32 text-rose-500 poppins-regular text-sm space-y-2">
@@ -221,7 +206,7 @@ export default function MaslaDetailPage() {
 
       </main>
 
-      <Footer />
+      {!loading && <Footer />}
     </div>
   );
 }

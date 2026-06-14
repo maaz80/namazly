@@ -241,13 +241,13 @@ export default function MosqueFinderPage() {
         {/* Banner info */}
         <section className="text-center space-y-1">
           <span className="px-3 py-1 rounded-full bg-sage-200/50 text-sage-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">
-            Masjid Finder
+            Nearby Big-Named Mosques (प्रमुख मस्जिदें)
           </span>
           <h1 className="poppins-regular text-xl sm:text-2xl font-black text-sage-900">
-            Nearby Mosque Finder
+            Nearby Big-Named Mosques
           </h1>
           <p className="poppins-regular text-[11px] text-sage-500 max-w-xs mx-auto leading-normal">
-            Locate mosques and prayer halls around your current position instantly.
+            Locate historical and major big-named mosques around your current position.
           </p>
         </section>
 
@@ -385,6 +385,26 @@ export default function MosqueFinderPage() {
                       </a>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* Google Maps Fallback Notice */}
+              {coordinates && (
+                <div className="glass-card rounded-3xl p-5 border border-white/80 text-[11px] text-sage-500 leading-relaxed space-y-2 mt-4 text-center">
+                  <p className="font-semibold text-sage-700">
+                    💡 Missing local neighborhood mosques?
+                  </p>
+                  <p>
+                    OpenStreetMap is a volunteer-mapped database. If some smaller mohalla masjids are not showing, it means they haven't been drawn on the public map database yet. You can see all commercial listings on Google Maps:
+                  </p>
+                  <a
+                    href={`https://www.google.com/maps/search/mosque+near+me/@${coordinates.lat},${coordinates.lon},15z`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 shadow-md transition-all text-decoration-none border-0 cursor-pointer"
+                  >
+                    🔍 Search on Google Maps (गूगल मैप्स पर देखें)
+                  </a>
                 </div>
               )}
             </div>

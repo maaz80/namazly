@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
@@ -55,51 +55,6 @@ const SCHOOLS = [
   { id: '1', name: 'Hanafi' }
 ];
 
-const LOCATION_DATA = {
-  "India": [
-    "Jaunpur", "Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", "Surat", 
-    "Pune", "Jaipur", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", 
-    "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad", "Meerut", "Rajkot", 
-    "Varanasi", "Srinagar", "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai", "Ranchi", "Howrah", 
-    "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", 
-    "Guwahati", "Chandigarh", "Solapur", "Bareilly", "Moradabad", "Mysore", "Gurgaon", "Aligarh", 
-    "Jalandhar", "Tiruchirappalli", "Bhubaneswar", "Salem", "Mira-Bhayandar", "Warangal", "Guntur", 
-    "Bhiwandi", "Saharanpur", "Gorakhpur", "Bikaner", "Amravati", "Noida", "Jamshedpur", "Bhilai", 
-    "Cuttack", "Firozabad", "Kochi", "Nellore", "Bhavnagar", "Dehradun", "Durgapur", "Asansol", 
-    "Rourkela", "Nanded", "Kolhapur", "Ajmer", "Akola", "Gulbarga", "Jamnagar", "Ujjain", "Jhansi", 
-    "Ulhasnagar", "Jammu", "Mangalore", "Belgaum", "Tirunelveli", "Malegaon", "Gaya", "Jalgaon", 
-    "Udaipur", "Kozhikode", "Akbarpur", "Muzaffarnagar", "Rampur", "Patiala"
-  ],
-  "Pakistan": [
-    "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Gujranwala", "Peshawar", "Multan", "Hyderabad", 
-    "Islamabad", "Quetta", "Bahawalpur", "Sargodha", "Sialkot", "Sukkur"
-  ],
-  "Bangladesh": [
-    "Dhaka", "Chittagong", "Khulna", "Sylhet", "Rajshahi", "Mymensingh", "Barisal", "Rangpur"
-  ],
-  "Saudi Arabia": [
-    "Makkah", "Madinah", "Riyadh", "Jeddah", "Dammam", "Taif", "Tabuk", "Buraydah", "Al Khobar"
-  ],
-  "United Arab Emirates": [
-    "Dubai", "Abu Dhabi", "Sharjah", "Al Ain", "Ajman"
-  ],
-  "United Kingdom": [
-    "London", "Birmingham", "Manchester", "Glasgow", "Newcastle", "Sheffield", "Liverpool", "Leeds"
-  ],
-  "United States": [
-    "New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas"
-  ],
-  "Canada": [
-    "Toronto", "Montreal", "Vancouver", "Calgary", "Edmonton", "Ottawa"
-  ],
-  "Australia": [
-    "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Canberra"
-  ],
-  "Turkey": [
-    "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Konya"
-  ]
-};
-
 const parsePrayerTime = (timeStr, baseDate = new Date()) => {
   const [hours, minutes] = timeStr.split(':').map(Number);
   const date = new Date(baseDate);
@@ -113,30 +68,26 @@ export default function TimingsPage() {
   const [error, setError] = useState('');
   
   // Location states
-  const [city, setCity] = useState(() => localStorage.getItem('namazly_city') || 'Mumbai');
+  const [city, setCity] = useState(() => localStorage.getItem('namazly_city') || 'Jaunpur');
+  const [stateName, setStateName] = useState(() => localStorage.getItem('namazly_state') || 'Uttar Pradesh');
   const [country, setCountry] = useState(() => localStorage.getItem('namazly_country') || 'India');
   const [usingCoords, setUsingCoords] = useState(false);
   const [coords, setCoords] = useState(null);
 
   // Dropdown / Form selection states
-  const [selectedCountry, setSelectedCountry] = useState(() => {
-    return LOCATION_DATA[country] ? country : 'Other';
-  });
-  const [selectedCity, setSelectedCity] = useState(() => {
-    if (LOCATION_DATA[country] && LOCATION_DATA[country].includes(city)) {
-      return city;
-    }
-    return 'Other';
-  });
-  const [customCountry, setCustomCountry] = useState(() => {
-    return LOCATION_DATA[country] ? '' : country;
-  });
-  const [customCity, setCustomCity] = useState(() => {
-    if (LOCATION_DATA[country] && LOCATION_DATA[country].includes(city)) {
-      return '';
-    }
-    return city;
-  });
+  const [selectedCountry, setSelectedCountry] = useState(country);
+  const [selectedState, setSelectedState] = useState(stateName);
+  const [selectedCity, setSelectedCity] = useState(city);
+
+  const [isCustomInput, setIsCustomInput] = useState(false);
+  const [customCountry, setCustomCountry] = useState('');
+  const [customState, setCustomState] = useState('');
+  const [customCity, setCustomCity] = useState('');
+
+  // Country, State, City fetching lists
+  const [countriesList, setCountriesList] = useState([]);
+  const [citiesList, setCitiesList] = useState([]);
+  const [citiesLoading, setCitiesLoading] = useState(false);
 
   // Timing Calculation states
   const [method, setMethod] = useState(() => localStorage.getItem('namazly_timing_method') || '1');
@@ -157,45 +108,83 @@ export default function TimingsPage() {
     '/timings'
   );
 
-  // Keep dropdown selection states in sync with active city/country
+  // Load all countries and states on mount
   useEffect(() => {
-    if (LOCATION_DATA[country]) {
-      setSelectedCountry(country);
-      if (LOCATION_DATA[country].includes(city)) {
-        setSelectedCity(city);
-        setCustomCity('');
-      } else {
-        setSelectedCity('Other');
-        setCustomCity(city);
-      }
-      setCustomCountry('');
-    } else {
-      setSelectedCountry('Other');
-      setCustomCountry(country);
-      setSelectedCity('Other');
-      setCustomCity(city);
-    }
-  }, [city, country]);
+    fetch('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => res.json())
+      .then(resData => {
+        if (!resData.error && resData.data) {
+          const sorted = resData.data.sort((a, b) => a.name.localeCompare(b.name));
+          setCountriesList(sorted);
+        }
+      })
+      .catch(err => console.error("Error fetching countries/states list:", err));
+  }, []);
 
-  const handleCountryChange = (e) => {
-    const c = e.target.value;
-    setSelectedCountry(c);
-    if (c !== 'Other') {
-      const citiesOfCountry = LOCATION_DATA[c];
-      setSelectedCity(citiesOfCountry[0]);
-      setCustomCountry('');
-      setCustomCity('');
-    } else {
-      setSelectedCity('Other');
-      setCustomCountry('');
-      setCustomCity('');
+  // Compute states for selected country
+  const statesList = useMemo(() => {
+    const found = countriesList.find(c => c.name === selectedCountry);
+    if (!found || !found.states) return [];
+    return [...found.states].sort((a, b) => a.name.localeCompare(b.name));
+  }, [countriesList, selectedCountry]);
+
+  // Load cities when state changes
+  useEffect(() => {
+    if (!selectedCountry || !selectedState) {
+      setCitiesList([]);
+      return;
     }
-  };
+    setCitiesLoading(true);
+    fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        country: selectedCountry,
+        state: selectedState
+      })
+    })
+      .then(res => res.json())
+      .then(resData => {
+        if (!resData.error && resData.data) {
+          const sorted = resData.data.sort((a, b) => a.localeCompare(b));
+          setCitiesList(sorted);
+        } else {
+          setCitiesList([]);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching cities:", err);
+        setCitiesList([]);
+      })
+      .finally(() => {
+        setCitiesLoading(false);
+      });
+  }, [selectedCountry, selectedState]);
+
+  // Automatically select first city when list changes
+  useEffect(() => {
+    if (citiesList.length > 0) {
+      if (!citiesList.includes(selectedCity)) {
+        setSelectedCity(citiesList[0]);
+      }
+    } else {
+      setSelectedCity('');
+    }
+  }, [citiesList]);
+
+  // Sync dropdown inputs when active location changes (e.g. from GPS)
+  useEffect(() => {
+    setSelectedCountry(country);
+    setSelectedState(stateName);
+    setSelectedCity(city);
+  }, [city, stateName, country]);
 
   // Fetch timings by Coords or City/Country
-  const fetchTimings = async (lat = null, lon = null, targetCity = city, targetCountry = country) => {
-    const latVal = lat !== null ? lat : (usingCoords && coords ? coords.lat : null);
-    const lonVal = lon !== null ? lon : (usingCoords && coords ? coords.lon : null);
+  const fetchTimings = async (lat = null, lon = null, targetCity = city, targetCountry = country, forceCityName = false) => {
+    const latVal = forceCityName ? null : (lat !== null ? lat : (usingCoords && coords ? coords.lat : null));
+    const lonVal = forceCityName ? null : (lon !== null ? lon : (usingCoords && coords ? coords.lon : null));
 
     // Skip duplicate fetches
     if (
@@ -240,13 +229,12 @@ export default function TimingsPage() {
         if (latVal !== null && lonVal !== null) {
           setUsingCoords(true);
           setCoords({ lat: latVal, lon: lonVal });
-          const localCity = data.data.meta.timezone?.split('/').pop()?.replace('_', ' ') || 'Local Coordinates';
-          setCity(localCity);
         } else {
           setUsingCoords(false);
           setCoords(null);
           localStorage.setItem('namazly_city', targetCity);
           localStorage.setItem('namazly_country', targetCountry);
+          localStorage.setItem('namazly_state', stateName);
         }
       } else {
         setError('Could not retrieve prayer times. Please verify the city name.');
@@ -258,7 +246,7 @@ export default function TimingsPage() {
     }
   };
 
-  // Fetch timings on mount (No auto-geolocation request)
+  // Fetch timings on mount
   useEffect(() => {
     fetchTimings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -332,20 +320,28 @@ export default function TimingsPage() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     
-    let finalCountry = selectedCountry;
-    if (selectedCountry === 'Other') {
-      if (!customCountry.trim()) return;
+    let finalCountry = '';
+    let finalState = '';
+    let finalCity = '';
+
+    if (isCustomInput) {
+      if (!customCountry.trim() || !customCity.trim()) return;
       finalCountry = customCountry.trim();
-    }
-
-    let finalCity = selectedCity;
-    if (selectedCountry === 'Other' || selectedCity === 'Other') {
-      if (!customCity.trim()) return;
+      finalState = customState.trim();
       finalCity = customCity.trim();
+    } else {
+      if (!selectedCountry || !selectedCity) return;
+      finalCountry = selectedCountry;
+      finalState = selectedState;
+      finalCity = selectedCity;
     }
 
-    setCity(finalCity);
     setCountry(finalCountry);
+    setStateName(finalState);
+    setCity(finalCity);
+
+    // Force fetch timings using city name search, ignoring any active coordinate/GPS mode
+    fetchTimings(null, null, finalCity, finalCountry, true);
   };
 
   // Re-fetch when city, country, method, or school values change
@@ -360,8 +356,26 @@ export default function TimingsPage() {
     if (navigator.geolocation) {
       setLoading(true);
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          fetchTimings(position.coords.latitude, position.coords.longitude);
+        async (position) => {
+          const latVal = position.coords.latitude;
+          const lonVal = position.coords.longitude;
+          try {
+            // Reverse geocode to find exact City, State, Country
+            const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latVal}&longitude=${lonVal}&localityLanguage=en`);
+            const geoData = await geoRes.json();
+            const detectedCity = geoData.city || geoData.locality || geoData.village || geoData.town || 'Local Coordinates';
+            const detectedState = geoData.principalSubdivision || '';
+            const detectedCountry = geoData.countryName || 'India';
+            
+            setCountry(detectedCountry);
+            setStateName(detectedState);
+            setCity(detectedCity);
+            
+            fetchTimings(latVal, lonVal, detectedCity, detectedCountry);
+          } catch (err) {
+            console.error('Error reverse geocoding:', err);
+            fetchTimings(latVal, lonVal);
+          }
         },
         () => {
           setError('Location permission was denied by browser.');
@@ -462,87 +476,158 @@ export default function TimingsPage() {
                   Select a country and city, or type your own.
                 </p>
                 <form onSubmit={handleSearchSubmit} className="space-y-2.5 text-left">
-                  {/* Country Selector */}
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="search-country" className="poppins-regular text-[10px] font-semibold text-sage-600">
-                      Country
+                  
+                  {/* Toggle Custom Input checkbox */}
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <input
+                      type="checkbox"
+                      id="use-custom-input"
+                      checked={isCustomInput}
+                      onChange={(e) => setIsCustomInput(e.target.checked)}
+                      className="cursor-pointer rounded border-sage-300 text-sage-600 focus:ring-sage-500"
+                    />
+                    <label htmlFor="use-custom-input" className="poppins-regular text-[10px] font-semibold text-sage-600 cursor-pointer select-none">
+                      Type manually (Shehar ka naam likhein)
                     </label>
-                    <select
-                      id="search-country"
-                      value={selectedCountry}
-                      onChange={handleCountryChange}
-                      className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
-                    >
-                      {Object.keys(LOCATION_DATA).map((c) => (
-                        <option key={c} value={c} className="bg-emerald-50 text-sage-900">{c}</option>
-                      ))}
-                      <option value="Other" className="bg-emerald-50 text-sage-900">Other (Type custom)</option>
-                    </select>
                   </div>
 
-                  {/* Custom Country Input (only if Country is 'Other') */}
-                  {selectedCountry === 'Other' && (
-                    <div>
-                      <label htmlFor="custom-country" className="sr-only">Enter Country</label>
-                      <input
-                        id="custom-country"
-                        type="text"
-                        placeholder="Enter Country Name (e.g. India)"
-                        value={customCountry}
-                        onChange={(e) => setCustomCountry(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
-                        required
-                      />
-                    </div>
-                  )}
+                  {!isCustomInput ? (
+                    <>
+                      {/* Country Dropdown */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="search-country" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          Country
+                        </label>
+                        <select
+                          id="search-country"
+                          value={selectedCountry}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setSelectedCountry(val);
+                            // Find the states of this country and set first one as default
+                            const countryData = countriesList.find(c => c.name === val);
+                            if (countryData && countryData.states && countryData.states.length > 0) {
+                              const sortedStates = [...countryData.states].sort((a, b) => a.name.localeCompare(b.name));
+                              setSelectedState(sortedStates[0].name);
+                            } else {
+                              setSelectedState('');
+                            }
+                            setSelectedCity('');
+                          }}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
+                        >
+                          {countriesList.length === 0 ? (
+                            <option value="">Loading countries...</option>
+                          ) : (
+                            countriesList.map((c) => (
+                              <option key={c.name} value={c.name} className="bg-emerald-50 text-sage-900">{c.name}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
 
-                  {/* City Selector */}
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="search-city" className="poppins-regular text-[10px] font-semibold text-sage-600">
-                      City
-                    </label>
-                    {selectedCountry !== 'Other' ? (
-                      <select
-                        id="search-city"
-                        value={selectedCity}
-                        onChange={(e) => {
-                          setSelectedCity(e.target.value);
-                          if (e.target.value !== 'Other') setCustomCity('');
-                        }}
-                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer"
-                      >
-                        {LOCATION_DATA[selectedCountry].map((ct) => (
-                          <option key={ct} value={ct} className="bg-emerald-50 text-sage-900">{ct}</option>
-                        ))}
-                        <option value="Other" className="bg-emerald-50 text-sage-900">Other (Type custom)</option>
-                      </select>
-                    ) : (
-                      <input
-                        id="custom-city"
-                        type="text"
-                        placeholder="Enter City Name (e.g. Mumbai)"
-                        value={customCity}
-                        onChange={(e) => setCustomCity(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
-                        required
-                      />
-                    )}
-                  </div>
+                      {/* State Dropdown */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="search-state" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          State
+                        </label>
+                        <select
+                          id="search-state"
+                          value={selectedState}
+                          onChange={(e) => {
+                            setSelectedState(e.target.value);
+                            setSelectedCity('');
+                          }}
+                          disabled={statesList.length === 0}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50"
+                        >
+                          {statesList.length === 0 ? (
+                            <option value="">No states found</option>
+                          ) : (
+                            statesList.map((s) => (
+                              <option key={s.name} value={s.name} className="bg-emerald-50 text-sage-900">{s.name}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
 
-                  {/* Custom City Input (if country is selected but city is 'Other') */}
-                  {selectedCountry !== 'Other' && selectedCity === 'Other' && (
-                    <div>
-                      <label htmlFor="custom-city-input" className="sr-only">Enter City</label>
-                      <input
-                        id="custom-city-input"
-                        type="text"
-                        placeholder="Enter City Name"
-                        value={customCity}
-                        onChange={(e) => setCustomCity(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
-                        required
-                      />
-                    </div>
+                      {/* City Dropdown */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="search-city" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          City
+                        </label>
+                        <select
+                          id="search-city"
+                          value={selectedCity}
+                          onChange={(e) => setSelectedCity(e.target.value)}
+                          disabled={citiesList.length === 0 || citiesLoading}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs text-sage-800 bg-white/50 focus:bg-white focus:outline-none cursor-pointer disabled:opacity-50"
+                        >
+                          {citiesLoading ? (
+                            <option value="">Loading cities...</option>
+                          ) : citiesList.length === 0 ? (
+                            <option value="">No cities found</option>
+                          ) : (
+                            <>
+                              <option value="">-- Select City --</option>
+                              {citiesList.map((ct) => (
+                                <option key={ct} value={ct} className="bg-emerald-50 text-sage-900">{ct}</option>
+                              ))}
+                            </>
+                          )}
+                        </select>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Custom Country Input */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="custom-country-input" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          Country Name
+                        </label>
+                        <input
+                          id="custom-country-input"
+                          type="text"
+                          placeholder="e.g. India"
+                          value={customCountry}
+                          onChange={(e) => setCustomCountry(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                          required
+                        />
+                      </div>
+
+                      {/* Custom State Input */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="custom-state-input" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          State Name
+                        </label>
+                        <input
+                          id="custom-state-input"
+                          type="text"
+                          placeholder="e.g. Uttar Pradesh"
+                          value={customState}
+                          onChange={(e) => setCustomState(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                          required
+                        />
+                      </div>
+
+                      {/* Custom City Input */}
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="custom-city-input" className="poppins-regular text-[10px] font-semibold text-sage-600">
+                          City Name
+                        </label>
+                        <input
+                          id="custom-city-input"
+                          type="text"
+                          placeholder="e.g. Jaunpur"
+                          value={customCity}
+                          onChange={(e) => setCustomCity(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl glass-card-deep border border-white/60 text-xs focus:bg-white/80 focus:outline-none placeholder-sage-400"
+                          required
+                        />
+                      </div>
+                    </>
                   )}
 
                   <button

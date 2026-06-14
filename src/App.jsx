@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import InstallPwaModal from './components/InstallPwaModal';
 import Dashboard from './pages/Dashboard';
+import MasailPage from './pages/MasailPage';
+import MaslaDetailPage from './pages/MaslaDetailPage';
 
 // ── Code-split routes — loaded on demand ──────────────────
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -19,11 +21,9 @@ const PrivacyPage   = lazy(() => import('./pages/PrivacyPage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const AdminLogin   = lazy(() => import('./pages/AdminLogin'));
 const AdminDash    = lazy(() => import('./pages/AdminDashboard'));
-const MasailPage   = lazy(() => import('./pages/MasailPage'));
-const MaslaDetailPage = lazy(() => import('./pages/MaslaDetailPage'));
 const ZakatCalculatorPage = lazy(() => import('./pages/ZakatCalculatorPage'));
 const TasbihPage = lazy(() => import('./pages/TasbihPage'));
-const HalalCheckerPage = lazy(() => import('./pages/HalalCheckerPage'));
+// const HalalCheckerPage = lazy(() => import('./pages/HalalCheckerPage'));
 const QiblaFinderPage = lazy(() => import('./pages/QiblaFinderPage'));
 const MosqueFinderPage = lazy(() => import('./pages/MosqueFinderPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -171,7 +171,7 @@ const AppRoutes = () => {
       <Route path="/masail/:slug" element={<MaslaDetailPage />} />
       <Route path="/zakat-calculator" element={<ZakatCalculatorPage />} />
       <Route path="/tasbih" element={<TasbihPage />} />
-      <Route path="/halal-checker" element={<HalalCheckerPage />} />
+      {/* <Route path="/halal-checker" element={<HalalCheckerPage />} /> */}
       <Route path="/qibla" element={<QiblaFinderPage />} />
       <Route path="/nearby-mosques" element={<MosqueFinderPage />} />
       <Route path="/1adminMs1" element={<AdminLogin />} />

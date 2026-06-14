@@ -147,6 +147,34 @@ export default function AboutPage() {
               <div className="flex gap-2.5 items-start">
                 <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Islamic Masail Q&amp;A</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Browse and search 5,000+ authentic deeni rulings from 'Fatawa Usmani' by Mufti Taqi Usmani.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Qibla Finder &amp; Compass</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Find Kaaba direction with sensor-based device absolute compass and haptic alignment feedback.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Digital Tasbih Counter</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Count your dhikr, configure limits, and track counts with custom sound/vibration alerts.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Zakat Calculator</h4>
+                  <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Calculate your Zakat liabilities based on gold, silver, cash, assets, and debt deductions.</p>
+                </div>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <HiOutlineCheckCircle className="text-sage-500 text-lg flex-shrink-0 mt-0.5" />
+                <div>
                   <h4 className="poppins-regular text-xs font-bold text-sage-800 leading-tight">Interactive Progress & Stats</h4>
                   <p className="poppins-regular text-[10px] text-sage-400 mt-0.5">Visualize your completed salah percentage, total Rakat counts, and maintain active logs.</p>
                 </div>

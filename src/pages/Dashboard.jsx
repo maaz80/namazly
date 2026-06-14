@@ -353,7 +353,7 @@ export default function Dashboard() {
         aria-label="Qaza namaz manager dashboard"
       >
         {/* Welcome banner */}
-        <div className="mb-8 animate-fade-in">
+        <div className="mb-8">
           <p className="poppins-regular text-sage-500 text-sm mb-1">{getGreeting()},</p>
           <h1 className="poppins-regular text-3xl md:text-4xl font-bold">
             <span className="gradient-text">{user ? user.name?.split(' ')[0] : 'Guest'}</span>

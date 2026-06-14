@@ -87,10 +87,6 @@ export default function QiblaFinderPage() {
     );
   };
 
-  // Try GPS on mount
-  useEffect(() => {
-    requestLocation();
-  }, []);
 
   const handleOrientation = useCallback((e) => {
     let currentHeading = null;
@@ -274,34 +270,28 @@ export default function QiblaFinderPage() {
               </ol>
             </div>
           </div>
-        ) : gpsLoading ? (
-          /* Loading Skeleton View */
-          <div className="space-y-6 flex flex-col items-center animate-pulse">
-            <div className="space-y-2 flex flex-col items-center">
-              <div className="w-28 h-5 bg-sage-200/60 rounded-full" />
-              <div className="w-36 h-8 bg-sage-300/40 rounded-2xl" />
-              <div className="w-44 h-4 bg-sage-200/40 rounded-lg" />
-            </div>
-            
-            {/* Pulsing Outer Ring */}
-            <div className="w-72 h-72 rounded-full border-4 border-white/60 bg-white/20 flex items-center justify-center shadow-inner">
-              <div className="w-56 h-56 rounded-full border border-dashed border-sage-200/40 flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full bg-sage-300/30" />
-              </div>
-            </div>
-
-            {/* Calibration skeleton */}
-            <div className="w-full h-24 bg-white/20 rounded-2xl border border-white/40" />
-          </div>
         ) : (
-          /* Geolocation Success View */
+          /* Main Compass Interface */
           <div className="space-y-6 flex flex-col items-center">
             
             {/* Degree & Status Header */}
             <div>
-              {bearing !== null && (
-                <div className="space-y-1">
+              {gpsLoading ? (
+                <div className="space-y-1 animate-pulse">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage-200/50 text-sage-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                    Finding Location...
+                  </div>
+                  <h1 className="poppins-regular text-2xl font-black text-sage-900 mt-2 tracking-tight">
+                    Locating GPS...
+                  </h1>
+                  <span className="inline-block px-3 py-1 rounded-full bg-sage-100/80 text-sage-600 text-[10px] font-bold uppercase tracking-wider border border-sage-200">
+                    Computing Kaaba angle
+                  </span>
+                </div>
+              ) : bearing !== null ? (
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold poppins-regular uppercase tracking-wider border border-emerald-200">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                     GPS Connected
                   </div>
@@ -324,16 +314,28 @@ export default function QiblaFinderPage() {
                     </span>
                   )}
                 </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage-200/50 text-sage-700 text-[10px] font-bold poppins-regular uppercase tracking-wider">
+                    GPS Idle
+                  </div>
+                  <h1 className="poppins-regular text-2xl font-black text-sage-900 mt-2 tracking-tight">
+                    Qibla Finder
+                  </h1>
+                  <span className="inline-block px-3 py-1 rounded-full bg-sage-100/80 text-sage-600 text-[10px] font-bold uppercase tracking-wider border border-sage-200">
+                    Click 'Find Qibla' to start
+                  </span>
+                </div>
               )}
             </div>
 
             {/* Premium Compass */}
-            <div className="flex justify-center select-none">
+            <div className="flex justify-center select-none relative">
               <div className={`w-72 h-72 rounded-full border-4 relative flex items-center justify-center shadow-[0_8px_32px_0_rgba(31,67,54,0.15)] bg-white/25 backdrop-blur-md transition-all duration-300 ${
-                isAligned && sensorStatus === 'active'
+                isAligned && sensorStatus === 'active' && bearing !== null
                   ? 'border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-emerald-50/10'
                   : 'border-white/90'
-              }`}>
+              } ${gpsLoading ? 'shimmer-block' : ''}`}>
                 {/* Glow ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-sage-500/5 to-cream-500/5 blur-sm" />
 
@@ -373,68 +375,93 @@ export default function QiblaFinderPage() {
                   </svg>
                 </div>
 
-                {/* Rotating Qibla Needle */}
-                <div 
-                  className="w-full h-full absolute inset-0 flex items-center justify-center z-10"
-                  style={{ transform: `rotate(${needleAngle}deg)` }}
-                >
-                  <svg className="w-full h-full" viewBox="0 0 200 200">
-                    <defs>
-                      <filter id="needleGlow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="3" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                      </filter>
-                      <linearGradient id="needleGold" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#ffd700" />
-                        <stop offset="100%" stopColor="#d4a017" />
-                      </linearGradient>
-                      <linearGradient id="needleEmerald" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" />
-                        <stop offset="100%" stopColor="#047857" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Needle tail */}
-                    <polygon
-                      points="100,100 95,124 100,119 105,124"
-                      fill="rgba(61, 130, 101, 0.25)"
-                    />
-                    
-                    {/* Needle head */}
-                    <polygon
-                      points="100,28 92,100 100,95"
-                      fill="url(#needleEmerald)"
-                      filter="url(#needleGlow)"
-                    />
-                    <polygon
-                      points="100,28 108,100 100,95"
-                      fill="url(#needleGold)"
-                      filter="url(#needleGlow)"
-                    />
-                    
-                    {/* Mosque icon on needle tip */}
-                    <g transform="translate(88, 8)">
-                      <circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#d4a017" strokeWidth="1.5" />
-                      <text x="12" y="15.5" textAnchor="middle" fontSize="11">🕌</text>
-                    </g>
-                  </svg>
-                </div>
+                {/* Rotating Qibla Needle (Only show when bearing is calculated and not loading) */}
+                {bearing !== null && !gpsLoading && (
+                  <div 
+                    className="w-full h-full absolute inset-0 flex items-center justify-center z-10 animate-fade-in"
+                    style={{ transform: `rotate(${needleAngle}deg)` }}
+                  >
+                    <svg className="w-full h-full" viewBox="0 0 200 200">
+                      <defs>
+                        <filter id="needleGlow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feGaussianBlur stdDeviation="3" result="blur" />
+                          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        <linearGradient id="needleGold" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#ffd700" />
+                          <stop offset="100%" stopColor="#d4a017" />
+                        </linearGradient>
+                        <linearGradient id="needleEmerald" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#10b981" />
+                          <stop offset="100%" stopColor="#047857" />
+                        </linearGradient>
+                      </defs>
+                      
+                      {/* Needle tail */}
+                      <polygon
+                        points="100,100 95,124 100,119 105,124"
+                        fill="rgba(61, 130, 101, 0.25)"
+                      />
+                      
+                      {/* Needle head */}
+                      <polygon
+                        points="100,28 92,100 100,95"
+                        fill="url(#needleEmerald)"
+                        filter="url(#needleGlow)"
+                      />
+                      <polygon
+                        points="100,28 108,100 100,95"
+                        fill="url(#needleGold)"
+                        filter="url(#needleGlow)"
+                      />
+                      
+                      {/* Mosque icon on needle tip */}
+                      <g transform="translate(88, 8)">
+                        <circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#d4a017" strokeWidth="1.5" />
+                        <text x="12" y="15.5" textAnchor="middle" fontSize="11">🕌</text>
+                      </g>
+                    </svg>
+                  </div>
+                )}
 
                 {/* Center Pivot Pin */}
                 <div className="w-7 h-7 rounded-full bg-white border border-sage-300 flex items-center justify-center z-20 shadow-sm">
-                  <TbCompass className="w-4 h-4 text-sage-600 animate-spin-slow" />
+                  <TbCompass className={`w-4 h-4 text-sage-600 ${gpsLoading ? 'animate-spin' : 'animate-spin-slow'}`} />
                 </div>
               </div>
             </div>
 
-            {/* Calibration and iOS sensor button */}
+            {/* Find Qibla Action Button */}
             <div className="w-full space-y-3">
+              <button
+                onClick={requestLocation}
+                disabled={gpsLoading}
+                className={`w-full py-4 rounded-2xl poppins-regular text-sm font-bold text-white shadow-md transition-all active:scale-95 cursor-pointer border-0 flex items-center justify-center gap-2 ${
+                  gpsLoading 
+                    ? 'bg-sage-400 cursor-not-allowed' 
+                    : bearing !== null 
+                      ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600'
+                      : 'bg-gradient-to-r from-sage-600 to-sage-500 hover:from-sage-700 hover:to-sage-600'
+                }`}
+              >
+                {gpsLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Finding Qibla...</span>
+                  </>
+                ) : bearing !== null ? (
+                  <span>Find Again</span>
+                ) : (
+                  <span>Find Qibla</span>
+                )}
+              </button>
+
               {sensorStatus === 'permission_needed' && (
                 <button
                   onClick={requestOrientationPermission}
                   className="w-full py-3 rounded-2xl poppins-regular text-xs font-bold text-white bg-gradient-to-r from-sage-600 to-sage-500 hover:from-sage-700 hover:to-sage-600 shadow-md transition-all active:scale-95 cursor-pointer border-0"
                 >
-                  Enable Compass Sensors (कंपास ऑन करें)
+                  Enable Compass Sensors
                 </button>
               )}
 

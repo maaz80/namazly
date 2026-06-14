@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { MASAIL_DATA } from './src/utils/masailData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +23,7 @@ const staticPages = [
   { path: '/masail', priority: '0.9', changefreq: 'daily' },
   { path: '/zakat-calculator', priority: '0.8', changefreq: 'weekly' },
   { path: '/tasbih', priority: '0.8', changefreq: 'weekly' },
-  { path: '/halal-checker', priority: '0.8', changefreq: 'weekly' },
+  // { path: '/halal-checker', priority: '0.8', changefreq: 'weekly' },
   { path: '/qibla', priority: '0.8', changefreq: 'weekly' },
   { path: '/nearby-mosques', priority: '0.8', changefreq: 'weekly' }
 ];
@@ -47,6 +46,17 @@ staticPages.forEach(page => {
     <priority>${page.priority}</priority>
   </url>\n`;
 });
+
+// Load masail from public/masail.json
+const masailJsonPath = path.join(__dirname, 'public', 'masail.json');
+let MASAIL_DATA = [];
+try {
+  if (fs.existsSync(masailJsonPath)) {
+    MASAIL_DATA = JSON.parse(fs.readFileSync(masailJsonPath, 'utf8'));
+  }
+} catch (err) {
+  console.error('Error loading masail.json for sitemap:', err);
+}
 
 // Add dynamic masail pages from MASAIL_DATA
 MASAIL_DATA.forEach(masla => {

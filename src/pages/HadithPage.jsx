@@ -31,7 +31,7 @@ export default function HadithPage() {
   );
 
   const handleCopy = async () => {
-    const shareText = `Hadith of the Day 🌙\n\nArabic:\n"${hadith.arabic}"\n\nTranslation:\n"${hadith.english}"\n\n— Narrated by ${hadith.narrator} (${hadith.source}, ${hadith.reference})\n\nRead more on Namazly`;
+    const shareText = `Hadith of the Day 🌙\n\nArabic:\n"${hadith.arabic}"\n\nTranslation:\n"${hadith.english}"\n\nHinglish:\n"${hadith.hinglish}"\n\n— Narrated by ${hadith.narrator} (${hadith.source}, ${hadith.reference})\n\nRead more on Namazly`;
     try {
       await navigator.clipboard.writeText(shareText);
       setCopied(true);
@@ -42,7 +42,7 @@ export default function HadithPage() {
   };
 
   const handleShare = async () => {
-    const shareText = `Hadith of the Day 🌙\n\n"${hadith.english}"\n\n— Narrated by ${hadith.narrator} (${hadith.source})`;
+    const shareText = `Hadith of the Day 🌙\n\n"${hadith.english}"\n\nHinglish: "${hadith.hinglish}"\n\n— Narrated by ${hadith.narrator} (${hadith.source})`;
     try {
       if (navigator.share) {
         await navigator.share({
@@ -101,7 +101,6 @@ export default function HadithPage() {
 
       {/* Main content */}
       <main id="main-content" tabIndex="-1" className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1 w-full flex flex-col items-center justify-center space-y-6">
-        
         {/* Toggle Controls */}
         <div className="flex items-center gap-2 glass-card-deep rounded-2xl p-1 border border-white/40 shadow-sm animate-fade-in">
           <button
@@ -152,7 +151,7 @@ export default function HadithPage() {
           <div className="space-y-6 text-center">
             {/* Arabic script */}
             <p 
-              className="text-2xl sm:text-3xl leading-loose font-medium text-sage-950 px-2 select-all"
+              className="text-md sm:text-3xl leading-loose font-medium text-sage-950 px-2 select-all"
               style={{ 
                 fontFamily: "'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Segoe UI', serif",
                 direction: 'rtl' 
@@ -162,14 +161,27 @@ export default function HadithPage() {
             </p>
 
             {/* Narrator */}
-            <p className="poppins-regular text-sage-500 italic text-xs sm:text-sm pt-2">
+            <p className="poppins-regular text-sage-500 italic text-[10px] sm:text-sm pt-2">
               Narrated by <span className="font-semibold text-sage-800">{hadith.narrator} (RA)</span>:
             </p>
 
-            {/* Translation */}
-            <blockquote className="poppins-regular text-base sm:text-lg font-medium text-sage-800 leading-relaxed max-w-xl mx-auto px-4 border-l-2 border-sage-400/40 select-all">
-              "{hadith.english}"
-            </blockquote>
+            {/* Translation (English) */}
+            <div className="space-y-1 text-left max-w-xl mx-auto border-l-2 border-sage-400/40 pl-4">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-sage-400 block poppins-regular">English</span>
+              <blockquote className="poppins-regular text-[14px] sm:text-lg font-medium text-sage-800 leading-relaxed select-all">
+                "{hadith.english}"
+              </blockquote>
+            </div>
+
+            {/* Translation (Hinglish) */}
+            {hadith.hinglish && (
+              <div className="space-y-1 text-left max-w-xl mx-auto border-l-2 border-emerald-500/40 pl-4 pt-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 block poppins-regular">Roman Urdu</span>
+                <blockquote className="poppins-regular text-[14px] sm:text-lg font-medium text-sage-800 leading-relaxed select-all">
+                  "{hadith.hinglish}"
+                </blockquote>
+              </div>
+            )}
 
             {/* Reference info */}
             <p className="poppins-regular text-[11px] sm:text-xs text-sage-400 font-semibold tracking-wide pt-4">
@@ -207,7 +219,15 @@ export default function HadithPage() {
             </button>
           </div>
         </div>
-
+        {/* Informational Note Box */}
+        <div className="w-full glass-card rounded-2xl p-5 border border-emerald-500/20 bg-emerald-50/30 text-sage-800 text-sm poppins-regular leading-relaxed shadow-sm animate-fade-in text-left">
+          <p className="font-bold text-emerald-800 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
+            Kitab al-Riyad as-Salihin
+          </p>
+          <p className="text-sage-700 text-[11px] sm:text-xs leading-relaxed">
+            <span className='text-yellow-600 font-medium'>Note -</span> Is page par dikhayi gayi tamam Hadith <strong>Riyadus Saliheen</strong> (compiler: <strong>Imam al-Nawawi</strong>) se li gayi hain. Is kitab mein Sunni Islam ki 6 authentic kitabon <em>(Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawood, Jami' at-Tirmidhi, Sunan an-Nasa'i, aur Sunan Ibn Majah)</em> se sirf <strong>authentic (Sahih aur Hasan)</strong> Hadiths ko jama kiya gaya hai.
+          </p>
+        </div>
         {/* Bottom Tip */}
         <p className="poppins-regular text-[10px] text-sage-400 text-center leading-relaxed">
           Prophet Muhammad (ﷺ) said: "Convey from me even if it is a single verse." <br />— Sahih al-Bukhari 3461

@@ -9,8 +9,12 @@ import {
   HiOutlineShieldCheck,
   HiOutlineArrowLeft,
   HiOutlineStar,
-  HiOutlineChatAlt2
+  HiOutlineChatAlt2,
+  HiOutlineQuestionMarkCircle,
+  HiOutlineCash,
+  HiMap
 } from 'react-icons/hi';
+import { TbCompass } from 'react-icons/tb';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 
@@ -267,18 +271,121 @@ export default function GuidePage() {
             </div>
           </section>
 
-          {/* 7. Privacy First Philosophy */}
+          {/* 7. Islamic Masail Q&A */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineQuestionMarkCircle className="text-xl text-sage-500" />
+              <span>7. Islamic Masail (Q&amp;A) Database</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                The <strong>Islamic Masail</strong> page offers a searchable repository of over 5,000 authentic deeni rulings from the famous book <em>'Fatawa Usmani'</em> by <strong>Mufti Muhammad Taqi Usmani</strong>.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🔍 Search &amp; Categories</h3>
+                  <p>
+                    Browse rulings dynamically by categories like Namaz, Wazu, Ghusl, and modern issues. Use the Search Bar to lookup specific keywords instantly in Urdu, Hindi, or English.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">📈 Live View Count Tracking</h3>
+                  <p>
+                    Each masla detail page lists the exact book reference and tracks how many times it has been read. It uses a secure backend endpoint to dynamically maintain view counts.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 8. Qibla Finder & Tasbih Counter */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <TbCompass className="text-xl text-sage-500" />
+              <span>8. Qibla Finder &amp; Tasbih Counter</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <div className="space-y-2">
+                <h3 className="font-bold text-sage-800">🧭 Sensor-Based Qibla Compass</h3>
+                <p>
+                  Access the <strong>Qibla Finder</strong> page to find the exact direction of the Kaaba. Tap "Find Qibla" to let the app locate your coordinates. Ensure your device is held flat in your hand. Wave it in a figure-8 pattern to calibrate internal sensors. The compass plate will align with true North, and the needle will light up green with a haptic vibration when you are aligned with the Qibla.
+                </p>
+              </div>
+              <div className="space-y-2 border-t border-sage-100/40 pt-3">
+                <h3 className="font-bold text-sage-800">📿 Digital Tasbih Manager</h3>
+                <p>
+                  The <strong>Tasbih Counter</strong> lets you manage your daily dhikr. Increment counts by tapping the center button, configure vibration limits (e.g. at 33, 99, or 100), and track your completed logs with sound and vibration alerts.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 9. Zakat Calculator */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiOutlineCash className="text-xl text-sage-500" />
+              <span>9. Comprehensive Zakat Calculator</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                Estimate your annual charity obligation using our advanced <strong>Zakat Calculator</strong>, structured in full compliance with classical jurisprudence.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">💰 Assets &amp; Liabilities Input</h3>
+                  <p>
+                    Enter your holdings in Gold (in grams/tolas), Silver, cash in hand or bank, property investments, and business stock. Then enter your active debts, bills, and short-term liabilities to deduct.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">⚖️ Nisab Detection &amp; Calculations</h3>
+                  <p>
+                    The calculator automatically pulls up standard Nisab thresholds (equivalent to 87.48g gold or 612.36g silver) to verify if your net wealth exceeds Nisab. If yes, it calculates exactly 2.5% of your net pool as Zakat.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 10. Nearby Mosque Finder */}
+          <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
+              <HiMap className="text-xl text-sage-500" />
+              <span>10. Nearby Mosque Finder</span>
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
+              <p>
+                The <strong>Nearby Mosque Finder</strong> helps you locate major and historical mosques around your current location using an interactive Leaflet map.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">📍 Real-time Distance &amp; Radius</h3>
+                  <p>
+                    Choose search radii between 1 km to 10 km to scan the area. The map will display your current position as a pulsing blue dot and mosques as green mosque markers.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sage-800">🗺️ Google Maps Fallback Search</h3>
+                  <p>
+                    Since OpenStreetMap is a volunteer-mapped database, some local neighborhood mosques might not be registered yet. Click the "Search on Google Maps" button at the bottom to search Google Maps directly.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 11. Privacy First Philosophy */}
           <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm text-left space-y-4">
             <h2 className="poppins-regular text-lg font-bold text-sage-900 flex items-center gap-2.5 pb-2 border-b border-sage-100/60">
               <HiOutlineShieldCheck className="text-xl text-sage-500" />
-              <span>7. Our Privacy-First Commitment</span>
+              <span>11. Our Privacy-First Commitment</span>
             </h2>
             <div className="space-y-2 text-xs sm:text-sm leading-relaxed poppins-regular text-sage-600">
               <p>
                 Namazly is built with complete sincerity as an open utility for Muslims around the world.
               </p>
               <ul className="list-disc pl-5 space-y-1.5">
-                <li>**No Ads or Distractions**: Namazly is entirely free, contains zero ads, and does not sell features or track your browsing habits.</li>
+                {/* <li>**No Ads or Distractions**: Namazly is entirely free, contains zero ads, and does not sell features or track your browsing habits.</li> */}
                 <li>**Secure Google Auth**: Google Sign-in is handled securely. We only store your email, name, avatar link, and qaza namaz counts.</li>
                 <li>**Zero Metadata Selling**: We never sell, rent, or share personal profiles or location data with third parties.</li>
               </ul>
