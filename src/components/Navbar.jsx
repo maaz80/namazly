@@ -116,7 +116,7 @@ export default function Navbar({ onAuthClick }) {
                 <img
                   src={getOptimizedAvatar(user.avatar, 64)}
                   onError={(e) => {
-                    e.currentTarget.src = '/icon-192.png';
+                    e.currentTarget.src = '/icon-48.png';
                   }}
                   alt={`${user.name}'s profile picture`}
                   className="w-7 h-7 rounded-full border border-white/80 object-cover bg-sage-50"

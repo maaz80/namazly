@@ -268,7 +268,7 @@ export default function ReviewsPage() {
                 <div className="flex items-center gap-3 bg-sage-50/40 border border-sage-100 rounded-xl p-3">
                   <img
                     src={getOptimizedAvatar(user.avatar, 64)}
-                    onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                    onError={(e) => { e.currentTarget.src = '/icon-48.png'; }}
                     alt={user.name}
                     width="32"
                     height="32"
@@ -392,7 +392,7 @@ export default function ReviewsPage() {
                       {avatar ? (
                         <img 
                           src={getOptimizedAvatar(avatar, 64)} 
-                          onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                          onError={(e) => { e.currentTarget.src = '/icon-48.png'; }}
                           alt={name}
                           width="28"
                           height="28"

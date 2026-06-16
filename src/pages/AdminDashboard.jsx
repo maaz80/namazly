@@ -106,15 +106,30 @@ const formatWeekKey = (key) => {
 };
 
 /* ─── User Growth Line Chart (CSS-based) ───────────────── */
-const UserGrowthChart = ({ data }) => {
+const UserGrowthChart = ({ data, filter, onFilterChange }) => {
   if (!data || data.length === 0) {
     return (
       <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
-        <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4 flex items-center gap-2">
-          <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
-          User Growth (Last 12 Months)
-        </h3>
-        <p className="text-xs text-white/30 poppins-regular text-center py-8">No data available yet</p>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-white/70 poppins-regular flex items-center gap-2">
+            <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
+            User Signups
+          </h3>
+          <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
+            {['day', 'week', 'month', '6month', '1year'].map(f => (
+              <button
+                key={f}
+                onClick={() => onFilterChange(f)}
+                className={`px-2 py-1 rounded cursor-pointer border-0 capitalize transition-all ${
+                  filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
+                }`}
+              >
+                {f === '6month' ? '6m' : f === '1year' ? '1y' : f}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs text-white/30 poppins-regular text-center py-8">No signup data available yet</p>
       </div>
     );
   }
@@ -124,13 +139,28 @@ const UserGrowthChart = ({ data }) => {
 
   return (
     <div className="rounded-2xl p-5 border border-white/10 bg-white/5 backdrop-blur-sm">
-      <h3 className="text-sm font-semibold text-white/70 poppins-regular mb-4 flex items-center gap-2">
-        <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
-        User Signups (Last 12 Months)
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-white/70 poppins-regular flex items-center gap-2">
+          <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
+          User Signups
+        </h3>
+        <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
+          {['day', 'week', 'month', '6month', '1year'].map(f => (
+            <button
+              key={f}
+              onClick={() => onFilterChange(f)}
+              className={`px-2.5 py-1 rounded cursor-pointer border-0 capitalize transition-all ${
+                filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
+              }`}
+            >
+              {f === '6month' ? '6m' : f === '1year' ? '1y' : f}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="flex items-end gap-[3px] h-28 overflow-hidden">
         {data.map((d, i) => (
-          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${formatMonthKey(d._id)}: ${d.count} users`}>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${filter === 'week' ? formatWeekKey(d._id) : filter === 'month' || filter === '6month' || filter === '1year' ? formatMonthKey(d._id) : d._id}: ${d.count} users`}>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -143,11 +173,27 @@ const UserGrowthChart = ({ data }) => {
         ))}
       </div>
       <div className="flex justify-between mt-2 text-[9px] text-white/25 poppins-regular">
-        <span>{formatMonthKey(data[0]?._id)}</span>
-        <span>{formatMonthKey(data[Math.floor(data.length / 4)]?._id)}</span>
-        <span>{formatMonthKey(data[Math.floor(data.length / 2)]?._id)}</span>
-        <span>{formatMonthKey(data[Math.floor(3 * data.length / 4)]?._id)}</span>
-        <span>{formatMonthKey(data[data.length - 1]?._id)}</span>
+        {filter === 'day' ? (
+          <>
+            <span>{data[0]?._id?.slice(5)}</span>
+            {data.length > 3 && <span>{data[Math.floor(data.length / 2)]?._id?.slice(5)}</span>}
+            <span>{data[data.length - 1]?._id?.slice(5)}</span>
+          </>
+        ) : filter === 'week' ? (
+          <>
+            {data.map((d, i) => (
+              <span key={i}>{formatWeekKey(d._id)}</span>
+            ))}
+          </>
+        ) : (
+          <>
+            <span>{formatMonthKey(data[0]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(data.length / 4)]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(data.length / 2)]?._id)}</span>
+            <span>{formatMonthKey(data[Math.floor(3 * data.length / 4)]?._id)}</span>
+            <span>{formatMonthKey(data[data.length - 1]?._id)}</span>
+          </>
+        )}
       </div>
     </div>
   );
@@ -164,7 +210,7 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
             Website Traffic
           </h3>
           <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
-            {['day', 'week', 'month'].map(f => (
+            {['day', 'week', 'month', '6month', '1year'].map(f => (
               <button
                 key={f}
                 onClick={() => onFilterChange(f)}
@@ -172,7 +218,7 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
                   filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
                 }`}
               >
-                {f}
+                {f === '6month' ? '6m' : f === '1year' ? '1y' : f}
               </button>
             ))}
           </div>
@@ -193,7 +239,7 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
           Website Traffic
         </h3>
         <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 text-xs">
-          {['day', 'week', 'month'].map(f => (
+          {['day', 'week', 'month', '6month', '1year'].map(f => (
             <button
               key={f}
               onClick={() => onFilterChange(f)}
@@ -201,14 +247,14 @@ const VisitorGrowthChart = ({ data, filter, onFilterChange }) => {
                 filter === f ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/40 hover:text-white/60 bg-transparent'
               }`}
             >
-              {f}
+              {f === '6month' ? '6m' : f === '1year' ? '1y' : f}
             </button>
           ))}
         </div>
       </div>
       <div className="flex items-end gap-[3px] h-28 overflow-hidden">
         {data.map((d, i) => (
-          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${filter === 'week' ? formatWeekKey(d._id) : filter === 'month' ? formatMonthKey(d._id) : d._id}: ${d.count} visits`}>
+          <div key={i} className="flex-1 h-full flex flex-col justify-end min-w-0" title={`${filter === 'week' ? formatWeekKey(d._id) : filter === 'month' || filter === '6month' || filter === '1year' ? formatMonthKey(d._id) : d._id}: ${d.count} visits`}>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -288,6 +334,8 @@ export default function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [visitFilter, setVisitFilter] = useState('day');
+  const [signupFilter, setSignupFilter] = useState('day');
+  const [showAllPageViews, setShowAllPageViews] = useState(false);
 
   // NEW visitors list pagination & toggle states
   const [visitors, setVisitors] = useState([]);
@@ -325,9 +373,9 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
-  const loadStats = useCallback(async (filter = 'day') => {
+  const loadStats = useCallback(async (vFilter = 'day', sFilter = 'day') => {
     try {
-      const data = await adminFetch(`/admin/stats?visitFilter=${filter}`);
+      const data = await adminFetch(`/admin/stats?visitFilter=${vFilter}&signupFilter=${sFilter}`);
       if (data.success) setStats(data.stats);
     } catch (err) {
       if (err.message === 'UNAUTHORIZED') navigate('/1adminMs1', { replace: true });
@@ -395,8 +443,8 @@ export default function AdminDashboard() {
 
   // Load stats when filter changes
   useEffect(() => {
-    loadStats(visitFilter);
-  }, [visitFilter, loadStats]);
+    loadStats(visitFilter, signupFilter);
+  }, [visitFilter, signupFilter, loadStats]);
 
   // Load visitors when page or type changes
   useEffect(() => {
@@ -416,7 +464,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      await Promise.all([loadStats(visitFilter), loadUsers(), loadReviews()]);
+      await Promise.all([loadStats(visitFilter, signupFilter), loadUsers(), loadReviews()]);
       setLoading(false);
     };
     init();
@@ -425,11 +473,11 @@ export default function AdminDashboard() {
   const handleRefresh = async () => {
     setRefreshing(true);
     if (activeTab === 'visitors') {
-      await Promise.all([loadStats(visitFilter), loadVisitors(visitorsPage, visitorsType)]);
+      await Promise.all([loadStats(visitFilter, signupFilter), loadVisitors(visitorsPage, visitorsType)]);
     } else if (activeTab === 'masail') {
-      await Promise.all([loadStats(visitFilter), loadAdminMasail(masailPage, masailSearch)]);
+      await Promise.all([loadStats(visitFilter, signupFilter), loadAdminMasail(masailPage, masailSearch)]);
     } else {
-      await Promise.all([loadStats(visitFilter), loadUsers(usersPage, userSearch), loadReviews()]);
+      await Promise.all([loadStats(visitFilter, signupFilter), loadUsers(usersPage, userSearch), loadReviews()]);
     }
     setRefreshing(false);
   };
@@ -599,7 +647,7 @@ export default function AdminDashboard() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <VisitorGrowthChart data={stats.visitorGrowth} filter={visitFilter} onFilterChange={setVisitFilter} />
-              <UserGrowthChart data={stats.userGrowth} />
+              <UserGrowthChart data={stats.userGrowth} filter={signupFilter} onFilterChange={setSignupFilter} />
             </div>
 
             {/* Lower Analytics Row */}
@@ -651,7 +699,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5 text-white/80 poppins-regular">
-                    {stats.pageViews?.map((pv, i) => (
+                    {(showAllPageViews ? stats.pageViews : stats.pageViews?.slice(0, 5))?.map((pv, i) => (
                       <tr key={pv._id || i} className="hover:bg-white/5 transition-colors">
                         <td className="px-5 py-3 font-mono text-emerald-300 truncate max-w-xs sm:max-w-lg" title={pv.path}>
                           {pv.path}
@@ -671,6 +719,16 @@ export default function AdminDashboard() {
                   </tbody>
                 </table>
               </div>
+              {stats.pageViews && stats.pageViews.length > 5 && (
+                <div className="px-5 py-3 border-t border-white/10 text-center">
+                  <button
+                    onClick={() => setShowAllPageViews(prev => !prev)}
+                    className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold poppins-regular bg-transparent border-0 cursor-pointer"
+                  >
+                    {showAllPageViews ? 'See Less' : `See More (${stats.pageViews.length - 5} more)`}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Recent Users */}
@@ -691,12 +749,12 @@ export default function AdminDashboard() {
                 {stats.recentUsers?.map((u, i) => (
                   <div key={u._id || i} className="px-5 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors">
                     <img
-                      src={u.avatar || '/icon-192.png'}
+                      src={u.avatar || '/icon-48.png'}
                       alt={u.name || 'User avatar'}
                       width="32"
                       height="32"
                       className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
-                      onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                      onError={(e) => { e.currentTarget.src = '/icon-48.png'; }}
                       loading="lazy"
                     />
                     <div className="flex-1 min-w-0">
@@ -915,8 +973,8 @@ export default function AdminDashboard() {
                       <tr key={u._id} className="hover:bg-white/5 transition-colors">
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
-                            <img src={u.avatar || '/icon-192.png'} alt={u.name || 'User avatar'} width="32" height="32" className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
-                              onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} loading="lazy" />
+                            <img src={u.avatar || '/icon-48.png'} alt={u.name || 'User avatar'} width="32" height="32" className="w-8 h-8 rounded-full border border-white/10 object-cover bg-white/10"
+                              onError={(e) => { e.currentTarget.src = '/icon-48.png'; }} loading="lazy" />
                             <span className="text-sm text-white/80 font-semibold poppins-regular truncate max-w-[140px]">{u.name}</span>
                           </div>
                         </td>
@@ -982,7 +1040,7 @@ export default function AdminDashboard() {
                       <div className="flex items-start gap-3 min-w-0 flex-1">
                         {userAvatar ? (
                           <img src={userAvatar} alt={userName} width="36" height="36" className="w-9 h-9 rounded-full border border-white/10 object-cover flex-shrink-0 bg-white/10"
-                            onError={(e) => { e.currentTarget.src = '/icon-192.png'; }} loading="lazy" />
+                            onError={(e) => { e.currentTarget.src = '/icon-48.png'; }} loading="lazy" />
                         ) : (
                           <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400 text-sm font-bold">
                             {userName.charAt(0).toUpperCase()}

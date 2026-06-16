@@ -10,7 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL
  * @returns {string} The optimized avatar URL
  */
 export function getOptimizedAvatar(url, size = 64) {
-  if (!url) return '/icon-192.png';
+  if (!url || url === '/icon-192.png') return '/icon-48.png';
   
   if (url.includes('googleusercontent.com')) {
     // Google profile photo URLs end with '=s96-c' or similar options.

@@ -42,17 +42,22 @@ export default defineConfig(({ mode }) => ({
         // Manual chunk splitting for optimal caching
         // React core — changes rarely, cached long-term
         manualChunks(id) {
-          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
-            return 'vendor-react';
-          }
-          if (id.includes('node_modules/react-router-dom') || id.includes('node_modules/react-router/') || id.includes('node_modules/@remix-run/')) {
-            return 'vendor-router';
-          }
-          if (id.includes('node_modules/@react-oauth')) {
-            return 'vendor-oauth';
-          }
-          if (id.includes('node_modules/axios')) {
-            return 'vendor-axios';
+          if (id.includes('node_modules')) {
+            // Group heavy OAuth libraries separately
+            if (id.includes('@react-oauth')) {
+              return 'vendor-oauth';
+            }
+            // Group core dependencies together to prevent critical request chaining/waterfalls
+            if (
+              id.includes('react/') ||
+              id.includes('react-dom/') ||
+              id.includes('react-router/') ||
+              id.includes('react-router-dom/') ||
+              id.includes('axios') ||
+              id.includes('scheduler')
+            ) {
+              return 'vendor-core';
+            }
           }
         },
 

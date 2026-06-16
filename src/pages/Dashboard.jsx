@@ -494,7 +494,7 @@ export default function Dashboard() {
                       {avatar ? (
                         <img
                           src={getOptimizedAvatar(avatar, 48)}
-                          onError={(e) => { e.currentTarget.src = '/icon-192.png'; }}
+                          onError={(e) => { e.currentTarget.src = '/icon-48.png'; }}
                           alt={name}
                           width="22"
                           height="22"
@@ -549,8 +549,9 @@ export default function Dashboard() {
               return (
                 <article
                   key={idx}
-                  className={`transition-all duration-500 ease-in-out ${isActive ? 'block opacity-100 translate-x-0' : 'hidden opacity-0'
-                    }`}
+                  className={`transition-all duration-500 ease-in-out ${
+                    isActive ? 'opacity-100 translate-x-0 relative z-10' : 'opacity-0 absolute top-6 left-6 right-6 md:top-8 md:left-8 md:right-8 pointer-events-none z-0'
+                  }`}
                 >
                   <div className="space-y-3 text-left">
                     <span className="px-2.5 py-1 rounded-full bg-sage-200/50 text-sage-800 text-[10px] font-bold poppins-regular uppercase tracking-wider">

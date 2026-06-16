@@ -4,8 +4,6 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import InstallPwaModal from './components/InstallPwaModal';
 import Dashboard from './pages/Dashboard';
-import MasailPage from './pages/MasailPage';
-import MaslaDetailPage from './pages/MaslaDetailPage';
 
 // ── Code-split routes — loaded on demand ──────────────────
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -27,6 +25,8 @@ const TasbihPage = lazy(() => import('./pages/TasbihPage'));
 const QiblaFinderPage = lazy(() => import('./pages/QiblaFinderPage'));
 const MosqueFinderPage = lazy(() => import('./pages/MosqueFinderPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const MasailPage = lazy(() => import('./pages/MasailPage'));
+const MaslaDetailPage = lazy(() => import('./pages/MaslaDetailPage'));
 
 // ── Route guards ──────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {

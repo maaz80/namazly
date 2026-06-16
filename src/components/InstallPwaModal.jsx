@@ -107,7 +107,7 @@ export default function InstallPwaModal() {
 
         {/* Namazly App Icon */}
         <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-4 shadow-lg border border-white/80 animate-float bg-white flex items-center justify-center">
-          <img src="/icon-192.png" alt="Namazly Logo" className="w-full h-full object-cover" />
+          <img src="/icon-96.png" alt="Namazly Logo" className="w-full h-full object-cover" />
         </div>
 
         {/* Heading */}
