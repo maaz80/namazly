@@ -356,7 +356,7 @@ export default function Dashboard() {
         <div className="mb-8">
           <p className="poppins-regular text-sage-500 text-sm mb-1">{getGreeting()},</p>
           <h1 className="poppins-regular text-3xl md:text-4xl font-bold">
-            <span className="gradient-text">{user ? user.name?.split(' ')[0] : 'Guest'}</span>
+            <span className="gradient-text">{user ? user.name?.split(' ')[0] : 'Namazly'}</span>
             <span className="text-sage-800 text-2xl md:text-3xl font-medium"> 🌙</span>
           </h1>
           <p className="poppins-regular text-sage-500 mt-1.5">

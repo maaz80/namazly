@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
 import { HiPlus, HiMinus } from 'react-icons/hi';
 import api from '../utils/api';
@@ -6,9 +6,11 @@ import api from '../utils/api';
 export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, qazaRecord }) {
   const [localValue, setLocalValue] = useState(value);
   const [status, setStatus] = useState('idle'); // 'idle' | 'saving' | 'saved' | 'error'
+  const localValueRef = useRef(value);
 
   /* Sync external value (e.g., from calculator bulk-apply) */
   useEffect(() => {
+    localValueRef.current = value;
     setLocalValue(value);
   }, [value]);
 
@@ -42,20 +44,27 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
     }
   }, [prayer.key, onUpdate, isGuest, qazaRecord]);
 
-  const debouncedSave = useDebounce(saveToDb, 700);
+  const debouncedSave = useDebounce(saveToDb, 2000);
 
   /* Adjust by this prayer's rakat count */
   const adjust = (delta) => {
-    const next = Math.max(0, localValue + delta * prayer.rakats);
+    const next = Math.max(0, localValueRef.current + delta * prayer.rakats);
+    localValueRef.current = next;
     setLocalValue(next);
     debouncedSave(next);
   };
 
   const handleChange = (e) => {
     const raw = e.target.value;
-    if (raw === '') { setLocalValue(0); debouncedSave(0); return; }
+    if (raw === '') {
+      localValueRef.current = 0;
+      setLocalValue(0);
+      debouncedSave(0);
+      return;
+    }
     const num = parseInt(raw, 10);
     if (!isNaN(num) && num >= 0) {
+      localValueRef.current = num;
       setLocalValue(num);
       debouncedSave(num);
     }
