@@ -8,7 +8,7 @@ import { useEffect } from 'react';
  * @param {string} description - The meta description for search engines
  * @param {string} [path] - Optional route path (e.g. '/about') to set canonical tag
  */
-export default function usePageMeta(title, description, path = '') {
+export default function usePageMeta(title, description, path = '', noIndex = false) {
   useEffect(() => {
     // 1. Update Document Title
     document.title = title;
@@ -17,7 +17,19 @@ export default function usePageMeta(title, description, path = '') {
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', description);
 
-    // 3. Update Open Graph Meta Tags
+    // 3. Update Robots Meta Tag
+    let robotsMeta = document.querySelector('meta[name="robots"]');
+    if (!robotsMeta) {
+      robotsMeta = document.createElement('meta');
+      robotsMeta.setAttribute('name', 'robots');
+      document.head.appendChild(robotsMeta);
+    }
+    robotsMeta.setAttribute(
+      'content',
+      noIndex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+    );
+
+    // 4. Update Open Graph Meta Tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute('content', title);
 
@@ -29,14 +41,14 @@ export default function usePageMeta(title, description, path = '') {
       ogUrl.setAttribute('content', `https://namazly.in${path}`);
     }
 
-    // 4. Update Twitter Card Meta Tags
+    // 5. Update Twitter Card Meta Tags
     const twitterTitle = document.querySelector('meta[name="twitter:title"]');
     if (twitterTitle) twitterTitle.setAttribute('content', title);
 
     const twitterDesc = document.querySelector('meta[name="twitter:description"]');
     if (twitterDesc) twitterDesc.setAttribute('content', description);
 
-    // 5. Update Canonical Link
+    // 6. Update Canonical Link
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
       canonical = document.createElement('link');
@@ -44,5 +56,5 @@ export default function usePageMeta(title, description, path = '') {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute('href', `https://namazly.in${path}`);
-  }, [title, description, path]);
+  }, [title, description, path, noIndex]);
 }

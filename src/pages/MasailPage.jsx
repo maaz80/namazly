@@ -27,16 +27,34 @@ export default function MasailPage() {
     const params = new URLSearchParams(window.location.search);
     return params.get('q') || '';
   });
-  const [page, setPage] = useState(1);
+  
+  const [page, setPage] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return parseInt(params.get('page')) || 1;
+  });
   
   const [masailList, setMasailList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewsMap, setViewsMap] = useState({});
 
+  // Sync page state when URL parameters change
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const p = parseInt(params.get('page')) || 1;
+    if (p !== page) {
+      setPage(p);
+    }
+  }, [window.location.search]);
+
+  const canonicalPath = page > 1 ? `/masail?page=${page}` : '/masail';
+  const pageTitle = page > 1 
+    ? `Islamic Masail & Answers — Page ${page} | Namazly` 
+    : 'Islamic Masail & Answers — Ask and Learn Rulings | Namazly';
+
   usePageMeta(
-    'Islamic Masail & Answers — Ask and Learn Rulings | Namazly',
+    pageTitle,
     'Explore authentic solutions to Islamic rulings (Masail) regarding Wazu, Namaz, cleanliness, and daily issues with reliable scholars references.',
-    '/masail'
+    canonicalPath
   );
 
   // Load from local static JSON and fetch view counts from the server
@@ -237,9 +255,9 @@ export default function MasailPage() {
                         <span className="px-2.5 py-0.5 rounded-full bg-sage-200/50 text-[10px] font-bold text-sage-800 uppercase tracking-wider">
                           {item.category}
                         </span>
-                        <span className="text-[10px] text-sage-400 font-semibold flex items-center gap-1">
+                        {/* <span className="text-[10px] text-sage-400 font-semibold flex items-center gap-1">
                           👁️ {viewsMap[item.slug] || 0} views
-                        </span>
+                        </span> */}
                       </div>
                       <h2 className="poppins-regular text-base font-bold text-sage-900 leading-snug group-hover:text-sage-700 transition-colors">
                         {item.question}
@@ -262,25 +280,29 @@ export default function MasailPage() {
               {/* Pagination Controls */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-8">
-                  <button
-                    onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-                    disabled={page <= 1}
+                  <Link
+                    to={`/masail?page=${Math.max(page - 1, 1)}`}
+                    onClick={(e) => {
+                      if (page <= 1) e.preventDefault();
+                    }}
                     aria-label="Previous Page"
-                    className="p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer"
+                    className={`p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer no-underline flex items-center ${page <= 1 ? 'opacity-30 pointer-events-none' : ''}`}
                   >
                     <HiOutlineChevronLeft className="w-4 h-4" />
-                  </button>
+                  </Link>
                   <span className="text-xs text-sage-600 font-semibold poppins-regular px-2">
                     Page {page} of {totalPages}
                   </span>
-                  <button
-                    onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={page >= totalPages}
+                  <Link
+                    to={`/masail?page=${Math.min(page + 1, totalPages)}`}
+                    onClick={(e) => {
+                      if (page >= totalPages) e.preventDefault();
+                    }}
                     aria-label="Next Page"
-                    className="p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer"
+                    className={`p-2.5 rounded-xl glass-card border border-white/80 text-sage-700 hover:bg-white hover:text-sage-900 active:scale-95 transition-all cursor-pointer no-underline flex items-center ${page >= totalPages ? 'opacity-30 pointer-events-none' : ''}`}
                   >
                     <HiOutlineChevronRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>

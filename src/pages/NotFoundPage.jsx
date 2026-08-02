@@ -19,7 +19,9 @@ export default function NotFoundPage() {
 
   usePageMeta(
     'Page Not Found (404) | Namazly',
-    'The page you are looking for does not exist on Namazly. Return to the dashboard to calculate and manage your Qaza Namaz.'
+    'The page you are looking for does not exist on Namazly.',
+    window.location.pathname,
+    true
   );
 
   return (

@@ -345,25 +345,7 @@ export default function AdminDashboard() {
   const [visitorsTotal, setVisitorsTotal] = useState(0);
   const [visitorsLoading, setVisitorsLoading] = useState(false);
 
-  // NEW Masail states
-  const [masail, setMasail] = useState([]);
-  const [masailTotal, setMasailTotal] = useState(0);
-  const [masailPage, setMasailPage] = useState(1);
-  const [masailTotalPages, setMasailTotalPages] = useState(1);
-  const [masailSearch, setMasailSearch] = useState('');
-  const [masailLoading, setMasailLoading] = useState(false);
-  const [deleteMaslaLoading, setDeleteMaslaLoading] = useState(null);
 
-  const [newMasla, setNewMasla] = useState({
-    question: '',
-    answer: '',
-    category: 'General',
-    authority: 'Mufti Tariq Masood',
-    reference: ''
-  });
-  const [formSubmitting, setFormSubmitting] = useState(false);
-  const [formError, setFormError] = useState('');
-  const [formSuccess, setFormSuccess] = useState('');
 
   // Check admin auth on mount
   useEffect(() => {
@@ -423,24 +405,6 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
-  // NEW load masail function
-  const loadAdminMasail = useCallback(async (page = 1, search = '') => {
-    setMasailLoading(true);
-    try {
-      const data = await adminFetch(`/masail?page=${page}&limit=10&search=${encodeURIComponent(search)}`);
-      if (data.success) {
-        setMasail(data.masail);
-        setMasailTotal(data.total);
-        setMasailPage(data.page);
-        setMasailTotalPages(data.totalPages);
-      }
-    } catch (err) {
-      if (err.message === 'UNAUTHORIZED') navigate('/1adminMs1', { replace: true });
-    } finally {
-      setMasailLoading(false);
-    }
-  }, [navigate]);
-
   // Load stats when filter changes
   useEffect(() => {
     loadStats(visitFilter, signupFilter);
@@ -452,13 +416,6 @@ export default function AdminDashboard() {
       loadVisitors(visitorsPage, visitorsType);
     }
   }, [activeTab, visitorsPage, visitorsType, loadVisitors]);
-
-  // Load masail when tab or page changes
-  useEffect(() => {
-    if (activeTab === 'masail') {
-      loadAdminMasail(masailPage, masailSearch);
-    }
-  }, [activeTab, masailPage, loadAdminMasail]);
 
   // Initial load
   useEffect(() => {
@@ -474,62 +431,10 @@ export default function AdminDashboard() {
     setRefreshing(true);
     if (activeTab === 'visitors') {
       await Promise.all([loadStats(visitFilter, signupFilter), loadVisitors(visitorsPage, visitorsType)]);
-    } else if (activeTab === 'masail') {
-      await Promise.all([loadStats(visitFilter, signupFilter), loadAdminMasail(masailPage, masailSearch)]);
     } else {
       await Promise.all([loadStats(visitFilter, signupFilter), loadUsers(usersPage, userSearch), loadReviews()]);
     }
     setRefreshing(false);
-  };
-
-  const handleDeleteMasla = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this Masla permanently?')) return;
-    setDeleteMaslaLoading(id);
-    try {
-      const data = await adminFetch(`/masail/${id}`, { method: 'DELETE' });
-      if (data.success) {
-        setMasail(prev => prev.filter(m => m._id !== id));
-        setMasailTotal(prev => prev - 1);
-      }
-    } catch (err) {
-      if (err.message === 'UNAUTHORIZED') navigate('/1adminMs1', { replace: true });
-    } finally {
-      setDeleteMaslaLoading(null);
-    }
-  };
-
-  const handleAddMasla = async (e) => {
-    e.preventDefault();
-    if (!newMasla.question || !newMasla.answer || !newMasla.category) {
-      setFormError('Question, Answer and Category are required!');
-      return;
-    }
-    setFormSubmitting(true);
-    setFormError('');
-    setFormSuccess('');
-    try {
-      const data = await adminFetch('/masail', {
-        method: 'POST',
-        body: JSON.stringify(newMasla)
-      });
-      if (data.success) {
-        setFormSuccess('Masla added successfully!');
-        setNewMasla({
-          question: '',
-          answer: '',
-          category: 'General',
-          authority: 'Mufti Tariq Masood',
-          reference: ''
-        });
-        loadAdminMasail(1, masailSearch);
-      } else {
-        setFormError(data.message || 'Failed to add Masla.');
-      }
-    } catch (err) {
-      setFormError('Error connecting to server.');
-    } finally {
-      setFormSubmitting(false);
-    }
   };
 
   const handleDeleteReview = async (id) => {
@@ -625,7 +530,6 @@ export default function AdminDashboard() {
         <div className="flex flex-wrap gap-2 mb-6">
           <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={HiOutlineChartBar} label="Overview" />
           <TabButton active={activeTab === 'visitors'} onClick={() => setActiveTab('visitors')} icon={HiOutlineGlobe} label="Visitors" />
-          <TabButton active={activeTab === 'masail'} onClick={() => { setActiveTab('masail'); loadAdminMasail(1, masailSearch); }} icon={HiOutlineBookOpen} label="Masail" />
           <TabButton active={activeTab === 'users'} onClick={() => { setActiveTab('users'); loadUsers(1, userSearch); }} icon={HiOutlineUsers} label="Users" />
           <TabButton active={activeTab === 'reviews'} onClick={() => { setActiveTab('reviews'); loadReviews(); }} icon={HiOutlineStar} label="Reviews" />
         </div>
@@ -1087,226 +991,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ════════════════════════════════════════════════════ */}
-        {/* MASAIL TAB                                          */}
-        {/* ════════════════════════════════════════════════════ */}
-        {activeTab === 'masail' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Grid Layout for Form and Table */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Form to Add New Masla */}
-              <div className="lg:col-span-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-5 space-y-4 self-start">
-                <h3 className="text-sm font-bold text-white poppins-regular flex items-center gap-2">
-                  <span>➕</span> Add New Masla
-                </h3>
-                
-                {formError && (
-                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs poppins-regular">
-                    ⚠️ {formError}
-                  </div>
-                )}
-                {formSuccess && (
-                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs poppins-regular">
-                    ✅ {formSuccess}
-                  </div>
-                )}
 
-                <form onSubmit={handleAddMasla} className="space-y-3.5 text-left">
-                  <div>
-                    <label className="block text-[10px] text-white/40 uppercase font-semibold tracking-wider mb-1.5 poppins-regular">Question / Sawaal</label>
-                    <textarea
-                      value={newMasla.question}
-                      onChange={(e) => setNewMasla(prev => ({ ...prev, question: e.target.value }))}
-                      placeholder="e.g. Kya cryptocurrency halal hai?"
-                      className="block w-full px-3.5 py-2.5 rounded-xl text-xs text-white placeholder-white/20 bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular resize-none h-20"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-white/40 uppercase font-semibold tracking-wider mb-1.5 poppins-regular">Answer / Jawaab</label>
-                    <textarea
-                      value={newMasla.answer}
-                      onChange={(e) => setNewMasla(prev => ({ ...prev, answer: e.target.value }))}
-                      placeholder="Enter detailed fatwa/answer..."
-                      className="block w-full px-3.5 py-2.5 rounded-xl text-xs text-white placeholder-white/20 bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular resize-none h-32"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] text-white/40 uppercase font-semibold tracking-wider mb-1.5 poppins-regular">Category</label>
-                      <select
-                        value={newMasla.category}
-                        onChange={(e) => setNewMasla(prev => ({ ...prev, category: e.target.value }))}
-                        className="block w-full px-3 py-2 rounded-xl text-xs text-white bg-neutral-900 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular h-9 cursor-pointer"
-                      >
-                        <option value="General">General</option>
-                        <option value="Wazu">Wazu</option>
-                        <option value="Namaz">Namaz</option>
-                        <option value="Ghusl">Ghusl</option>
-                        <option value="Roza">Roza</option>
-                        <option value="Zakat">Zakat</option>
-                        <option value="Cleanliness">Cleanliness</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-white/40 uppercase font-semibold tracking-wider mb-1.5 poppins-regular">Authority</label>
-                      <input
-                        type="text"
-                        value={newMasla.authority}
-                        onChange={(e) => setNewMasla(prev => ({ ...prev, authority: e.target.value }))}
-                        placeholder="e.g. Mufti Tariq Masood"
-                        className="block w-full px-3 py-2 rounded-xl text-xs text-white placeholder-white/20 bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular h-9"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-white/40 uppercase font-semibold tracking-wider mb-1.5 poppins-regular">Book Reference / Hawala</label>
-                    <input
-                      type="text"
-                      value={newMasla.reference}
-                      onChange={(e) => setNewMasla(prev => ({ ...prev, reference: e.target.value }))}
-                      placeholder="e.g. Ask Mufti Tariq Masood"
-                      className="block w-full px-3.5 py-2.5 rounded-xl text-xs text-white placeholder-white/20 bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular h-9"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={formSubmitting}
-                    className="w-full py-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 text-xs font-bold border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-50 poppins-regular"
-                  >
-                    {formSubmitting ? 'Adding...' : 'Add Masla'}
-                  </button>
-                </form>
-              </div>
-
-              {/* Table of Existing Masail */}
-              <div className="lg:col-span-2 space-y-4">
-                {/* Search Bar */}
-                <form
-                  onSubmit={(e) => { e.preventDefault(); loadAdminMasail(1, masailSearch); }}
-                  className="flex gap-2"
-                >
-                  <div className="relative flex-1">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30">
-                      <HiOutlineSearch className="w-4 h-4" />
-                    </span>
-                    <input
-                      type="text"
-                      value={masailSearch}
-                      onChange={(e) => setMasailSearch(e.target.value)}
-                      placeholder="Search question or answers..."
-                      className="block w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 bg-white/5 border border-white/10 focus:border-emerald-400/40 outline-none transition-all poppins-regular"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-sm font-semibold border border-emerald-500/20 hover:bg-emerald-500/30 transition-all cursor-pointer poppins-regular"
-                  >
-                    Search
-                  </button>
-                </form>
-
-                {/* Listing Count Info */}
-                <p className="text-xs text-white/30 poppins-regular text-left">
-                  Showing {masail.length} of {masailTotal} Masail · Page {masailPage} of {masailTotalPages}
-                </p>
-
-                {/* Table */}
-                {masailLoading ? (
-                  <div className="flex items-center justify-center py-20">
-                    <div className="w-8 h-8 rounded-full animate-spin border-2 border-emerald-400/30 border-t-emerald-400" />
-                  </div>
-                ) : (
-                  <>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-x-auto">
-                      <table className="w-full text-left table-fixed">
-                        <thead>
-                          <tr className="border-b border-white/10">
-                            <th className="w-1/2 px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">Question</th>
-                            <th className="w-1/6 px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider">Category</th>
-                            <th className="w-1/6 px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">Views</th>
-                            <th className="w-1/6 px-5 py-3 text-xs font-semibold text-white/40 poppins-regular uppercase tracking-wider text-center">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                          {masail.map((m) => (
-                            <tr key={m._id} className="hover:bg-white/5 transition-colors">
-                              <td className="px-5 py-3 text-left">
-                                <p className="text-sm font-semibold text-white/80 poppins-regular truncate" title={m.question}>
-                                  {m.question}
-                                </p>
-                                <p className="text-[10px] text-white/30 poppins-regular truncate mt-0.5">
-                                  Ref: {m.reference || 'N/A'} · By {m.authority}
-                                </p>
-                              </td>
-                              <td className="px-5 py-3 text-left">
-                                <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/10 uppercase tracking-wider">
-                                  {m.category}
-                                </span>
-                              </td>
-                              <td className="px-5 py-3 text-center text-xs text-white/50 font-mono">
-                                {m.views || 0}
-                              </td>
-                              <td className="px-5 py-3 text-center">
-                                <button
-                                  onClick={() => handleDeleteMasla(m._id)}
-                                  disabled={deleteMaslaLoading === m._id}
-                                  className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-all border-0 cursor-pointer"
-                                  title="Delete Masla"
-                                >
-                                  {deleteMaslaLoading === m._id ? (
-                                    <div className="w-4 h-4 rounded-full animate-spin border-2 border-rose-400/30 border-t-rose-400" />
-                                  ) : (
-                                    <HiOutlineTrash className="w-4 h-4" />
-                                  )}
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                          {masail.length === 0 && (
-                            <tr>
-                              <td colSpan={4} className="px-5 py-10 text-center text-xs text-white/20 poppins-regular">No Masail found</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Pagination */}
-                    {masailTotalPages > 1 && (
-                      <div className="flex items-center justify-center gap-2 mt-4">
-                        <button
-                          onClick={() => setMasailPage(prev => Math.max(prev - 1, 1))}
-                          disabled={masailPage <= 1}
-                          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed border-0 cursor-pointer transition-all"
-                        >
-                          <HiOutlineChevronLeft className="w-4 h-4" />
-                        </button>
-                        <span className="text-xs text-white/40 poppins-regular px-2">
-                          {masailPage} / {masailTotalPages}
-                        </span>
-                        <button
-                          onClick={() => setMasailPage(prev => Math.min(prev + 1, masailTotalPages))}
-                          disabled={masailPage >= masailTotalPages}
-                          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed border-0 cursor-pointer transition-all"
-                        >
-                          <HiOutlineChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );

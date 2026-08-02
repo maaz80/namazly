@@ -61,22 +61,40 @@
   <!-- Google Fonts - Poppins -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
 
-  <!-- ── JSON-LD Structured Data ───────────────────────── -->
+  <!-- ── JSON-LD Structured Data for Google Site Name ───────────────── -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Namazly",
-      "alternateName": ["Namazly Qaza Calculator", "Namazly App"],
-      "url": "https://namazly.in/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://namazly.in/masail?q={search_term_string}"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://namazly.in/#website",
+          "name": "Namazly",
+          "alternateName": ["Namazly.in", "Namazly App", "Namazly Qaza Calculator"],
+          "url": "https://namazly.in/",
+          "publisher": {
+            "@id": "https://namazly.in/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://namazly.in/masail?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
         },
-        "query-input": "required name=search_term_string"
-      }
+        {
+          "@type": "Organization",
+          "@id": "https://namazly.in/#organization",
+          "name": "Namazly",
+          "url": "https://namazly.in/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://namazly.in/icon-512.png"
+          }
+        }
+      ]
     }
   </script>
 

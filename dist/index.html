@@ -61,22 +61,40 @@
   <!-- Google Fonts - Poppins -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
 
-  <!-- ── JSON-LD Structured Data ───────────────────────── -->
+  <!-- ── JSON-LD Structured Data for Google Site Name ───────────────── -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Namazly",
-      "alternateName": ["Namazly Qaza Calculator", "Namazly App"],
-      "url": "https://namazly.in/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://namazly.in/masail?q={search_term_string}"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://namazly.in/#website",
+          "name": "Namazly",
+          "alternateName": ["Namazly.in", "Namazly App", "Namazly Qaza Calculator"],
+          "url": "https://namazly.in/",
+          "publisher": {
+            "@id": "https://namazly.in/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://namazly.in/masail?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
         },
-        "query-input": "required name=search_term_string"
-      }
+        {
+          "@type": "Organization",
+          "@id": "https://namazly.in/#organization",
+          "name": "Namazly",
+          "url": "https://namazly.in/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://namazly.in/icon-512.png"
+          }
+        }
+      ]
     }
   </script>
 
@@ -117,14 +135,14 @@
     }
     </script>
   <!-- ✅ Baaki CSS non-blocking load -->
-  <link rel="preload" as="style" href="/assets/css/index-DcwwwbNA.css"
+  <link rel="preload" as="style" href="/assets/css/index-BUrWXy2o.css"
     onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
-    <link rel="stylesheet" href="/assets/css/index-DcwwwbNA.css" />
+    <link rel="stylesheet" href="/assets/css/index-BUrWXy2o.css" />
   </noscript>
-  <script type="module" crossorigin src="/assets/js/index-ozxb-xlb.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/js/vendor-core-CPR3ybn9.js">
-  <!-- <link rel="stylesheet" crossorigin href="/assets/css/index-DcwwwbNA.css"> -->
+  <script type="module" crossorigin src="/assets/js/index-6_32deyv.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/js/vendor-core-BW7M86o5.js">
+  <!-- <link rel="stylesheet" crossorigin href="/assets/css/index-BUrWXy2o.css"> -->
 </head>
 
 <body>

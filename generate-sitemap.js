@@ -9,43 +9,50 @@ const BASE_URL = 'https://namazly.in';
 
 // List of static pages
 const staticPages = [
-  { path: '/', priority: '1.0', changefreq: 'weekly' },
-  { path: '/calendar', priority: '0.8', changefreq: 'monthly' },
-  { path: '/timings', priority: '0.8', changefreq: 'daily' },
-  { path: '/hadith', priority: '0.8', changefreq: 'daily' },
-  { path: '/reviews', priority: '0.8', changefreq: 'daily' },
-  { path: '/guide', priority: '0.7', changefreq: 'monthly' },
-  { path: '/about', priority: '0.6', changefreq: 'monthly' },
-  { path: '/contact', priority: '0.5', changefreq: 'monthly' },
-  { path: '/faq', priority: '0.7', changefreq: 'weekly' },
-  { path: '/privacy-policy', priority: '0.4', changefreq: 'monthly' },
-  { path: '/disclaimer', priority: '0.4', changefreq: 'monthly' },
-  { path: '/masail', priority: '0.9', changefreq: 'daily' },
-  { path: '/zakat-calculator', priority: '0.8', changefreq: 'weekly' },
-  { path: '/tasbih', priority: '0.8', changefreq: 'weekly' },
-  // { path: '/halal-checker', priority: '0.8', changefreq: 'weekly' },
-  { path: '/qibla', priority: '0.8', changefreq: 'weekly' },
-  { path: '/nearby-mosques', priority: '0.8', changefreq: 'weekly' }
+  { path: '/', title: 'Qaza Namaz Calculator and Manager' },
+  { path: '/calendar', title: 'Islamic Calendar' },
+  { path: '/timings', title: 'Namaz Timings' },
+  { path: '/hadith', title: 'Daily Hadith' },
+  { path: '/reviews', title: 'User Reviews' },
+  { path: '/guide', title: 'Step-by-Step Guide' },
+  { path: '/about', title: 'About Us' },
+  { path: '/contact', title: 'Contact Us' },
+  { path: '/faq', title: 'Frequently Asked Questions' },
+  { path: '/privacy-policy', title: 'Privacy Policy' },
+  { path: '/disclaimer', title: 'Disclaimer' },
+  { path: '/masail', title: 'Islamic Masail & Answers' },
+  { path: '/zakat-calculator', title: 'Zakat Calculator' },
+  { path: '/tasbih', title: 'Digital Tasbih counter' },
+  { path: '/qibla', title: 'Qibla Finder' },
+  { path: '/nearby-mosques', title: 'Nearby Mosque Finder' }
 ];
 
-const today = new Date().toISOString().split('T')[0];
+// Helper function to format timestamp matching strictly W3C ISO 8601 spec: YYYY-MM-DDTHH:mm:ss+05:30 (with 2-digit offset hour)
+function getTimestampWithOffset() {
+  const date = new Date();
+  const pad = (num) => String(num).padStart(2, '0');
+  
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  
+  const dateTimePart = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  
+  const offsetMinutes = date.getTimezoneOffset();
+  const absOffsetMinutes = Math.abs(offsetMinutes);
+  const offsetHours = pad(Math.floor(absOffsetMinutes / 60)); // Must be 2-digit padded for search engine validation
+  const offsetMins = pad(absOffsetMinutes % 60);
+  const sign = offsetMinutes <= 0 ? '+' : '-';
+  
+  const offsetStr = `${sign}${offsetHours}:${offsetMins}`;
+  return `${dateTimePart}${offsetStr}`;
+}
 
-let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-`;
-
-// Add static pages
-staticPages.forEach(page => {
-  xml += `  <url>
-    <loc>${BASE_URL}${page.path === '/' ? '/' : page.path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>\n`;
-});
+const currentTimestamp = getTimestampWithOffset();
 
 // Load masail from public/masail.json
 const masailJsonPath = path.join(__dirname, 'public', 'masail.json');
@@ -58,19 +65,56 @@ try {
   console.error('Error loading masail.json for sitemap:', err);
 }
 
-// Add dynamic masail pages from MASAIL_DATA
-MASAIL_DATA.forEach(masla => {
-  xml += `  <url>
-    <loc>${BASE_URL}/masail/${masla.slug}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>\n`;
+// 1. Generate sitemap.xml with ONLY <loc> and <lastmod> (with clean pretty printed newlines)
+let sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+// Add static pages
+staticPages.forEach(page => {
+  sitemapXml += `  <url>\n    <loc>${BASE_URL}${page.path === '/' ? '/' : page.path}</loc>\n    <lastmod>${currentTimestamp}</lastmod>\n  </url>\n`;
 });
 
-xml += `</urlset>\n`;
+// Add dynamic masail pages
+MASAIL_DATA.forEach(masla => {
+  sitemapXml += `  <url>\n    <loc>${BASE_URL}/masail/${masla.slug}</loc>\n    <lastmod>${currentTimestamp}</lastmod>\n  </url>\n`;
+});
+
+sitemapXml += `</urlset>\n`;
 
 const sitemapPath = path.join(__dirname, 'public', 'sitemap.xml');
-fs.writeFileSync(sitemapPath, xml, 'utf8');
+fs.writeFileSync(sitemapPath, sitemapXml, 'utf8');
 console.log(`✅ Sitemap successfully generated at: ${sitemapPath}`);
-console.log(`   Total URLs: ${staticPages.length + MASAIL_DATA.length}`);
+
+
+// 2. Generate urllist.txt (One URL per line)
+let urlListText = "";
+staticPages.forEach(page => {
+  urlListText += `${BASE_URL}${page.path === '/' ? '/' : page.path}\n`;
+});
+MASAIL_DATA.forEach(masla => {
+  urlListText += `${BASE_URL}/masail/${masla.slug}\n`;
+});
+
+const urlListPath = path.join(__dirname, 'public', 'urllist.txt');
+fs.writeFileSync(urlListPath, urlListText, 'utf8');
+console.log(`✅ URL List successfully generated at: ${urlListPath}`);
+
+
+// 3. Generate ror.xml
+let rorXml = `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:ror="http://rorweb.com/0.1/">\n  <channel>\n    <title>Namazly Sitemap</title>\n    <link>${BASE_URL}/</link>\n    <description>ROR XML sitemap feed for Namazly website resources</description>\n`;
+
+staticPages.forEach((page, index) => {
+  rorXml += `    <item>\n      <link>${BASE_URL}${page.path === '/' ? '/' : page.path}</link>\n      <title>${page.title} | Namazly</title>\n      <ror:sortOrder>${index + 1}</ror:sortOrder>\n      <ror:resourceOf>sitemap</ror:resourceOf>\n    </item>\n`;
+});
+
+MASAIL_DATA.forEach((masla, index) => {
+  const cleanTitle = masla.question.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  rorXml += `    <item>\n      <link>${BASE_URL}/masail/${masla.slug}</link>\n      <title>${cleanTitle} | Namazly</title>\n      <ror:sortOrder>${staticPages.length + index + 1}</ror:sortOrder>\n      <ror:resourceOf>sitemap</ror:resourceOf>\n    </item>\n`;
+});
+
+rorXml += `  </channel>\n</rss>\n`;
+
+const rorPath = path.join(__dirname, 'public', 'ror.xml');
+fs.writeFileSync(rorPath, rorXml, 'utf8');
+console.log(`✅ ROR Sitemap successfully generated at: ${rorPath}`);
+
+console.log(`🎉 All SEO map files successfully compiled! Total URLs: ${staticPages.length + MASAIL_DATA.length}`);

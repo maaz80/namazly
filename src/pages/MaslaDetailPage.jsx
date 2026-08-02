@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
 import api from '../utils/api';
+import masailDuplicateMap from '../data/masailDuplicateMap.json';
 import { HiOutlineArrowLeft, HiOutlineChevronRight, HiOutlineBookOpen, HiOutlineUser } from 'react-icons/hi';
 
 const Background = () => (
@@ -15,6 +16,8 @@ const Background = () => (
       style={{ backgroundImage: 'radial-gradient(#255342 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
   </>
 );
+
+let cachedClientMasail = null;
 
 export default function MaslaDetailPage() {
   const { slug } = useParams();
@@ -30,36 +33,148 @@ export default function MaslaDetailPage() {
   const pageTitle = masla ? `${masla.question} — Answer & Reference | Namazly` : 'Islamic Ruling details | Namazly';
   const pageDesc = masla ? masla.answer.slice(0, 155) : 'Read detailed Islamic rulings (Masla & Jawab) with verified scholar and book references.';
 
-  usePageMeta(pageTitle, pageDesc, `/masail/${slug}`);
+  const primarySlug = masailDuplicateMap[slug] || slug;
+  usePageMeta(pageTitle, pageDesc, `/masail/${primarySlug}`);
 
   useEffect(() => {
     setLoading(true);
     setError('');
 
-    // Fetch the specific masla and related rulings directly from the API in a single request (under 1 KB)
-    api.get(`/masail/detail/${slug}`)
-      .then(res => {
-        if (res.data && res.data.success) {
-          setMasla(res.data.masla);
-          setRelated(res.data.related || []);
-          setViews(res.data.views || 0);
-          setError('');
-        } else {
-          setMasla(null);
-          setRelated([]);
-          setError(res.data?.message || 'Ruling not found.');
+    const handleData = (data) => {
+      const targetSlug = masailDuplicateMap[slug] || slug;
+      let found = data.find(m => m.slug === targetSlug);
+
+      if (!found) {
+        // Fallback search by matching question
+        found = data.find(m => m.slug === slug);
+      }
+
+      if (found) {
+        if (found.slug !== slug) {
+          navigate(`/masail/${found.slug}`, { replace: true });
         }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error loading masla detail:', err);
-        setError(err.response?.data?.message || 'Error loading ruling details.');
-        setLoading(false);
-      });
+        setMasla(found);
+        const relatedRulings = data
+          .filter(m => m.category === found.category && m.slug !== found.slug)
+          .slice(0, 5);
+        setRelated(relatedRulings);
+        setViews(found.views || 0);
+        setError('');
+      } else {
+        setMasla(null);
+        setRelated([]);
+        setError('Ruling not found.');
+      }
+      setLoading(false);
+    };
+
+    if (cachedClientMasail) {
+      handleData(cachedClientMasail);
+    } else {
+      fetch('/masail.json')
+        .then(res => res.json())
+        .then(data => {
+          cachedClientMasail = data;
+          handleData(data);
+        })
+        .catch(err => {
+          console.error('Error loading masail.json:', err);
+          setError('Error loading ruling details.');
+          setLoading(false);
+        });
+    }
 
     // Scroll to top when loading new masla
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
+
+  // Inject/Update dynamic schemas on client side (for dynamic navigations)
+  useEffect(() => {
+    if (!masla) return;
+
+    // 1. QA Schema
+    let qaScript = document.getElementById('client-qa-schema');
+    if (!qaScript) {
+      qaScript = document.createElement('script');
+      qaScript.id = 'client-qa-schema';
+      qaScript.type = 'application/ld+json';
+      document.head.appendChild(qaScript);
+    }
+    const publishedDate = masla.createdAt || '2026-01-01T00:00:00+05:30';
+    const qaSchema = {
+      "@context": "https://schema.org",
+      "@type": "QAPage",
+      "mainEntity": {
+        "@type": "Question",
+        "name": masla.question,
+        "text": masla.question,
+        "answerCount": 1,
+        "datePublished": publishedDate,
+        "author": {
+          "@type": "Person",
+          "name": masla.questioner || "Islamic Seeker"
+        },
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": masla.answer,
+          "upvoteCount": 1,
+          "url": `https://namazly.in/masail/${slug}`,
+          "datePublished": publishedDate,
+          "author": {
+            "@type": "Organization",
+            "name": masla.authority || masla.reference || "Namazly Islamic Advisory"
+          }
+        }
+      }
+    };
+    qaScript.textContent = JSON.stringify(qaSchema, null, 2);
+
+    // 2. Breadcrumb Schema
+    let bcScript = document.getElementById('client-bc-schema');
+    if (!bcScript) {
+      bcScript = document.createElement('script');
+      bcScript.id = 'client-bc-schema';
+      bcScript.type = 'application/ld+json';
+      document.head.appendChild(bcScript);
+    }
+    const bcSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://namazly.in/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Masail",
+          "item": "https://namazly.in/masail"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": masla.category || "General",
+          "item": `https://namazly.in/masail?category=${encodeURIComponent(masla.category || "General")}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": masla.question,
+          "item": `https://namazly.in/masail/${slug}`
+        }
+      ]
+    };
+    bcScript.textContent = JSON.stringify(bcSchema, null, 2);
+
+    // Clean up on unmount or transition
+    return () => {
+      document.getElementById('client-qa-schema')?.remove();
+      document.getElementById('client-bc-schema')?.remove();
+    };
+  }, [masla, slug]);
 
   return (
     <div className="min-h-screen relative flex flex-col"
@@ -121,9 +236,9 @@ export default function MaslaDetailPage() {
               <span className="px-3 py-1 rounded-full bg-sage-200/50 text-sage-800 uppercase tracking-wider">
                 {masla.category}
               </span>
-              <span className="flex items-center gap-1">
+              {/* <span className="flex items-center gap-1">
                 👁️ {views || masla.views || 0} times read
-              </span>
+              </span> */}
             </div>
 
             {/* Question Details */}

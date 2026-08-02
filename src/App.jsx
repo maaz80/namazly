@@ -172,6 +172,7 @@ const AppRoutes = () => {
       <Route path="/zakat-calculator" element={<ZakatCalculatorPage />} />
       <Route path="/tasbih" element={<TasbihPage />} />
       {/* <Route path="/halal-checker" element={<HalalCheckerPage />} /> */}
+      <Route path="/halal-checker" element={<Navigate to="/" replace />} />
       <Route path="/qibla" element={<QiblaFinderPage />} />
       <Route path="/nearby-mosques" element={<MosqueFinderPage />} />
       <Route path="/1adminMs1" element={<AdminLogin />} />

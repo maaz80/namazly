@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import QazaCalculator from '../components/QazaCalculator';
 import PrayerTracker from '../components/PrayerTracker';
 import StatsSummary from '../components/StatsSummary';
+import HomePrayerTimings from '../components/HomePrayerTimings';
 
 const AuthModal = lazy(() => import('../components/AuthModal'));
 import api from '../utils/api';
@@ -353,7 +354,7 @@ export default function Dashboard() {
         aria-label="Qaza namaz manager dashboard"
       >
         {/* Welcome banner */}
-        <div className="mb-8">
+        <div className="mb-6">
           <p className="poppins-regular text-sage-500 text-sm mb-1">{getGreeting()},</p>
           <h1 className="poppins-regular text-3xl md:text-4xl font-bold">
             <span className="gradient-text">{user ? user.name?.split(' ')[0] : 'Namazly'}</span>
@@ -362,6 +363,11 @@ export default function Dashboard() {
           <p className="poppins-regular text-sage-500 mt-1.5">
             {user ? 'May Allah accept your namaz and ease your journey.' : 'Estimate, track, and manage your missed namaz locally.'}
           </p>
+        </div>
+
+        {/* Minimalist Top Prayer Timings */}
+        <div className="mb-6 animate-fade-in">
+          <HomePrayerTimings />
         </div>
 
         {/* Guest Mode Banner */}
