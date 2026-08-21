@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
+import { STATIC_REVIEWS } from '../data/staticReviews';
 import { HiOutlineArrowLeft, HiStar, HiOutlineChatAlt2, HiCheckCircle } from 'react-icons/hi';
 import { getOptimizedAvatar } from '../utils/avatar';
 import usePageMeta from '../hooks/usePageMeta';
@@ -23,9 +24,24 @@ export default function ReviewsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const getInitialReviews = () => {
+    try {
+      const cached = localStorage.getItem('namazly_cached_reviews');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to parse cached reviews:', err);
+    }
+    return STATIC_REVIEWS;
+  };
+
   // Page States
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState(getInitialReviews);
+  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -46,8 +62,11 @@ export default function ReviewsPage() {
   const fetchReviews = async () => {
     try {
       const { data } = await api.get('/reviews');
-      if (data.success) {
+      if (data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {
         setReviews(data.reviews);
+        try {
+          localStorage.setItem('namazly_cached_reviews', JSON.stringify(data.reviews));
+        } catch (e) {}
       }
     } catch (err) {
       console.error('Failed to fetch reviews:', err);
@@ -88,7 +107,13 @@ export default function ReviewsPage() {
       
       const { data } = await api.post('/reviews', payload);
       if (data.success) {
-        setReviews(prev => [data.review, ...prev]);
+        setReviews(prev => {
+          const updated = [data.review, ...prev];
+          try {
+            localStorage.setItem('namazly_cached_reviews', JSON.stringify(updated));
+          } catch (e) {}
+          return updated;
+        });
         setSuccess(true);
         setComment('');
         setGuestName('');

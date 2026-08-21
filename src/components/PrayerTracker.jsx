@@ -33,7 +33,7 @@ export default function PrayerTracker({ qazaRecord, onUpdate, isGuest, onSaveAtt
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 md:p-8 shadow-lg">
+    <div className="glass-card rounded-3xl py-6 px-3 md:p-8 shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

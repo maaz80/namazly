@@ -112,7 +112,7 @@ export default function PrayerRow({ prayer, value, onUpdate, isSaving, isGuest, 
           onChange={handleChange}
           aria-label={`Qaza count for ${prayer.name}`}
           min={0}
-          className="prayer-input w-12 sm:w-16 md:w-20 text-center py-2 px-1 rounded-xl
+          className="prayer-input w-16 sm:w-16 md:w-20 text-center py-2 px-1 rounded-xl
                      poppins-regular font-bold text-sm sm:text-base md:text-lg text-sage-900
                      bg-white/70 border border-white/90 outline-none
                      focus:ring-2 focus:ring-sage-300/70 focus:border-sage-300

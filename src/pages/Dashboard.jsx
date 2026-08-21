@@ -9,6 +9,7 @@ import HomePrayerTimings from '../components/HomePrayerTimings';
 
 const AuthModal = lazy(() => import('../components/AuthModal'));
 import api from '../utils/api';
+import { STATIC_REVIEWS } from '../data/staticReviews';
 import { PRAYERS } from '../utils/constants';
 import { HiStar, HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineBookOpen } from 'react-icons/hi';
 import { IoIosArrowForward } from "react-icons/io";
@@ -116,8 +117,23 @@ const ARTICLES = [
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, updateQazaRecord } = useAuth();
-  const [dashboardReviews, setDashboardReviews] = useState([]);
-  const [loadingReviews, setLoadingReviews] = useState(true);
+  const getInitialDashboardReviews = () => {
+    try {
+      const cached = localStorage.getItem('namazly_cached_reviews');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.slice(0, 4);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to parse cached reviews:', err);
+    }
+    return STATIC_REVIEWS.slice(0, 4);
+  };
+
+  const [dashboardReviews, setDashboardReviews] = useState(getInitialDashboardReviews);
+  const [loadingReviews, setLoadingReviews] = useState(false);
   const [activeArticleIndex, setActiveArticleIndex] = useState(0);
 
   useEffect(() => {
@@ -243,13 +259,18 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  /* Fetch newest reviews on mount for dashboard footer */
+  /* Fetch newest reviews on mount for dashboard footer (updates static reviews with live data once server responds) */
   useEffect(() => {
     const fetchDashboardReviews = async () => {
       try {
         const { data } = await api.get('/reviews');
-        if (data.success) {
+        if (data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {
           setDashboardReviews(data.reviews.slice(0, 4));
+          try {
+            localStorage.setItem('namazly_cached_reviews', JSON.stringify(data.reviews));
+          } catch (e) {
+            // ignore localStorage errors
+          }
         }
       } catch (err) {
         console.error('Failed to fetch dashboard reviews:', err);
