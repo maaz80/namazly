@@ -11,7 +11,7 @@ const BASE_URL = 'https://namazly.in';
 const staticPages = [
   { path: '/', title: 'Qaza Namaz Calculator and Manager' },
   { path: '/calendar', title: 'Islamic Calendar' },
-  { path: '/timings', title: 'Namaz Timings' },
+  { path: '/timings', title: 'Today Namaz Timing & Prayer Timings' },
   { path: '/hadith', title: 'Daily Hadith' },
   { path: '/reviews', title: 'User Reviews' },
   { path: '/guide', title: 'Step-by-Step Guide' },

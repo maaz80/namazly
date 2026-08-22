@@ -3,9 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import InstallPwaModal from './components/InstallPwaModal';
-import Dashboard from './pages/Dashboard';
-
 // ── Code-split routes — loaded on demand ──────────────────
+const Dashboard   = lazy(() => import('./pages/Dashboard'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const TimingsPage  = lazy(() => import('./pages/TimingsPage'));

@@ -1,0 +1,30 @@
+# Namazly
+
+> Namazly is a distraction-free Qaza Namaz calculator, missed prayer manager, and Islamic prayer utility web application featuring cloud sync across devices.
+
+## Core Applications & Calculators
+
+- [Qaza Namaz Calculator & Manager](https://namazly.in/): Estimate, calculate, track, and reduce missed Qaza-e-Umri prayers with automatic calculation by age, puberty, and female menstruation exemptions.
+- [Islamic Masail & Rulings](https://namazly.in/masail): Comprehensive directory of verified Islamic rulings, questions, and answers regarding Qaza Salah, prayer rules, and daily fiqh.
+- [Zakat Calculator](https://namazly.in/zakat-calculator): Accurate Zakat calculator for gold, silver, cash, investments, liabilities, and business assets.
+- [Prayer Timings](https://namazly.in/timings): Accurate daily Islamic prayer timings for Fajr, Dhuhr, Asr, Maghrib, and Isha based on location.
+- [Qibla Finder](https://namazly.in/qibla): Interactive Qibla direction finder and compass.
+- [Tasbih Counter](https://namazly.in/tasbih): Digital Tasbih counter with customizable target counts, sound, and haptic feedback.
+- [Daily Hadith Reminders](https://namazly.in/hadith): Verified Hadiths with copy and share features.
+- [Mosque Finder](https://namazly.in/nearby-mosques): Locate nearby masjids and mosques.
+- [Islamic Calendar](https://namazly.in/calendar): Hijri calendar with key Islamic dates and events.
+
+## Guides & Documentation
+
+- [Step-by-Step Qaza Guide](https://namazly.in/guide): Detailed guide on how to calculate and offer Qaza prayers according to Islamic jurisprudence.
+- [Frequently Asked Questions](https://namazly.in/faq): Answers to common questions regarding Qaza tracking, cloud synchronization, and rules.
+- [User Reviews](https://namazly.in/reviews): Community feedback and user reviews of Namazly.
+- [About Namazly](https://namazly.in/about): Mission, features, and background of the Namazly platform.
+- [Contact Support](https://namazly.in/contact): Contact form and support information.
+- [Privacy Policy](https://namazly.in/privacy-policy): Information on user data handling, privacy, and cloud synchronization.
+- [Disclaimer](https://namazly.in/disclaimer): Medical, legal, and religious jurisprudence disclaimer.
+
+## Sitemaps & Feeds
+
+- [XML Sitemap](https://namazly.in/sitemap.xml): Complete XML sitemap indexing all canonical site pages and rulings.
+- [URL List](https://namazly.in/urllist.txt): Text file containing list of all published URLs.

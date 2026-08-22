@@ -58,8 +58,12 @@
   <!-- ── Font Performance ──────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Google Fonts - Poppins -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
+  <!-- Google Fonts - Poppins (Non-blocking load for optimal LCP) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
+  </noscript>
 
   <!-- ── JSON-LD Structured Data for Google Site Name ───────────────── -->
   <script type="application/ld+json">
@@ -135,14 +139,16 @@
     }
     </script>
   <!-- ✅ Baaki CSS non-blocking load -->
-  <link rel="preload" as="style" href="/assets/css/index-DO3kMDDq.css"
+  <link rel="preload" as="style" href="/assets/css/index-E83CwFK8.css"
     onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
-    <link rel="stylesheet" href="/assets/css/index-DO3kMDDq.css" />
+    <link rel="stylesheet" href="/assets/css/index-E83CwFK8.css" />
   </noscript>
-  <script type="module" crossorigin src="/assets/js/index-BEZ9U7En.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/js/vendor-core-BW7M86o5.js">
-  <link rel="stylesheet" crossorigin href="/assets/css/index-BUrWXy2o.css">
+  <script type="module" crossorigin src="/assets/js/index-C8wpKIag.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/js/vendor-react-BVEPmpLk.js">
+  <link rel="modulepreload" crossorigin href="/assets/js/vendor-router-SyKcVfmb.js">
+  <link rel="modulepreload" crossorigin href="/assets/js/vendor-axios-CT76seSz.js">
+  <!-- <link rel="stylesheet" crossorigin href="/assets/css/index-E83CwFK8.css"> -->
 </head>
 
 <body>

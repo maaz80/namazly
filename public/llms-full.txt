@@ -1,0 +1,52 @@
+# Namazly - Complete Overview & Documentation
+
+> Namazly is a distraction-free Qaza Namaz calculator, missed prayer manager, and Islamic prayer utility web application featuring cloud sync across devices.
+
+## Overview
+
+Namazly helps Muslims around the world estimate, calculate, track, and make up missed prayers (Qaza-e-Umri) in a structured and distraction-free manner. The application supports guest mode with local storage, as well as optional Google Authentication for real-time cloud synchronization across mobile and desktop devices.
+
+## Features
+
+### 1. Qaza Namaz Calculator
+- Calculates total missed prayers based on current age, age of puberty (Baligh), and years of missed Salah.
+- Supports female menstruation cycle deduction to automatically exclude exempt days from total counts.
+- Calculates individual counts for Fajr, Dhuhr, Asr, Maghrib, Isha, and Witr prayers.
+
+### 2. Prayer Tracker
+- Interactive counter buttons for logging completed Qaza prayers daily.
+- Visual progress tracking with percentage completion and total rakats remaining.
+- Streak counters and history tracking.
+
+### 3. Masail & Islamic Rulings Directory
+- Verified Fiqh rulings regarding Qaza prayers, timing restrictions (Tulu, Ghurub, Zawaal), intention (Niyat), order (Tarteeb), and Hanafi/general school guidelines.
+- Dynamic search and categorization for quick access to authentic rulings.
+
+### 4. Zakat Calculator
+- Real-time Zakat calculation based on gold weight, silver weight, cash in hand/bank, business investments, and deducting short-term liabilities.
+
+### 5. Utility Tools
+- **Prayer Timings**: Location-based accurate Islamic prayer times.
+- **Qibla Finder**: Digital compass pointing towards Kaaba (Makkah).
+- **Digital Tasbih**: Customizable counter with sound/haptics for dhikr after Salah.
+- **Daily Hadith**: Authentic Hadith reminders with quick sharing capabilities.
+- **Mosque Finder**: Map utility to locate nearby masjids.
+
+## Key URLs & Links
+
+- [Qaza Namaz Calculator & Manager](https://namazly.in/): Primary web application dashboard.
+- [Islamic Masail Directory](https://namazly.in/masail): Directory of Islamic rulings and QA.
+- [Zakat Calculator](https://namazly.in/zakat-calculator): Zakat calculation tool.
+- [Prayer Timings](https://namazly.in/timings): Prayer times page.
+- [Qibla Finder](https://namazly.in/qibla): Qibla direction tool.
+- [Tasbih Counter](https://namazly.in/tasbih): Digital Tasbih counter.
+- [Daily Hadith Reminders](https://namazly.in/hadith): Hadith collection page.
+- [Mosque Finder](https://namazly.in/nearby-mosques): Nearby masjid locator.
+- [Islamic Calendar](https://namazly.in/calendar): Hijri calendar.
+- [Step-by-Step Qaza Guide](https://namazly.in/guide): Comprehensive guide on praying Qaza-e-Umri.
+- [Frequently Asked Questions](https://namazly.in/faq): Common questions and help.
+- [User Reviews](https://namazly.in/reviews): User testimonials and ratings.
+- [About Namazly](https://namazly.in/about): About the project.
+- [Contact Support](https://namazly.in/contact): Contact page.
+- [Privacy Policy](https://namazly.in/privacy-policy): Privacy and data security details.
+- [Disclaimer](https://namazly.in/disclaimer): Religious and legal disclaimer.

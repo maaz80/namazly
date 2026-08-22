@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import Footer from '../components/Footer';
-import api from '../utils/api';
-import masailDuplicateMap from '../data/masailDuplicateMap.json';
 import { HiOutlineArrowLeft, HiOutlineChevronRight, HiOutlineBookOpen, HiOutlineUser } from 'react-icons/hi';
 
 const Background = () => (
@@ -18,6 +16,7 @@ const Background = () => (
 );
 
 let cachedClientMasail = null;
+let cachedDuplicateMap = null;
 
 export default function MaslaDetailPage() {
   const { slug } = useParams();
@@ -33,15 +32,15 @@ export default function MaslaDetailPage() {
   const pageTitle = masla ? `${masla.question} — Answer & Reference | Namazly` : 'Islamic Ruling details | Namazly';
   const pageDesc = masla ? masla.answer.slice(0, 155) : 'Read detailed Islamic rulings (Masla & Jawab) with verified scholar and book references.';
 
-  const primarySlug = masailDuplicateMap[slug] || slug;
+  const primarySlug = (cachedDuplicateMap && cachedDuplicateMap[slug]) || slug;
   usePageMeta(pageTitle, pageDesc, `/masail/${primarySlug}`);
 
   useEffect(() => {
     setLoading(true);
     setError('');
 
-    const handleData = (data) => {
-      const targetSlug = masailDuplicateMap[slug] || slug;
+    const handleData = (data, dupMap) => {
+      const targetSlug = (dupMap && dupMap[slug]) || slug;
       let found = data.find(m => m.slug === targetSlug);
 
       if (!found) {
@@ -68,21 +67,18 @@ export default function MaslaDetailPage() {
       setLoading(false);
     };
 
-    if (cachedClientMasail) {
-      handleData(cachedClientMasail);
-    } else {
-      fetch('/masail.json')
-        .then(res => res.json())
-        .then(data => {
-          cachedClientMasail = data;
-          handleData(data);
-        })
-        .catch(err => {
-          console.error('Error loading masail.json:', err);
-          setError('Error loading ruling details.');
-          setLoading(false);
-        });
-    }
+    Promise.all([
+      cachedClientMasail ? Promise.resolve(cachedClientMasail) : fetch('/masail.json').then(r => r.json()),
+      cachedDuplicateMap ? Promise.resolve(cachedDuplicateMap) : fetch('/masailDuplicateMap.json').then(r => r.json()).catch(() => ({}))
+    ]).then(([data, dupMap]) => {
+      cachedClientMasail = data;
+      cachedDuplicateMap = dupMap || {};
+      handleData(data, cachedDuplicateMap);
+    }).catch(err => {
+      console.error('Error loading masail data:', err);
+      setError('Error loading ruling details.');
+      setLoading(false);
+    });
 
     // Scroll to top when loading new masla
     window.scrollTo({ top: 0, behavior: 'smooth' });

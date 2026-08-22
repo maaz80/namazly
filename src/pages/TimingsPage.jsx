@@ -103,8 +103,8 @@ export default function TimingsPage() {
   const lastFetchedRef = useRef({ city: '', country: '', method: '', school: '', lat: null, lon: null });
 
   usePageMeta(
-    'Daily Namaz Timings — Real-time Prayer Schedule | Namazly',
-    'Get precise, location-based daily prayer times, dynamic remaining countdowns, and automatic geolocation updates.',
+    `Today Namaz Timing & Prayer Timings (${city}) — Live Daily Schedule | Namazly`,
+    `Check today's accurate Namaz timing and prayer timings for Fajr, Dhuhr, Asr, Maghrib & Isha in ${city}, ${country}. Live countdown, Hanafi/Shafi calculation methods & automatic GPS location updates.`,
     '/timings'
   );
 
@@ -413,14 +413,75 @@ export default function TimingsPage() {
       {/* Main content */}
       <main id="main-content" tabIndex="-1" className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 py-6 md:py-8 flex-1 w-full space-y-6">
 
+        {/* ── JSON-LD Structured Data for Search Engine Crawlers ───────────────── */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebPage",
+                "@id": "https://namazly.in/timings#webpage",
+                "url": "https://namazly.in/timings",
+                "name": `Today Namaz Timing & Prayer Timings in ${city} | Namazly`,
+                "description": `Get precise today Namaz timing and daily prayer schedule for Fajr, Dhuhr, Asr, Maghrib, and Isha in ${city}, ${country}. Includes live countdown, Hanafi and Shafi calculation methods, and automatic location detection.`,
+                "inLanguage": "en",
+                "isPartOf": {
+                  "@type": "WebSite",
+                  "@id": "https://namazly.in/#website",
+                  "name": "Namazly",
+                  "url": "https://namazly.in/"
+                }
+              },
+              {
+                "@type": "FAQPage",
+                "@id": "https://namazly.in/timings#faq",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "What is today's Namaz timing for my location?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Today's Namaz timing (prayer timing) varies based on your geographic location and sun position. Namazly automatically detects your city or GPS coordinates to display accurate daily start times for Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "What is the difference between Hanafi and Shafi Asr prayer timings?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "In the Shafi, Maliki, and Hanbali schools of thought, Asr timing begins when an object's shadow equals its height (1x shadow ratio). In the Hanafi school of jurisprudence, Asr timing begins when the shadow of an object reaches twice its height plus the shadow length at noon (2x shadow ratio)."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "How are daily Namaz timings calculated?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Daily Namaz timings are calculated using astronomical solar position calculations based on zenith angles, latitude, longitude, and established Islamic calculation conventions like the University of Islamic Sciences Karachi, ISNA, MWL, and Umm Al-Qura Makkah."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "What are the 5 obligatory Namaz timings in Islam?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "The five obligatory daily prayers (Salah / Namaz) are Fajr (Dawn prayer before sunrise), Dhuhr (Noon prayer after midday sun passes zenith), Asr (Late afternoon prayer), Maghrib (Sunset prayer immediately after sun sets), and Isha (Night prayer after twilight disappears)."
+                    }
+                  }
+                ]
+              }
+            ]
+          })}
+        </script>
+
         {/* Top Header Card */}
         <section className="glass-card rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in">
           <div className="text-center md:text-left">
             <h1 className="poppins-regular text-2xl sm:text-3xl font-bold text-sage-900 leading-tight">
-              {city}
+              Today Namaz Timing &amp; Prayer Timings <span className="text-sage-600 font-medium block sm:inline text-xl sm:text-2xl">in {city}</span>
             </h1>
-            <p className="poppins-regular text-sage-500 font-semibold mt-0.5 text-xs sm:text-sm flex items-center justify-center md:justify-start gap-1">
-              <span>{usingCoords ? 'Auto-detected via GPS' : `${city}, ${country}`}</span>
+            <p className="poppins-regular text-sage-500 font-semibold mt-1 text-xs sm:text-sm flex items-center justify-center md:justify-start gap-1">
+              <span>📍 {usingCoords ? 'Auto-detected via GPS' : `${city}, ${country}`}</span>
             </p>
           </div>
 
@@ -797,6 +858,117 @@ export default function TimingsPage() {
 
           </div>
         </section>
+
+        {/* SEO Text Content & Educational Guide Section */}
+        <article className="glass-card rounded-3xl p-6 md:p-8 shadow-sm space-y-6 animate-slide-up text-sage-900" style={{ animationDelay: '0.25s' }}>
+          <header className="space-y-2 border-b border-sage-100/60 pb-4">
+            <h2 className="poppins-regular text-xl md:text-2xl font-bold text-sage-900">
+              Complete Guide to Today Namaz Timing &amp; Daily Prayer Timings
+            </h2>
+            <p className="poppins-regular text-xs md:text-sm text-sage-600 leading-relaxed">
+              Offering daily Salah (Namaz) at its designated time is one of the five mandatory pillars of Islam. Having access to accurate <strong>today Namaz timing</strong> for your exact city ensures that your Fajr, Dhuhr, Asr, Maghrib, and Isha prayers are performed punctually, whether you are at home, at work, or travelling.
+            </p>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <section className="space-y-3">
+              <h3 className="poppins-regular text-base font-bold text-sage-800 flex items-center gap-2">
+                <span>🌅</span> The 5 Daily Namaz Timings Explained
+              </h3>
+              <ul className="space-y-2 text-xs md:text-sm text-sage-700 list-disc pl-5 leading-relaxed">
+                <li><strong>Fajr Timing (Dawn Prayer):</strong> Starts at true dawn (Subh Sadiq) when light first spreads horizontally, and ends right before sunrise.</li>
+                <li><strong>Dhuhr Timing (Zohr / Midday):</strong> Begins after the sun passes its zenith (midday peak) and starts declining toward the west.</li>
+                <li><strong>Asr Timing (Late Afternoon):</strong> Begins in the afternoon when shadows reach prescribed lengths (1x for Shafi, 2x for Hanafi) and ends before sunset.</li>
+                <li><strong>Maghrib Timing (Sunset Prayer):</strong> Starts immediately after the sun's disk fully sets below the horizon.</li>
+                <li><strong>Isha Timing (Night Prayer):</strong> Starts when evening twilight disappears completely from the sky and lasts until Fajr dawn.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-3">
+              <h3 className="poppins-regular text-base font-bold text-sage-800 flex items-center gap-2">
+                <span>⚖️</span> Calculation Methods &amp; Asr Madhhab Differences
+              </h3>
+              <p className="text-xs md:text-sm text-sage-700 leading-relaxed">
+                Namaz timings are calculated based on solar twilight angles and geographic coordinates. Different Islamic authorities recommend regional parameters:
+              </p>
+              <ul className="space-y-1.5 text-xs text-sage-700 list-disc pl-5 leading-relaxed">
+                <li><strong>Karachi Method (South Asia):</strong> Uses 18° Fajr &amp; 18° Isha angles (Standard across India, Pakistan, and Bangladesh).</li>
+                <li><strong>ISNA (North America):</strong> Uses 15° Fajr &amp; 15° Isha calculation angles.</li>
+                <li><strong>Muslim World League (MWL):</strong> Standard 18° Fajr &amp; 17° Isha angles.</li>
+                <li><strong>Hanafi vs Shafi Asr Timing:</strong> Hanafi jurisprudence calculates Asr when shadow length is twice an object's height (2x), whereas Shafi, Maliki, and Hanbali use single shadow length (1x).</li>
+              </ul>
+            </section>
+          </div>
+
+          {/* Interactive Utility Cross-Links */}
+          <section className="pt-4 border-t border-sage-100/60">
+            <h3 className="poppins-regular text-sm font-bold text-sage-800 mb-3">
+              Explore Islamic Utilities &amp; Prayer Tools on Namazly:
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <a href="/calendar" className="p-3 rounded-xl glass-card-deep hover:bg-white/80 transition-all text-sage-800 font-semibold no-underline text-center">
+                📅 Islamic Calendar
+              </a>
+              <a href="/qibla" className="p-3 rounded-xl glass-card-deep hover:bg-white/80 transition-all text-sage-800 font-semibold no-underline text-center">
+                🧭 Qibla Finder
+              </a>
+              <a href="/nearby-mosques" className="p-3 rounded-xl glass-card-deep hover:bg-white/80 transition-all text-sage-800 font-semibold no-underline text-center">
+                🕌 Nearby Mosques
+              </a>
+              <a href="/masail" className="p-3 rounded-xl glass-card-deep hover:bg-white/80 transition-all text-sage-800 font-semibold no-underline text-center">
+                📖 Islamic Masail
+              </a>
+            </div>
+          </section>
+
+          {/* FAQ Accordion Section for SEO & User Clarity */}
+          <section className="pt-4 border-t border-sage-100/60 space-y-4">
+            <h2 className="poppins-regular text-lg font-bold text-sage-900">
+              Frequently Asked Questions — Today Namaz Timing &amp; Prayer Times
+            </h2>
+            <div className="space-y-3">
+              <details className="group glass-card-deep rounded-2xl p-4 cursor-pointer">
+                <summary className="poppins-regular text-xs sm:text-sm font-semibold text-sage-900 flex justify-between items-center list-none">
+                  <span>How do I find today's accurate Namaz timing for my location?</span>
+                  <span className="text-sage-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-2.5 text-xs text-sage-600 leading-relaxed">
+                  Simply click <strong>"Use GPS Location"</strong> at the top to automatically detect your coordinates, or select your country, state, and city from the search dropdown. Namazly calculates live daily prayer timings according to your exact latitude and longitude.
+                </p>
+              </details>
+
+              <details className="group glass-card-deep rounded-2xl p-4 cursor-pointer">
+                <summary className="poppins-regular text-xs sm:text-sm font-semibold text-sage-900 flex justify-between items-center list-none">
+                  <span>Why does Asr prayer timing vary between local mosques?</span>
+                  <span className="text-sage-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-2.5 text-xs text-sage-600 leading-relaxed">
+                  Asr timing differs because of school of jurisprudence (Madhhab). The Hanafi Madhhab starts Asr prayer later (shadow equals twice object height), whereas Shafi, Maliki, and Hanbali start earlier (shadow equals single object height). You can toggle between Hanafi and Standard rules under <strong>Calculation Settings</strong> above.
+                </p>
+              </details>
+
+              <details className="group glass-card-deep rounded-2xl p-4 cursor-pointer">
+                <summary className="poppins-regular text-xs sm:text-sm font-semibold text-sage-900 flex justify-between items-center list-none">
+                  <span>What should I do if I miss a Namaz timing?</span>
+                  <span className="text-sage-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-2.5 text-xs text-sage-600 leading-relaxed">
+                  If a prayer is missed due to sleep or forgetfulness, it becomes a <strong>Qaza Namaz</strong> and should be performed as soon as possible. You can use the main <a href="/" className="text-sage-700 underline font-medium">Namazly Qaza Manager</a> to track and calculate your pending missed prayers systematically.
+                </p>
+              </details>
+
+              <details className="group glass-card-deep rounded-2xl p-4 cursor-pointer">
+                <summary className="poppins-regular text-xs sm:text-sm font-semibold text-sage-900 flex justify-between items-center list-none">
+                  <span>Are prayer timings updated dynamically for travellers?</span>
+                  <span className="text-sage-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-2.5 text-xs text-sage-600 leading-relaxed">
+                  Yes! When travelling across cities or timezones, click "Use GPS Location" to automatically re-calculate today's Namaz timing for your current location.
+                </p>
+              </details>
+            </div>
+          </section>
+        </article>
 
       </main>
 

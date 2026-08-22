@@ -25,6 +25,10 @@ export default defineConfig(({ mode }) => ({
         drop_console: mode === 'production',
         drop_debugger: true,
         pure_funcs: mode === 'production' ? ['console.log', 'console.info', 'console.debug'] : [],
+        passes: 2,
+      },
+      format: {
+        comments: false,
       },
     },
 
@@ -40,23 +44,22 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         // Manual chunk splitting for optimal caching
-        // React core — changes rarely, cached long-term
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // Group heavy OAuth libraries separately
             if (id.includes('@react-oauth')) {
               return 'vendor-oauth';
             }
-            // Group core dependencies together to prevent critical request chaining/waterfalls
-            if (
-              id.includes('react/') ||
-              id.includes('react-dom/') ||
-              id.includes('react-router/') ||
-              id.includes('react-router-dom/') ||
-              id.includes('axios') ||
-              id.includes('scheduler')
-            ) {
-              return 'vendor-core';
+            if (id.includes('react-icons')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('axios')) {
+              return 'vendor-axios';
+            }
+            if (id.includes('react-router') || id.includes('react-router-dom')) {
+              return 'vendor-router';
+            }
+            if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
+              return 'vendor-react';
             }
           }
         },
